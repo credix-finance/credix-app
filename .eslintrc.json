@@ -1,0 +1,14 @@
+{
+	"extends": [
+		"react-app",
+		"eslint:recommended"
+	],
+	"plugins": [
+		"react-hooks"
+	],
+	"rules": {
+		"semi": ["error", "always"],
+		"react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "warn"
+	}
+}
