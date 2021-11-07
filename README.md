@@ -10,9 +10,9 @@ A `.env` file will be read depending on what type of build you are running (see:
 
 ### Environment Variables
 
-- REACT_APP_CLUSTER (Defaults to localnet. Determines which cluster the app should target. options: localnet, testnet)
-- REACT_APP_PROGRAM_ID (Required for localnet. Determines which on chain program the app should target)
-- REACT_APP_RPC_ENDPOINT (Determines which rpc endpoint will be used to communite with the cluster)
+- `REACT_APP_CLUSTER` Defaults to localnet. Determines which cluster the app should target. options: localnet, testnet
+- `REACT_APP_PROGRAM_ID` Required for localnet. Determines which on-chain program the app should target
+- `REACT_APP_RPC_ENDPOINT` Determines which rpc endpoint will be used to communicate with the cluster
 
 ### Environments
 
