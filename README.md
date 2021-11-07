@@ -1,7 +1,62 @@
 # Credix Client
-Repository containing the FE client of Credix. If you want to see the working product on Solana testnet, go to [app.credix.finance](https://app.credix.finance), connect your wallet, get some SOL from [this faucet](https://www.solfaucet.com), get some USDC from [this faucet](https://www.usdcfaucet.com) and connect your wallet. If you want to spin up a local clients, follow the steps as outlined below.
 
-# Create React App
+Repository containing the FE application of Credix. If you want to see the working product on Solana testnet, go to [app.credix.finance](https://app.credix.finance), connect your wallet, get some SOL from [this faucet](https://www.solfaucet.com), get some USDC from [this faucet](https://www.usdcfaucet.com) and connect your wallet. If you want to spin up a local clients, follow the steps as outlined below.
+
+# Development
+
+## Configuration
+
+A `.env` file will be read depending on what type of build you are running (see: [custom environment variables](https://create-react-app.dev/docs/adding-custom-environment-variables/#what-other-env-files-can-be-used))
+
+### Environment Variables
+
+- REACT_APP_CLUSTER (Defaults to localnet. Determines which cluster the app should target. options: localnet, testnet)
+- REACT_APP_PROGRAM_ID (Required for localnet. Determines which on chain program the app should target)
+- REACT_APP_RPC_ENDPOINT (Determines which rpc endpoint will be used to communite with the cluster)
+
+### Environments
+
+#### Localnet
+
+When using localnet, be sure to run
+
+```sh
+$ solana-test-validator
+```
+
+This will spin up a local validator that our client interacts with. More info on setting up a local validator can be found [here](https://docs.solana.com/developing/test-validator).
+
+### Testnet
+
+Our program is also deployed on testnet. The program address is `7xxjTaGoqD9vTGGD2sr4krbKBozKrwQSB4GLsXsV5SYW`. When you deploy a new build to testnet, be sure to change the testnet clusterconfig in `src/config.ts` to reflect the deployed program's address.
+
+The request limits on testnet are the following.
+
+```
+Maximum number of requests per 10 seconds per IP: 100
+Maximum number of requests per 10 seconds per IP for a single RPC: 40
+Maximum concurrent connections per IP: 40
+Maximum connection rate per 10 seconds per IP: 40
+```
+
+## Editors
+
+We use eslint and prettier to lint and format our codebase. An editorconfig file is also provided.
+
+### Visual Studio Code
+
+#### Extensions
+
+- [EditorConfig for VS Code](https://marketplace.visualstudio.com/items?itemName=EditorConfig.EditorConfig)
+- [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
+- [Prettier - Code formatter](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
+
+##### Optional but recommended
+
+- [Formatting Toggle](https://marketplace.visualstudio.com/items?itemName=tombonnike.vscode-status-bar-format-toggle) A VS Code extension that allows you to toggle formatting settings ON and OFF with a simple click.
+
+# Usage
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
@@ -41,8 +96,4 @@ Instead, it will copy all the configuration files and the transitive dependencie
 
 You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
 
-# Development
-## Visual Studio Code
-### Extensions
-- [EditorConfig for VS Code](https://marketplace.visualstudio.com/items?itemName=EditorConfig.EditorConfig)
-- [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
+:warning: Ejecting should not be necessary as we are using [craco](https://github.com/risenforces/craco-alias) to override configs.
