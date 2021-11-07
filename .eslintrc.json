@@ -1,7 +1,8 @@
 {
 	"extends": [
 		"react-app",
-		"eslint:recommended"
+		"eslint:recommended",
+		"react-app/jest"
 	],
 	"plugins": [
 		"react-hooks"
@@ -9,6 +10,9 @@
 	"rules": {
 		"semi": ["error", "always"],
 		"react-hooks/rules-of-hooks": "error",
-    "react-hooks/exhaustive-deps": "warn"
+    "react-hooks/exhaustive-deps": "warn",
+		"no-trailing-spaces": "warn",
+		"indent": ["error", "tab"],
+		"eol-last": "warn"
 	}
 }
