@@ -1,0 +1,22 @@
+{
+	"compilerOptions": {
+		"baseUrl": "./src/",
+		"paths": {
+			"@components/*": [
+				"react/components/*"
+			],
+			"@reducers/*": [
+				"store/reducers/*"
+			],
+			"@actions/*": [
+				"store/actions/*"
+			],
+			"@sagas/*": [
+				"store/sagas/*"
+			],
+			"@styles/*": [
+				"styles/*"
+			]
+		}
+	}
+}
