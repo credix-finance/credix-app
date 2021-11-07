@@ -1,75 +1,81 @@
 import { PublicKey } from "@solana/web3.js";
-import { ENV } from "types/env.types";
-import { NetConfig, RPCEndpoint } from "types/solana.types";
+import { ClusterConfig, RPCEndpoint, SolanaCluster } from "types/solana.types";
 
-/// Prefilled configs
-const localnetConfig: Partial<NetConfig> = {
+/// PREFILLED CONFIGS
+const localnetConfig: Partial<ClusterConfig> = {
 	RPCEndpoint: RPCEndpoint.LOCALNET,
 };
 
-const testnetConfig: NetConfig = {
+const testnetConfig: ClusterConfig = {
 	RPCEndpoint: RPCEndpoint.TESTNET,
 	programId: new PublicKey("7xxjTaGoqD9vTGGD2sr4krbKBozKrwQSB4GLsXsV5SYW"),
 };
 ///
 
-const getRPCEndpoint = (baseEndpoint: string | undefined): RPCEndpoint => {
-	const endpoint = process.env.REACT_APP_RPC_ENDPOINT || baseEndpoint;
+const getTargetClusterFromEnv = (): SolanaCluster => {
+	const targetCluster = process.env.REACT_APP_CLUSTER;
 
-	if (!Object.values(ENV).some((e) => e === endpoint)) {
-		throw new Error(`Invalid rpc endpoint ${endpoint}`);
+	if (targetCluster) {
+		if (!Object.values(SolanaCluster).some((c) => c === targetCluster)) {
+			throw new Error(`Invalid cluster targetted ${targetCluster}`);
+		}
+
+		return targetCluster as SolanaCluster;
 	}
 
-	return endpoint as RPCEndpoint;
+	return SolanaCluster.LOCALNET;
 };
 
-const getProgramId = (baseKey: PublicKey | undefined): PublicKey => {
-	const envId = process.env.REACT_APP_PROGRAM_ID;
+const getBaseClusterConfig = (): Partial<ClusterConfig> => {
+	const targetCluster = getTargetClusterFromEnv();
 
-	if (envId) {
-		return new PublicKey(envId);
+	switch (targetCluster) {
+		case SolanaCluster.TESTNET:
+			return testnetConfig;
+		default:
+			return localnetConfig;
+	}
+};
+
+const getRPCEndpointFromEnv = (): RPCEndpoint | undefined => {
+	const endpoint = process.env.REACT_APP_RPC_ENDPOINT;
+
+	if (endpoint) {
+		if (!Object.values(RPCEndpoint).some((e) => e === endpoint)) {
+			throw new Error(`Invalid rpc endpoint ${endpoint}`);
+		}
+
+		return endpoint as RPCEndpoint;
+	}
+};
+
+const getProgramIdFromEnv = (): PublicKey | undefined => {
+	const key = process.env.REACT_APP_PROGRAM_ID;
+
+	if (key) {
+		return new PublicKey(key);
+	}
+};
+
+export const clusterConfig = ((): ClusterConfig => {
+	const baseClusterConfig = getBaseClusterConfig();
+
+	const rpcEndpoint = getRPCEndpointFromEnv() || baseClusterConfig.RPCEndpoint;
+
+	if (!rpcEndpoint) {
+		throw new Error("No RPC endpoint provided");
 	}
 
-	if (!baseKey) {
+	const programId = getProgramIdFromEnv() || baseClusterConfig.programId;
+
+	if (!programId) {
 		throw new Error("No program id provided");
 	}
 
-	return baseKey;
-};
-
-const getEnvironment = (): ENV => {
-	const env = process.env.REACT_APP_NET || process.env.NODE_ENV;
-
-	if (!Object.values(ENV).some((e) => e === env)) {
-		throw new Error(`Invalid environment ${env}`);
-	}
-
-	return env as ENV;
-};
-
-// Creates a netconfig based on one of the prefilled configs above \
-//  but with fields overridden by environment variables if present
-export const netConfig: NetConfig = (() => {
-	let baseConfig: Partial<NetConfig>;
-	const env = getEnvironment();
-
-	// TODO: deploy on mainnet and add a proper production environment
-	switch (env) {
-		case ENV.LOCAL:
-			baseConfig = localnetConfig;
-			break;
-		case ENV.DEVELOPMENT:
-		case ENV.PRODUCTION:
-			baseConfig = testnetConfig;
-	}
-
-	const rpcEndpoint = getRPCEndpoint(baseConfig.RPCEndpoint);
-	const programId = getProgramId(baseConfig.programId);
-
-	const config: NetConfig = {
+	const clusterConfig: ClusterConfig = {
 		RPCEndpoint: rpcEndpoint,
-		programId,
+		programId: programId,
 	};
 
-	return config;
+	return clusterConfig;
 })();
