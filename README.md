@@ -26,7 +26,7 @@ $ solana-test-validator
 
 This will spin up a local validator that our client interacts with. More info on setting up a local validator can be found [here](https://docs.solana.com/developing/test-validator).
 
-### Testnet
+#### Testnet
 
 Our program is also deployed on testnet. The program address is `7xxjTaGoqD9vTGGD2sr4krbKBozKrwQSB4GLsXsV5SYW`. When you deploy a new build to testnet, be sure to change the testnet clusterconfig in `src/config.ts` to reflect the deployed program's address.
 

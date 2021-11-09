@@ -6,7 +6,8 @@
 		"prettier"
 	],
 	"plugins": [
-		"react-hooks"
+		"react-hooks",
+		"formatjs"
 	],
 	"rules": {
 		"semi": ["error", "always"],
