@@ -20,6 +20,6 @@
 		"quotes": "error",
 		"no-unused-vars": "off",
 		"@typescript-eslint/no-unused-vars": "error",
-		"max-len": ["error", 100]
+		"max-len": ["error", 101]
 	}
 }

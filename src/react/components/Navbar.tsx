@@ -6,7 +6,5 @@ export const Navbar = () => (
 	<div>
 		<WalletMultiButton></WalletMultiButton>
 		<Balance />
-		<Balance />
-		<Balance />
 	</div>
 );

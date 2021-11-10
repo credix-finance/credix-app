@@ -5,9 +5,7 @@ import React, { useEffect, useState } from "react";
 import { useIntl } from "react-intl";
 import { getBalance } from "store/api";
 
-interface Props {}
-
-export const Balance = (props: Props) => {
+export const Balance = () => {
 	const wallet = useAnchorWallet();
 	const connection = useConnection();
 	const intl = useIntl();
