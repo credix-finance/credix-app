@@ -5,7 +5,7 @@ import { Path } from "types/navigation.types";
 export const Routes = () => (
 	<BrowserRouter>
 		<RouterRoutes>
-			<Route path={Path.OVERVIEW} element={<OverviewPage/>} />
+			<Route path={Path.OVERVIEW} element={<OverviewPage />} />
 		</RouterRoutes>
 	</BrowserRouter>
 );

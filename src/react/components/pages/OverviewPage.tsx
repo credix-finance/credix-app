@@ -1,5 +1,10 @@
+import { AppLayout } from "@components/AppLayout";
 import React from "react";
 
 export const OverviewPage = () => {
-	return <p>Overview</p>;
+	return (
+		<AppLayout>
+			<p>Credix - Overview</p>
+		</AppLayout>
+	);
 };

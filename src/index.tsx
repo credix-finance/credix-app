@@ -4,7 +4,7 @@ import ReactDOM from "react-dom";
 
 ReactDOM.render(
 	<React.StrictMode>
-		<CredixApp/>
+		<CredixApp />
 	</React.StrictMode>,
 	document.getElementById("root")
 );

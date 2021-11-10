@@ -16,6 +16,9 @@
 			],
 			"@styles/*": [
 				"styles/*"
+			],
+			"@selectors/*": [
+				"store/selectors/*"
 			]
 		}
 	}
