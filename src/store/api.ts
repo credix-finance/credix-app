@@ -1,23 +1,22 @@
-import { Address, Program, Provider, utils, Wallet } from "@project-serum/anchor";
+import { BN, Address, Program, Provider, utils, Wallet, web3 } from "@project-serum/anchor";
 import { Idl, IdlTypeDef } from "@project-serum/anchor/dist/cjs/idl";
 import { IdlTypes, TypeDef } from "@project-serum/anchor/dist/cjs/program/namespace/types";
+import { TOKEN_PROGRAM_ID } from "@solana/spl-token";
 import { Connection, ParsedAccountData, PublicKey } from "@solana/web3.js";
 import { multiAsync } from "async.utils";
 import { config } from "config";
 import { SEEDS } from "consts";
 import { PoolStats } from "types/program.types";
+import { PdaSeeds } from "types/solana.types";
+
+const mapPKToSeed = (publicKey: PublicKey) => publicKey.toBuffer().slice(0, 10);
+
+const encodeSeedString = (seedString: string) => utils.bytes.utf8.encode(seedString);
 
 const getProgram = (connection: Connection, wallet: Wallet) => {
 	const provider = new Provider(connection, wallet, config.confirmOptions);
 	return new Program(config.idl, config.clusterConfig.programId, provider);
 };
-
-const getGlobalMarketStateAccountData = multiAsync(
-	async (address: Address, connection: Connection, wallet: Wallet) => {
-		const program = getProgram(connection, wallet);
-		return program.account.globalMarketState.fetch(address);
-	}
-);
 
 const getDealAccountData = multiAsync(
 	async (address: Address, connection: Connection, wallet: Wallet) => {
@@ -26,15 +25,37 @@ const getDealAccountData = multiAsync(
 	}
 );
 
-const getGlobalMarketStatePDA = multiAsync(async () => {
-	const seed = utils.bytes.utf8.encode(SEEDS.GLOBAL_MARKET_STATE_PDA);
+const getPDA = multiAsync(async (seeds: PdaSeeds) => {
 	const programId = config.clusterConfig.programId;
-	return PublicKey.findProgramAddress([seed], programId);
+	return PublicKey.findProgramAddress(seeds, programId);
+});
+
+const getGlobalMarketStatePDA = multiAsync(async () => {
+	const seed = encodeSeedString(SEEDS.GLOBAL_MARKET_STATE_PDA);
+	return getPDA([seed]);
+});
+
+const getDepositorInvestorTokenPDA = multiAsync(async (publicKey: PublicKey) => {
+	const seed = encodeSeedString(SEEDS.DEPOSITOR_TOKEN);
+	const seeds: PdaSeeds = [mapPKToSeed(publicKey), Buffer.from(seed)];
+	return getPDA(seeds);
+});
+
+const getDepositorPDA = multiAsync(async (publicKey: PublicKey) => {
+	const seed = encodeSeedString(SEEDS.DEPOSITOR);
+	const seeds: PdaSeeds = [mapPKToSeed(publicKey), Buffer.from(seed)];
+	return getPDA(seeds);
+});
+
+const getInvestorTokenMintAuthorityPDA = multiAsync(async () => {
+	const seed = encodeSeedString(SEEDS.INVESTOR_MINT_AUTHORITY);
+	return getPDA([seed]);
 });
 
 const getGlobalMarketStateData = multiAsync(async (connection: Connection, wallet: Wallet) => {
+	const program = getProgram(connection, wallet);
 	const globalMarketStatePDA = await getGlobalMarketStatePDA();
-	return getGlobalMarketStateAccountData(globalMarketStatePDA[0], connection, wallet);
+	return program.account.globalMarketState.fetch(globalMarketStatePDA[0]);
 });
 
 const getLPTokenAccountInfo = multiAsync(async (connection: Connection, wallet: Wallet) => {
@@ -42,29 +63,35 @@ const getLPTokenAccountInfo = multiAsync(async (connection: Connection, wallet: 
 	return connection.getParsedAccountInfo(globalMarketStateData.liquidityPoolTokenAccount);
 });
 
-const getLPMintTokenAccounts = multiAsync(async (connection: Connection, wallet: Wallet) => {
+const getLPMint = multiAsync(async (connection: Connection, wallet: Wallet) => {
 	const lpTokenAccountInfo = await getLPTokenAccountInfo(connection, wallet);
 
 	if (!lpTokenAccountInfo.value) {
 		throw Error("Couldn't fetch lp token account info");
 	}
 
-	const lpMint = new PublicKey(
-		(lpTokenAccountInfo.value.data as ParsedAccountData).parsed.info.mint
-	);
+	return new PublicKey((lpTokenAccountInfo.value.data as ParsedAccountData).parsed.info.mint);
+});
 
+const getLPMintTokenAccounts = multiAsync(async (connection: Connection, wallet: Wallet) => {
+	const lpMint = await getLPMint(connection, wallet);
 	return connection.getParsedTokenAccountsByOwner(wallet.publicKey, { mint: lpMint });
 });
 
-export const getBalance = multiAsync(async (connection: Connection, wallet: Wallet) => {
+export const getLPMintTokenAccount = multiAsync(async (connection, wallet) => {
 	const tokenAccounts = await getLPMintTokenAccounts(connection, wallet);
+	return tokenAccounts.value[0];
+});
 
-	if (!tokenAccounts.value.length) {
+export const getBalance = multiAsync(async (connection: Connection, wallet: Wallet) => {
+	const tokenAccount = await getLPMintTokenAccount(connection, wallet);
+
+	if (!tokenAccount) {
 		return 0;
 	}
 
 	// TODO: is it ok to only show the balance of the first one? do we need to add them all up?
-	return 1.0 * tokenAccounts.value[0].account.data.parsed.info.tokenAmount.uiAmount;
+	return 1.0 * tokenAccount.account.data.parsed.info.tokenAmount.uiAmount;
 });
 
 const getParsedProgramAccounts = multiAsync(async (connection: Connection) => {
@@ -167,3 +194,89 @@ export const getPoolStats = multiAsync(async (connection: Connection, wallet: Wa
 
 	return poolStats;
 });
+
+const getDepositorAccountData = multiAsync(async (connection: Connection, wallet: Wallet) => {
+	const depositorPDA = await getDepositorPDA(wallet.publicKey);
+	const program = getProgram(connection, wallet);
+
+	return program.account.depositorInfo.fetch(depositorPDA[0]);
+});
+
+const createDepositorAccount = multiAsync(async (connection: Connection, wallet: Wallet) => {
+	const depositorPDAPromise = getDepositorPDA(wallet.publicKey);
+	const depositorInvestorTokenPDAPromise = getDepositorInvestorTokenPDA(wallet.publicKey);
+	const investorTokenMintAuthorityPDAPromise = getInvestorTokenMintAuthorityPDA();
+
+	const [depositorPDA, depositorInvestorTokenPDA, investorTokenMintAuthorityPDA] =
+		await Promise.all([
+			depositorPDAPromise,
+			depositorInvestorTokenPDAPromise,
+			investorTokenMintAuthorityPDAPromise,
+		]);
+
+	const program = getProgram(connection, wallet);
+
+	return program.rpc.createDepositor({
+		accounts: {
+			owner: wallet.publicKey,
+			depositor: wallet.publicKey,
+			depositorInfo: depositorPDA[0],
+			depositorInvestorTokenPDA: depositorInvestorTokenPDA[0],
+			investorTokenMintAccount: investorTokenMintAuthorityPDA[0],
+			rent: web3.SYSVAR_RENT_PUBKEY,
+			tokenProgram: TOKEN_PROGRAM_ID,
+		},
+	});
+});
+
+const depositInvestment = multiAsync(
+	async (amount: number, connection: Connection, wallet: Wallet) => {
+		// TODO: turn into constant
+		const depositAmount = new BN(amount * 1000000);
+		const program = getProgram(connection, wallet);
+		const globalMarketStatePDAPromise = getGlobalMarketStatePDA();
+		const globalMarketStateDataCall = getGlobalMarketStateData(connection, wallet);
+		const investorTokenMintAuthorityPDAPromise = getInvestorTokenMintAuthorityPDA();
+		const depositorPDAPromise = getDepositorPDA(wallet.publicKey);
+		const depositorInvestorTokenPDAPromise = getDepositorInvestorTokenPDA(wallet.publicKey);
+		const lpMintTokenAccountCall = getLPMintTokenAccount(connection, wallet);
+		const lpMintCall = getLPMint(connection, wallet);
+
+		const [
+			globalMarketStatePDA,
+			globalMarketState,
+			investorTokenMintAuthorityPDA,
+			depositorPDA,
+			depositorInvestorTokenPDA,
+			lpMintTokenAccount,
+			lpMint,
+		] = await Promise.all([
+			globalMarketStatePDAPromise,
+			globalMarketStateDataCall,
+			investorTokenMintAuthorityPDAPromise,
+			depositorPDAPromise,
+			depositorInvestorTokenPDAPromise,
+			lpMintTokenAccountCall,
+			lpMintCall,
+		]);
+
+		if (!lpMintTokenAccount) {
+			throw Error("No USDC token accounts found for depositor");
+		}
+
+		return program.rpc.depositFunds(investorTokenMintAuthorityPDA[1], depositAmount, {
+			accounts: {
+				depositor: wallet.publicKey,
+				globalMarketState: globalMarketStatePDA[0],
+				depositorInfo: depositorPDA[0],
+				depositorTokenAccount: lpMintTokenAccount.pubkey,
+				liquidityPoolTokenAccount: globalMarketState.liquidityPoolTokenAccount,
+				investorTokenMintAccount: globalMarketState.investorTokenMintAccount,
+				depositorInvestorTokenAccount: depositorInvestorTokenPDA[0],
+				usdcMintAccount: lpMint,
+				tokenProgram: TOKEN_PROGRAM_ID,
+			},
+			signer: wallet.publicKey,
+		});
+	}
+);

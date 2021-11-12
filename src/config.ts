@@ -9,7 +9,7 @@ const localnetConfig: Partial<ClusterConfig> = {
 	RPCEndpoint: RPCEndpoint.LOCALNET,
 };
 
-const testnetConfig: ClusterConfig = {
+const testnetConfig: Partial<ClusterConfig> = {
 	RPCEndpoint: RPCEndpoint.TESTNET,
 	programId: new PublicKey("7xxjTaGoqD9vTGGD2sr4krbKBozKrwQSB4GLsXsV5SYW"),
 };
@@ -60,6 +60,14 @@ const getProgramIdFromEnv = (): PublicKey | undefined => {
 	}
 };
 
+const getLPMintFromEnv = (): PublicKey | undefined => {
+	const key = process.env.REACT_APP_LP_MINT_ID;
+
+	if (key) {
+		return new PublicKey(key);
+	}
+};
+
 const getClusterConfig = (): ClusterConfig => {
 	const baseClusterConfig = getBaseClusterConfig();
 
@@ -75,9 +83,16 @@ const getClusterConfig = (): ClusterConfig => {
 		throw new Error("No program id provided");
 	}
 
+	const lpMintId = getLPMintFromEnv() || baseClusterConfig.lpMintId;
+
+	if (!lpMintId) {
+		throw new Error("No LP Mint id provided");
+	}
+
 	const clusterConfig: ClusterConfig = {
 		RPCEndpoint: rpcEndpoint,
-		programId: programId,
+		programId,
+		lpMintId,
 	};
 
 	return clusterConfig;
