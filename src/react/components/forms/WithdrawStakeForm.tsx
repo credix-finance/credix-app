@@ -3,19 +3,21 @@ import { useAnchorWallet, useConnection } from "@solana/wallet-adapter-react";
 import React, { useState } from "react";
 import { withdrawInvestment } from "store/api";
 import "../../../styles/depositstakeform.scss";
+import { useNotify } from "../../hooks/useNotify";
 
 export const WithdrawStakeForm = () => {
 	const wallet = useAnchorWallet();
 	const connection = useConnection();
 	const [withdrawAmount, setWithdrawAmount] = useState<number>(0);
-	// const notify = useNotify();
+	const notify = useNotify();
 
 	const onSubmit = async (e: React.SyntheticEvent) => {
 		e.preventDefault();
 		try {
 			await withdrawInvestment(withdrawAmount, connection.connection, wallet as Wallet);
+			notify("success", `Successful withdraw of ${withdrawAmount} USDC`);
 		} catch (e: any) {
-			// notify("error", `Transaction failed! ${e?.message}`);
+			notify("error", `Transaction failed! ${e?.message}`);
 		}
 	};
 

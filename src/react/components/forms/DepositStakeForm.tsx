@@ -24,7 +24,7 @@ export const DepositStakeForm = () => {
 
 		try {
 			await depositInvestment(stake, connection.connection, wallet as Wallet);
-			notify("success", `Succesfull deposit of ${stake} USDC`);
+			notify("success", `Successful deposit of ${stake} USDC`);
 		} catch (e: any) {
 			notify("error", `Transaction failed! ${e?.message}`);
 		}
