@@ -2,7 +2,6 @@ import { rootReducer } from "@reducers/index.reducers";
 import createSagaMiddleware from "@redux-saga/core";
 import { configureStore } from "@reduxjs/toolkit";
 import { CurriedGetDefaultMiddleware } from "@reduxjs/toolkit/dist/getDefaultMiddleware";
-import { balanceSaga } from "@sagas/balance.sagas";
 import { SESSION_STORAGE } from "consts";
 
 const storedState = sessionStorage.getItem(SESSION_STORAGE.STATE);
@@ -21,5 +20,3 @@ export const store = configureStore({
 store.subscribe(() => {
 	sessionStorage.setItem(SESSION_STORAGE.STATE, JSON.stringify(store.getState()));
 });
-
-sagaMiddleware.run(balanceSaga);

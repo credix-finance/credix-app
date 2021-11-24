@@ -1,3 +1,1 @@
-export interface ApplicationState {
-	usdcBalance: number;
-}
+export interface ApplicationState {}
