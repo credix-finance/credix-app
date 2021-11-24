@@ -1,0 +1,99 @@
+$pool-box-size: 56vh;
+
+.hover-text {
+	max-width: calc(#{$pool-box-size} / 2 - 2px);
+	height: calc(#{$pool-box-size} / 2 - 2px);
+	z-index: 1000;
+	opacity: 0;
+	background: black;
+	margin: 0 !important;
+	padding: 10px;
+
+	p {
+		color: white !important;
+		font-size: 12px;
+		text-align: center;
+		flex-grow: 1;
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+	}
+
+	&:hover {
+		opacity: 100;
+	}
+}
+
+.pool-container {
+	margin-right: 100px;
+}
+
+.pool-box {
+	height: $pool-box-size;
+	width: $pool-box-size;
+	position: relative;
+	border: 1px solid grey;
+
+	p {
+		padding-bottom: 10px !important;
+	}
+
+	hr {
+		margin: 30px 0;
+	}
+}
+
+.pool-stat {
+	width: calc(#{$pool-box-size} / 2 - 1px);
+	height: calc(#{$pool-box-size} / 2 - 1px);
+	border: 1px solid grey;
+	display: flex;
+	flex-direction: column;
+}
+
+.pool-stat-tl {
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+
+.pool-stat-tr {
+	position: absolute;
+	top: 0;
+	right: 0;
+}
+
+.pool-stat-bl {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+}
+
+.pool-stat-br {
+	position: absolute;
+	bottom: 0;
+	right: 0;
+}
+
+.pool-stat-title {
+	position: absolute;
+	font-size: 12px;
+	right: 10px;
+	bottom: 0;
+}
+
+.pool-stat-number {
+	text-align: center;
+	flex-grow: 1;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	font-size: 40px;
+	font-weight: bold;
+}
+
+.refresh-stats {
+	margin-bottom: 1em !important;
+}

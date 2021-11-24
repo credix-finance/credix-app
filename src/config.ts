@@ -1,14 +1,17 @@
-import { PublicKey } from "@solana/web3.js";
-import { ClusterConfig, RPCEndpoint, SolanaCluster } from "types/solana.types";
+import { Idl } from "@project-serum/anchor";
+import { ConfirmOptions, PublicKey } from "@solana/web3.js";
+import { ClusterConfig, Config } from "types/config.types";
+import { RPCEndpoint, SolanaCluster } from "types/solana.types";
+import idl from "credix.json";
 
 /// PREFILLED CONFIGS
 const localnetConfig: Partial<ClusterConfig> = {
 	RPCEndpoint: RPCEndpoint.LOCALNET,
 };
 
-const testnetConfig: ClusterConfig = {
+const testnetConfig: Partial<ClusterConfig> = {
 	RPCEndpoint: RPCEndpoint.TESTNET,
-	programId: new PublicKey("7xxjTaGoqD9vTGGD2sr4krbKBozKrwQSB4GLsXsV5SYW"),
+	programId: new PublicKey("J8ciKWVC1y5TZvzeeJdVZRtLuwCZheCYeo3K1JWRbL7g"),
 };
 ///
 
@@ -57,7 +60,7 @@ const getProgramIdFromEnv = (): PublicKey | undefined => {
 	}
 };
 
-export const clusterConfig = ((): ClusterConfig => {
+const getClusterConfig = (): ClusterConfig => {
 	const baseClusterConfig = getBaseClusterConfig();
 
 	const rpcEndpoint = getRPCEndpointFromEnv() || baseClusterConfig.RPCEndpoint;
@@ -74,8 +77,24 @@ export const clusterConfig = ((): ClusterConfig => {
 
 	const clusterConfig: ClusterConfig = {
 		RPCEndpoint: rpcEndpoint,
-		programId: programId,
+		programId,
 	};
 
 	return clusterConfig;
+};
+
+export const config: Config = ((): Config => {
+	const clusterConfig = getClusterConfig();
+	// TODO: see what these options should be
+	// TODO: make these configurable with environment variables
+	const confirmOptions: ConfirmOptions = {
+		commitment: "processed",
+		preflightCommitment: "processed",
+	};
+
+	return {
+		clusterConfig,
+		idl: idl as Idl,
+		confirmOptions,
+	};
 })();

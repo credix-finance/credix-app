@@ -1,0 +1,474 @@
+{
+  "version": "0.0.0",
+  "name": "credix",
+  "instructions": [
+    {
+      "name": "initializeMarket",
+      "accounts": [
+        {
+          "name": "owner",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "globalMarketState",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "liquidityPoolTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "treasuryPoolTokenAccount",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "investorTokenMintAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "usdcMintAccount",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rent",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "createDepositor",
+      "accounts": [
+        {
+          "name": "owner",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "depositor",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "depositorInfo",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "depositorInvestorTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "investorTokenMintAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "rent",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "depositFunds",
+      "accounts": [
+        {
+          "name": "depositor",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "globalMarketState",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "depositorInfo",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "depositorTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "liquidityPoolTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "investorTokenMintAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "depositorInvestorTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "usdcMintAccount",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "nonce",
+          "type": "u8"
+        },
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "createDeal",
+      "accounts": [
+        {
+          "name": "borrower",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "globalMarketState",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "deal",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "principal",
+          "type": "u64"
+        },
+        {
+          "name": "financingFee",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "activateDeal",
+      "accounts": [
+        {
+          "name": "owner",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "globalMarketState",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "deal",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "liquidityPoolTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "borrowerTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "usdcMintAccount",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "liquidityPoolBump",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "makeDealRepayment",
+      "accounts": [
+        {
+          "name": "borrower",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "globalMarketState",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "borrowerTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "deal",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "liquidityPoolTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "usdcMintAccount",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "amount",
+          "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "withdrawFunds",
+      "accounts": [
+        {
+          "name": "withdrawer",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "globalMarketState",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "withdrawerInvestorTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "withdrawerTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "liquidityPoolTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "treasuryPoolTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "investorTokenMintAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "usdcMintAccount",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "liquidityPoolBump",
+          "type": "u8"
+        },
+        {
+          "name": "itTokenAccountBump",
+          "type": "u8"
+        },
+        {
+          "name": "itWithdrawalAmount",
+          "type": "u64"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "Deal",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "borrower",
+            "type": "publicKey"
+          },
+          {
+            "name": "principal",
+            "type": "u64"
+          },
+          {
+            "name": "financingFee",
+            "type": "u8"
+          },
+          {
+            "name": "amountRepaid",
+            "type": "u64"
+          },
+          {
+            "name": "status",
+            "type": {
+              "defined": "DealStatus"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "GlobalMarketState",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "liquidityPoolTokenAccount",
+            "type": "publicKey"
+          },
+          {
+            "name": "liquidityPoolUsdcAmount",
+            "type": "u64"
+          },
+          {
+            "name": "liquidityPoolDecimals",
+            "type": "u8"
+          },
+          {
+            "name": "investorTokenMintAccount",
+            "type": "publicKey"
+          },
+          {
+            "name": "totalValueBorrowed",
+            "type": "u64"
+          },
+          {
+            "name": "totalOutstandingCredit",
+            "type": "u64"
+          },
+          {
+            "name": "tokenProgram",
+            "type": "publicKey"
+          },
+          {
+            "name": "treasuryPoolTokenAccount",
+            "type": "publicKey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "DepositorInfo",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "depositor",
+            "type": "publicKey"
+          },
+          {
+            "name": "depositedAmount",
+            "type": "u64"
+          }
+        ]
+      }
+    }
+  ],
+  "types": [
+    {
+      "name": "DealStatus",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Pending"
+          },
+          {
+            "name": "InProgress"
+          },
+          {
+            "name": "Closed"
+          }
+        ]
+      }
+    }
+  ],
+  "metadata": {
+    "address": "2aHEHSRNdS6P6LCwwEpR2Q9ZfEkk5GqAdzWh88Y6Ffgy"
+  }
+}

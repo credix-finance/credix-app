@@ -6,7 +6,8 @@
 		"prettier"
 	],
 	"plugins": [
-		"react-hooks"
+		"react-hooks",
+		"formatjs"
 	],
 	"rules": {
 		"semi": ["error", "always"],
@@ -18,7 +19,6 @@
 		"comma-spacing": "warn",
 		"quotes": "error",
 		"no-unused-vars": "off",
-		"@typescript-eslint/no-unused-vars": "error",
-		"max-len": ["error", 100]
+		"@typescript-eslint/no-unused-vars": "error"
 	}
 }

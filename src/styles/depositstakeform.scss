@@ -1,0 +1,55 @@
+.stake-input-label {
+	flex-grow: 2;
+	margin-right: 10px;
+}
+
+.stake-input {
+	width: 100%;
+
+	&:disabled {
+		opacity: 0.3 !important;
+		cursor: default;
+		pointer-events: none;
+	}
+}
+
+.stake-submit {
+	cursor: pointer !important;
+	margin-left: 10px;
+	pointer-events: auto !important;
+	width: 150px;
+	&:disabled {
+		opacity: 0.3 !important;
+		cursor: not-allowed !important;
+	}
+}
+
+.row {
+	display: flex;
+	justify-content: space-between;
+	margin-top: 20px;
+	max-width: 60vh;
+	flex-wrap: wrap;
+}
+
+.stake-form-column {
+	flex-direction: column;
+	align-items: flex-start;
+	width: 300px;
+	border: 1px solid black;
+	padding: 30px;
+	margin-top: 0;
+
+	.stake-input-label {
+		margin-bottom: 10px;
+		width: 100% !important;
+
+		input {
+			margin-top: 5px;
+		}
+	}
+
+	.stake-submit: {
+		margin-left: 0px !important;
+	}
+}
