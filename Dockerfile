@@ -1,0 +1,22 @@
+FROM node:13.12.0-alpine
+
+ARG PROGRAM_ADDRESS
+ENV ENV_PROGRAM_ADDRESS=$PROGRAM_ADDRESS
+
+ARG ENVIRONMENT
+ARG ENV_ENVIRONMENT=$ENVIRONMENT
+
+WORKDIR /app
+
+COPY . .
+
+RUN npm install --silent
+RUN npm install react-scripts@3.4.1 -g --silent
+
+RUN REACT_APP_CLUSTER=$ENV_ENVIRONMENT REACT_APP_PROGRAM_ID=$ENV_PROGRAM_ADDRESS npm run build --production
+
+RUN npm install -g serve
+
+CMD serve -p 8080 -s build
+
+EXPOSE 8080
