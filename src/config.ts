@@ -10,9 +10,14 @@ const localnetConfig: Partial<ClusterConfig> = {
 	programId: new PublicKey("2aHEHSRNdS6P6LCwwEpR2Q9ZfEkk5GqAdzWh88Y6Ffgy"),
 };
 
-const testnetConfig: Partial<ClusterConfig> = {
+const testnetConfig: ClusterConfig = {
 	RPCEndpoint: RPCEndpoint.TESTNET,
 	programId: new PublicKey("J8ciKWVC1y5TZvzeeJdVZRtLuwCZheCYeo3K1JWRbL7g"),
+};
+
+const devnetConfig: ClusterConfig = {
+	RPCEndpoint: RPCEndpoint.DEVNET,
+	programId: new PublicKey("92D2wYTs7vTJjfZgtVAR3PwyHEPNzKscm5Uj7MaJFwq2"),
 };
 ///
 
@@ -34,6 +39,8 @@ const getBaseClusterConfig = (): Partial<ClusterConfig> => {
 	const targetCluster = getTargetClusterFromEnv();
 
 	switch (targetCluster) {
+		case SolanaCluster.DEVNET:
+			return devnetConfig;
 		case SolanaCluster.TESTNET:
 			return testnetConfig;
 		default:
