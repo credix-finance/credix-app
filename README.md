@@ -44,7 +44,7 @@ Maximum amount of data per 30 second: 100 MB
 
 #### Testnet
 
-Program address is `7xxjTaGoqD9vTGGD2sr4krbKBozKrwQSB4GLsXsV5SYW`.
+Program address is `J8ciKWVC1y5TZvzeeJdVZRtLuwCZheCYeo3K1JWRbL7g`.
 
 Request limits of the default RPC endpoint:
 
