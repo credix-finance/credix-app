@@ -10,11 +10,13 @@ A `.env` file will be read depending on what type of build you are running (see:
 
 ### Environment Variables
 
-- `REACT_APP_CLUSTER` Defaults to localnet. Determines which cluster the app should target. options: localnet, testnet
+- `REACT_APP_CLUSTER` Defaults to localnet. Determines which cluster the app should target. options: localnet, devnet, testnet
 - `REACT_APP_PROGRAM_ID` Required for localnet. Determines which on-chain program the app should target
 - `REACT_APP_RPC_ENDPOINT` Determines which rpc endpoint will be used to communicate with the cluster
 
 ### Environments
+
+When you deploy a new build, be sure to change the clusterconfig in `src/config.ts` to reflect the deployed program's address.
 
 #### Localnet
 
@@ -26,17 +28,32 @@ $ solana-test-validator
 
 This will spin up a local validator that our client interacts with. More info on setting up a local validator can be found [here](https://docs.solana.com/developing/test-validator).
 
-#### Testnet
+#### Devnet
 
-Our program is also deployed on testnet. The program address is `7xxjTaGoqD9vTGGD2sr4krbKBozKrwQSB4GLsXsV5SYW`. When you deploy a new build to testnet, be sure to change the testnet clusterconfig in `src/config.ts` to reflect the deployed program's address.
+Program address is `92D2wYTs7vTJjfZgtVAR3PwyHEPNzKscm5Uj7MaJFwq2`
 
-The request limits on testnet are the following.
+Request limits of the default RPC endpoint:
 
 ```
 Maximum number of requests per 10 seconds per IP: 100
 Maximum number of requests per 10 seconds per IP for a single RPC: 40
 Maximum concurrent connections per IP: 40
 Maximum connection rate per 10 seconds per IP: 40
+Maximum amount of data per 30 second: 100 MB
+```
+
+#### Testnet
+
+Program address is `7xxjTaGoqD9vTGGD2sr4krbKBozKrwQSB4GLsXsV5SYW`.
+
+Request limits of the default RPC endpoint:
+
+```
+Maximum number of requests per 10 seconds per IP: 100
+Maximum number of requests per 10 seconds per IP for a single RPC: 40
+Maximum concurrent connections per IP: 40
+Maximum connection rate per 10 seconds per IP: 40
+Maximum amount of data per 30 second: 100 MB
 ```
 
 ## Editors
