@@ -11,4 +11,12 @@ module.exports = {
 			}
 		}
 	],
+	jest: {
+		configure(config) {
+			config.transformIgnorePatterns = [
+				"node_modules/(@toruslabs)/",
+			];
+			return config;
+		},
+	},
 };

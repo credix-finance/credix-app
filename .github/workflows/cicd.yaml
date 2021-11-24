@@ -1,0 +1,86 @@
+name: CICD
+
+on:
+  push:
+    branches:
+    - localnet
+    - devnet
+    - mainnet
+  pull_request:
+
+env:
+  # use docker.io for Docker Hub if empty
+  REGISTRY: us.gcr.io
+  # github.repository as <account>/<repo>
+  IMAGE_NAME: ${{ github.repository }}
+  # repository name without account name
+  REPOSITORY_NAME: ${{ github.event.repository.name }}
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Set up node
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+      - name: Install dependencies
+        run: npm install
+      - name: Run tests
+        run: npm test
+
+  cd-devnet:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/devnet'
+    needs: [ci]
+    environment:
+      name: devnet
+      url: 'http://app.dev.credix.finance'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@master
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          export_default_credentials: true
+      - name: Authenticate with registry
+        run: gcloud auth configure-docker -q
+      - name: Build Docker image
+        run: docker build . --build-arg PROGRAM_ADDRESS=${{ secrets.PROGRAM_ADDRESS }} --build-arg ENVIRONMENT=devnet -t ${{ env.REGISTRY }}/${{ secrets.GCP_PROJECT_ID }}/${{ env.REPOSITORY_NAME }}:latest
+      - name: Push Docker image
+        run: docker push ${{ env.REGISTRY }}/${{ secrets.GCP_PROJECT_ID }}/${{ env.REPOSITORY_NAME }}:latest
+      - name: Deploy to Google App Engine
+        run: |
+          gcloud config set project ${{ secrets.GCP_PROJECT_ID }}
+          gcloud app deploy --quiet --image-url ${{ env.REGISTRY }}/${{ secrets.GCP_PROJECT_ID }}/${{ env.REPOSITORY_NAME }}:latest
+
+  cd-mainnet:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/mainnet'
+    needs: [ci]
+    environment:
+      name: mainnet
+      url: 'http://app.credix.finance'
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@master
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          export_default_credentials: true
+      - name: Authenticate with registry
+        run: gcloud auth configure-docker -q
+      - name: Build Docker image
+        run: docker build . --build-arg PROGRAM_ADDRESS=${{ secrets.PROGRAM_ADDRESS }} --build-arg ENVIRONMENT=testnet -t ${{ env.REGISTRY }}/${{ secrets.GCP_PROJECT_ID }}/${{ env.REPOSITORY_NAME }}:latest
+      - name: Push Docker image
+        run: docker push ${{ env.REGISTRY }}/${{ secrets.GCP_PROJECT_ID }}/${{ env.REPOSITORY_NAME }}:latest
+      - name: Deploy to Google App Engine
+        run: |
+          gcloud config set project ${{ secrets.GCP_PROJECT_ID }}
+          gcloud app deploy --quiet --image-url ${{ env.REGISTRY }}/${{ secrets.GCP_PROJECT_ID }}/${{ env.REPOSITORY_NAME }}:latest
