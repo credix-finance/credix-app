@@ -1,0 +1,6 @@
+- remove sass
+- remove material-ui/core
+- remove scss files
+- remove logo import from navbar
+- remove notistack
+- clean stake forms

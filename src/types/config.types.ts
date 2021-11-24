@@ -5,7 +5,6 @@ import { RPCEndpoint } from "./solana.types";
 export interface ClusterConfig {
 	RPCEndpoint: RPCEndpoint;
 	programId: PublicKey;
-	lpMintId: PublicKey;
 }
 
 export interface Config {

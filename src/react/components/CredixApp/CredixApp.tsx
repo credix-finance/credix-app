@@ -12,6 +12,7 @@ import {
 } from "@solana/wallet-adapter-wallets";
 import { IntlProvider } from "react-intl";
 import { config } from "config";
+import { SnackbarProvider } from "notistack";
 
 function CredixApp() {
 	const wallets = useMemo(
@@ -20,17 +21,22 @@ function CredixApp() {
 	);
 
 	return (
-		<IntlProvider locale="en">
-			<ConnectionProvider endpoint={config.clusterConfig.RPCEndpoint}>
-				<WalletProvider wallets={wallets}>
-					<WalletDialogProvider>
-						<Provider store={store}>
-							<Routes />
-						</Provider>
-					</WalletDialogProvider>
-				</WalletProvider>
-			</ConnectionProvider>
-		</IntlProvider>
+		<SnackbarProvider>
+			<IntlProvider locale="en">
+				<ConnectionProvider
+					endpoint={config.clusterConfig.RPCEndpoint}
+					config={{ commitment: config.confirmOptions.commitment }}
+				>
+					<WalletProvider wallets={wallets}>
+						<WalletDialogProvider>
+							<Provider store={store}>
+								<Routes />
+							</Provider>
+						</WalletDialogProvider>
+					</WalletProvider>
+				</ConnectionProvider>
+			</IntlProvider>
+		</SnackbarProvider>
 	);
 }
 

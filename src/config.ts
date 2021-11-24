@@ -11,7 +11,7 @@ const localnetConfig: Partial<ClusterConfig> = {
 
 const testnetConfig: Partial<ClusterConfig> = {
 	RPCEndpoint: RPCEndpoint.TESTNET,
-	programId: new PublicKey("7xxjTaGoqD9vTGGD2sr4krbKBozKrwQSB4GLsXsV5SYW"),
+	programId: new PublicKey("J8ciKWVC1y5TZvzeeJdVZRtLuwCZheCYeo3K1JWRbL7g"),
 };
 ///
 
@@ -60,14 +60,6 @@ const getProgramIdFromEnv = (): PublicKey | undefined => {
 	}
 };
 
-const getLPMintFromEnv = (): PublicKey | undefined => {
-	const key = process.env.REACT_APP_LP_MINT_ID;
-
-	if (key) {
-		return new PublicKey(key);
-	}
-};
-
 const getClusterConfig = (): ClusterConfig => {
 	const baseClusterConfig = getBaseClusterConfig();
 
@@ -83,16 +75,9 @@ const getClusterConfig = (): ClusterConfig => {
 		throw new Error("No program id provided");
 	}
 
-	const lpMintId = getLPMintFromEnv() || baseClusterConfig.lpMintId;
-
-	if (!lpMintId) {
-		throw new Error("No LP Mint id provided");
-	}
-
 	const clusterConfig: ClusterConfig = {
 		RPCEndpoint: rpcEndpoint,
 		programId,
-		lpMintId,
 	};
 
 	return clusterConfig;
@@ -103,6 +88,7 @@ export const config: Config = ((): Config => {
 	// TODO: see what these options should be
 	// TODO: make these configurable with environment variables
 	const confirmOptions: ConfirmOptions = {
+		commitment: "processed",
 		preflightCommitment: "processed",
 	};
 

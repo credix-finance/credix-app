@@ -21,6 +21,11 @@
           "isSigner": false
         },
         {
+          "name": "treasuryPoolTokenAccount",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
           "name": "investorTokenMintAccount",
           "isMut": true,
           "isSigner": false
@@ -320,6 +325,11 @@
           "isSigner": false
         },
         {
+          "name": "treasuryPoolTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
           "name": "investorTokenMintAccount",
           "isMut": true,
           "isSigner": false
@@ -345,7 +355,7 @@
           "type": "u8"
         },
         {
-          "name": "withdrawalAmount",
+          "name": "itWithdrawalAmount",
           "type": "u64"
         }
       ]
@@ -414,6 +424,10 @@
           {
             "name": "tokenProgram",
             "type": "publicKey"
+          },
+          {
+            "name": "treasuryPoolTokenAccount",
+            "type": "publicKey"
           }
         ]
       }
@@ -453,5 +467,8 @@
         ]
       }
     }
-  ]
+  ],
+  "metadata": {
+    "address": "2aHEHSRNdS6P6LCwwEpR2Q9ZfEkk5GqAdzWh88Y6Ffgy"
+  }
 }
