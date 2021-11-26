@@ -21,11 +21,8 @@ export const DealOverview = () => {
 		setPrincipal(principal);
 		setFinancingFee(dealData.financingFee);
 
-		const repaymentAmount = principal * (1 + dealData.finacingFee / 100);
+		const repaymentAmount = principal * (1 + dealData.financingFee / 100);
 		setRepaymentAmount(repaymentAmount);
-
-		console.log("vals", principal, dealData.financingFee, repaymentAmount);
-		console.log("dealdatf", dealData);
 
 		// TODO: write util function
 		switch (Object.keys(dealData.status)[0]) {
