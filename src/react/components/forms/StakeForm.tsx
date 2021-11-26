@@ -8,6 +8,7 @@ import { getInvestorTokenUSDCBalance } from "store/api";
 import { useAnchorWallet, useConnection } from "@solana/wallet-adapter-react";
 import { Wallet } from "@project-serum/anchor";
 import { Button } from "@material-ui/core";
+import { useRefresh } from "react/hooks/useRefresh";
 
 export const StakeForm = () => {
 	const intl = useIntl();
@@ -21,6 +22,8 @@ export const StakeForm = () => {
 			setStake(stake);
 		}
 	}, [connection.connection, wallet]);
+
+	useRefresh(checkStake);
 
 	useEffect(() => {
 		checkStake();

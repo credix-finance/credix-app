@@ -25,6 +25,7 @@
     "@types/react": "^17.0.34",
     "@types/react-dom": "^17.0.11",
     "flatted": "^3.2.4",
+    "lodash": "^4.17.21",
     "millify": "^4.0.0",
     "notistack": "^2.0.3",
     "react": "^17.0.2",

@@ -1,13 +1,14 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { Path } from "types/navigation.types";
 import "../../styles/footer.scss";
 
 export const Footer = () => (
 	<div>
 		<div className="footer footer-left">
-			<Link to="/">Pool</Link>
-			<Link to="/deals">Deals</Link>
-			<Link to="/help" className="start-here animated bounce">
+			<Link to={Path.OVERVIEW}>Pool</Link>
+			<Link to={Path.DEALS}>Deals</Link>
+			<Link to={Path.HELP} className="start-here animated bounce">
 				Start here
 			</Link>
 		</div>
