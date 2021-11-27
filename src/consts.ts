@@ -2,6 +2,7 @@ export const SESSION_STORAGE = {
 	STATE: "state",
 };
 
+// TODO: turn into enum
 export const SEEDS = {
 	GLOBAL_MARKET_STATE_PDA: "global-market-state",
 	DEPOSITOR_INFO: "depositor-info",

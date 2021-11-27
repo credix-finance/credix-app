@@ -10,8 +10,8 @@ import { PoolStats } from "types/program.types";
 import { PdaSeeds } from "types/solana.types";
 
 // TODO: think of a better name
-// TODO: move to different file?
-const formatNumber = (n: number) => (1.0 * n) / 1000000;
+// TODO: move to different file
+export const formatNumber = (n: number) => (1.0 * n) / 1000000;
 
 const mapPKToSeed = (publicKey: PublicKey) => publicKey.toBuffer().slice(0, 10);
 
@@ -96,10 +96,12 @@ const getTokenAccount = multiAsync(
 	}
 );
 
-const getDepositorLPTokenAccount = multiAsync(async (connection: Connection, wallet: Wallet) => {
-	const lpMint = await getLPMint(connection, wallet);
-	return getTokenAccount(connection, wallet.publicKey, lpMint);
-});
+export const getDepositorLPTokenAccount = multiAsync(
+	async (connection: Connection, wallet: Wallet) => {
+		const lpMint = await getLPMint(connection, wallet);
+		return getTokenAccount(connection, wallet.publicKey, lpMint);
+	}
+);
 
 const getDepositorInvestorTokenTokenAccount = multiAsync(
 	async (connection: Connection, wallet: Wallet) => {
@@ -502,5 +504,44 @@ export const getInvestorTokenUSDCBalance = multiAsync(
 			investorTokenPrice;
 
 		return Math.round(stake * 100) / 100;
+	}
+);
+
+export const repayDeal = multiAsync(
+	async (amount: number, connection: Connection, wallet: Wallet) => {
+		const program = getProgram(connection, wallet);
+		const repayAmount = new BN(amount * 1000000);
+
+		const _globalMarketStatePDA = getGlobalMarketStatePDA();
+		const _depositorLPTokenAccount = getDepositorLPTokenAccount(connection, wallet);
+		const _dealPDA = getDealPDA(wallet.publicKey);
+		const _marketLPTokenPDA = getMarketLPTokenPDA();
+		const _lpMint = getLPMint(connection, wallet);
+
+		const [globalMarketStatePDA, depositorLPTokenAccount, dealPDA, marketLPTokenPDA, lpMint] =
+			await Promise.all([
+				_globalMarketStatePDA,
+				_depositorLPTokenAccount,
+				_dealPDA,
+				_marketLPTokenPDA,
+				_lpMint,
+			]);
+
+		if (!depositorLPTokenAccount) {
+			throw Error("No USDC token accounts found for depositor");
+		}
+
+		await program.rpc.makeDealRepayment(repayAmount, {
+			accounts: {
+				borrower: wallet.publicKey,
+				globalMarketState: globalMarketStatePDA[0],
+				borrowerTokenAccount: depositorLPTokenAccount.pubkey,
+				deal: dealPDA[0],
+				liquidityPoolTokenAccount: marketLPTokenPDA[0],
+				usdcMintAccount: lpMint,
+				tokenProgram: TOKEN_PROGRAM_ID,
+				systemProgram: SystemProgram.programId,
+			},
+		});
 	}
 );

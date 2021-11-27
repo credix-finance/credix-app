@@ -4,3 +4,7 @@ export interface PoolStats {
 	outstandingCredit: number;
 	solendBuffer: number;
 }
+
+export enum DealStatus {
+	CLOSED = "closed",
+}

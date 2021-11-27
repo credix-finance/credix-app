@@ -6,6 +6,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { getPoolStats } from "store/api";
 import { PoolStats } from "types/program.types";
 import "../../styles/poolstats.scss";
+import { useRefresh } from "react/hooks/useRefresh";
 
 export const PoolStatsDashboard = () => {
 	const wallet = useAnchorWallet();
@@ -20,6 +21,8 @@ export const PoolStatsDashboard = () => {
 		//  avoids unnecessary rerenders
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [connection.connection]);
+
+	useRefresh(updatePoolStats);
 
 	useEffect(() => {
 		updatePoolStats();

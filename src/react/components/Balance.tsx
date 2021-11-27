@@ -5,6 +5,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { useIntl } from "react-intl";
 import { getBalance } from "store/api";
 import { Button } from "@material-ui/core";
+import { useRefresh } from "react/hooks/useRefresh";
 
 export const Balance = () => {
 	const wallet = useAnchorWallet();
@@ -18,6 +19,8 @@ export const Balance = () => {
 			setBalance(balance);
 		}
 	}, [connection.connection, wallet]);
+
+	useRefresh(checkBalance);
 
 	useEffect(() => {
 		checkBalance();
