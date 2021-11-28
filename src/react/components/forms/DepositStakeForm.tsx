@@ -1,6 +1,6 @@
 import { Wallet } from "@project-serum/anchor";
 import { useAnchorWallet, useConnection } from "@solana/wallet-adapter-react";
-import { serialAsync } from "async.utils";
+import { serialAsync } from "utils/async.utils";
 import React, { useState } from "react";
 import { useRefresh } from "react/hooks/useRefresh";
 import { createDepositorAccounts, depositInvestment, getDepositorInfoAccountData } from "store/api";

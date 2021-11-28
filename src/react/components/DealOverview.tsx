@@ -1,8 +1,9 @@
 import { Wallet } from "@project-serum/anchor";
 import { useAnchorWallet, useConnection } from "@solana/wallet-adapter-react";
 import React, { useCallback, useEffect, useState } from "react";
-import { formatNumber, getDealData } from "store/api";
+import { getDealData } from "store/api";
 import { DealStatus } from "types/program.types";
+import { formatNumber } from "utils/format.utils";
 import "../../styles/stakeform.scss";
 
 export const DealOverview = () => {

@@ -1,9 +1,9 @@
 import { Wallet } from "@project-serum/anchor";
 import { useAnchorWallet, useConnection } from "@solana/wallet-adapter-react";
-import { serialAsync } from "async.utils";
+import { serialAsync } from "utils/async.utils";
 import React, { useEffect, useState } from "react";
 import { useNotify } from "react/hooks/useNotify";
-import { activateDeal, createDeal, getDepositorLPTokenAccount } from "store/api";
+import { activateDeal, createDeal, getDepositorLiquidityPoolTokenAccount } from "store/api";
 import "../../../styles/stakeform.scss";
 
 export const CreateDealForm = () => {
@@ -30,13 +30,13 @@ export const CreateDealForm = () => {
 			return;
 		}
 
-		const depositorLPTokenAccount = await getDepositorLPTokenAccount(
+		const depositorLiquidityPoolTokenAccount = await getDepositorLiquidityPoolTokenAccount(
 			connection.connection,
 			wallet as Wallet
 		);
 
 		// Can't we just create a token account using the associated token program when it doesn't exist yet?
-		if (!depositorLPTokenAccount) {
+		if (!depositorLiquidityPoolTokenAccount) {
 			notify("error", "Please opt in for USDC in your wallet");
 			return;
 		}

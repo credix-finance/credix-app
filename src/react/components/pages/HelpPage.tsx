@@ -13,11 +13,11 @@ export const HelpPage = () => {
 					<p>
 						{" "}
 						This demo is live on Solana Testnet. To interact with Credix:{" "}
-						<a href="https://www.solfaucet.com" target="_blank">
+						<a href="https://www.solfaucet.com" target="_blank" rel="noreferrer">
 							get some SOL
 						</a>
 						,
-						<a href="https://www.usdcfaucet.com" target="_blank">
+						<a href="https://www.usdcfaucet.com" target="_blank" rel="noreferrer">
 							get some USDC
 						</a>{" "}
 						and connect your wallet.
