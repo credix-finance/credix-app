@@ -9,5 +9,5 @@ export const SEEDS = {
 	DEPOSITOR_LP_TOKEN_ACCOUNT: "depositor-token",
 	LP_TOKEN_MINT_AUTHORITY: "market-lp-token-mint",
 	MARKET_LIQUIDITY_POOL_TOKEN_ACCOUNT: "market-liquidity-pool",
-	DEAL: "deal",
+	DEAL: "deal-info",
 };
