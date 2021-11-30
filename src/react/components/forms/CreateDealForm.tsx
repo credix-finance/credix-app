@@ -3,7 +3,7 @@ import { useAnchorWallet, useConnection } from "@solana/wallet-adapter-react";
 import { serialAsync } from "utils/async.utils";
 import React, { useEffect, useState } from "react";
 import { useNotify } from "react/hooks/useNotify";
-import { activateDeal, createDeal, getDepositorLiquidityPoolTokenAccount } from "store/api";
+import { activateDeal, createDeal, getUserUSDCTokenAccount } from "store/api";
 import "../../../styles/stakeform.scss";
 
 export const CreateDealForm = () => {
@@ -30,7 +30,7 @@ export const CreateDealForm = () => {
 			return;
 		}
 
-		const depositorLiquidityPoolTokenAccount = await getDepositorLiquidityPoolTokenAccount(
+		const depositorLiquidityPoolTokenAccount = await getUserUSDCTokenAccount(
 			connection.connection,
 			wallet as Wallet
 		);

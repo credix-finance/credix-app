@@ -1,3 +1,5 @@
+import { PublicKey } from "@solana/web3.js";
+
 export interface PoolStats {
 	TVL: number;
 	APY: number;
@@ -6,5 +8,19 @@ export interface PoolStats {
 }
 
 export enum DealStatus {
-	CLOSED = "closed",
+	CLOSED,
+	IN_PROGRESS,
+	PENDING,
 }
+
+export type Deal = {
+	borrower: PublicKey;
+	principal: number;
+	financingFeePercentage: number;
+	amountRepaid: number;
+	timeToMaturityDays: number;
+	goLiveAt: number;
+	createdAt: number;
+	leverageRatio: number;
+	underwriterPerformanceFeePercentage: number;
+};

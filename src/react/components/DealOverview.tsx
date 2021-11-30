@@ -1,8 +1,9 @@
 import { Wallet } from "@project-serum/anchor";
 import { useAnchorWallet, useConnection } from "@solana/wallet-adapter-react";
 import React, { useCallback, useEffect, useState } from "react";
-import { getDealData } from "store/api";
-import { DealStatus } from "types/program.types";
+import { getClusterTime, getDealAccountData } from "store/api";
+import { Deal, DealStatus } from "types/program.types";
+import { mapDealToStatus } from "utils/deal.utils";
 import { formatNumber } from "utils/format.utils";
 import "../../styles/stakeform.scss";
 
@@ -16,20 +17,26 @@ export const DealOverview = () => {
 	const [repaymentAmount, setRepaymentAmount] = useState<number | undefined>();
 
 	const fetchDealData = useCallback(async () => {
-		const dealData = await getDealData(connection.connection, wallet as Wallet);
-		const principal = formatNumber(dealData.principal);
+		const _clusterTime = getClusterTime(connection.connection);
+		const _dealData = getDealAccountData(connection.connection, wallet as Wallet) as Promise<Deal>;
+
+		const [clusterTime, deal] = await Promise.all([_clusterTime, _dealData]);
+
+		const principal = formatNumber(deal.principal);
 
 		setPrincipal(principal);
-		setFinancingFee(dealData.financingFee);
+		setFinancingFee(deal.financingFeePercentage);
 
-		const repaymentAmount = principal * (1 + dealData.financingFee / 100);
+		const repaymentAmount = principal * (1 + deal.financingFeePercentage / 100);
 		setRepaymentAmount(repaymentAmount);
 
-		// TODO: write util function
-		switch (Object.keys(dealData.status)[0]) {
-			case DealStatus.CLOSED:
-				setDealStatus(DealStatus.CLOSED);
+		if (!clusterTime) {
+			// TODO: DO SOMETHING
+			throw Error("Could not fetch cluster time");
 		}
+
+		const dealStatus = mapDealToStatus(deal, clusterTime);
+		setDealStatus(dealStatus);
 	}, [connection.connection, wallet]);
 
 	useEffect(() => {

@@ -3,7 +3,7 @@ import { useAnchorWallet, useConnection } from "@solana/wallet-adapter-react";
 import { MESSAGES } from "messages";
 import React, { useCallback, useEffect, useState } from "react";
 import { useIntl } from "react-intl";
-import { getBalance } from "store/api";
+import { getUserUSDCBalance } from "store/api";
 import { Button } from "@material-ui/core";
 import { useRefresh } from "react/hooks/useRefresh";
 
@@ -15,7 +15,7 @@ export const Balance = () => {
 
 	const checkBalance = useCallback(async () => {
 		if (wallet) {
-			const balance = await getBalance(connection.connection, wallet as Wallet);
+			const balance = await getUserUSDCBalance(connection.connection, wallet as Wallet);
 			setBalance(balance);
 		}
 	}, [connection.connection, wallet]);
