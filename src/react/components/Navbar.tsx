@@ -3,6 +3,7 @@ import { WalletMultiButton } from "@solana/wallet-adapter-material-ui";
 import React from "react";
 import "../../styles/navbar.scss";
 import logo from "../../assets/credix_logo_zwart.svg";
+import { FaucetButton } from "./FaucetButton";
 
 export const Navbar = () => (
 	<div className="navbar-container">
@@ -14,6 +15,7 @@ export const Navbar = () => (
 			</span>
 		</div>
 		<div className="balance-wallet-container">
+			<FaucetButton text="Get USDC" />
 			<WalletMultiButton className="navbar-button credix-button" />
 			<Balance />
 		</div>
