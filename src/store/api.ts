@@ -1,6 +1,5 @@
 import { BN, Program, ProgramAccount, Provider, Wallet, web3 } from "@project-serum/anchor";
 import { TOKEN_PROGRAM_ID } from "@solana/spl-token";
-import { ConnectionContext } from "@solana/wallet-adapter-react";
 import { Connection, ParsedAccountData, PublicKey, SystemProgram } from "@solana/web3.js";
 import { config } from "config";
 import { SEEDS } from "consts";
@@ -137,7 +136,7 @@ export const getClusterTime = multiAsync(async (connection: Connection) => {
 
 const getRunningAPY = multiAsync(async (connection: Connection, wallet: Wallet) => {
 	const _deals = getDealAccounts(connection, wallet);
-	const _liquidityPoolBalance: Promise<BN> = getLiquidityPoolBalance(connection, wallet);
+	const _liquidityPoolBalance = getLiquidityPoolBalance(connection, wallet);
 	const _clusterTime = getClusterTime(connection);
 
 	const [liquidityPoolBalance, deals, clusterTime] = await Promise.all([
@@ -151,7 +150,7 @@ const getRunningAPY = multiAsync(async (connection: Connection, wallet: Wallet) 
 	}
 
 	const runningAPY = (deals as Array<ProgramAccount<Deal>>).reduce((result, deal) => {
-		const status = mapDealToStatus(deal, clusterTime);
+		const status = mapDealToStatus(deal.account, clusterTime);
 		if (status === DealStatus.IN_PROGRESS) {
 			result += (deal.account.financingFeePercentage / 1000000) * deal.account.principal;
 		}
@@ -159,7 +158,7 @@ const getRunningAPY = multiAsync(async (connection: Connection, wallet: Wallet) 
 		return result;
 	}, 0);
 
-	return runningAPY + 6 * formatNumber(liquidityPoolBalance.toNumber());
+	return runningAPY + 6 * formatNumber(liquidityPoolBalance);
 });
 
 const getAPY = multiAsync(async (connection: Connection, wallet: Wallet) => {
