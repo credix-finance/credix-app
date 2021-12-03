@@ -7,17 +7,12 @@ import idl from "credix.json";
 /// PREFILLED CONFIGS
 const localnetConfig: Partial<ClusterConfig> = {
 	RPCEndpoint: RPCEndpoint.LOCALNET,
-	programId: new PublicKey("2aHEHSRNdS6P6LCwwEpR2Q9ZfEkk5GqAdzWh88Y6Ffgy"),
-};
-
-const testnetConfig: ClusterConfig = {
-	RPCEndpoint: RPCEndpoint.TESTNET,
-	programId: new PublicKey("J8ciKWVC1y5TZvzeeJdVZRtLuwCZheCYeo3K1JWRbL7g"),
+	programId: new PublicKey("F4RF3uKfQcPmTyshHMYEcJWnNofgjr3Tdte1qxnziVC1"),
 };
 
 const devnetConfig: ClusterConfig = {
 	RPCEndpoint: RPCEndpoint.DEVNET,
-	programId: new PublicKey("92D2wYTs7vTJjfZgtVAR3PwyHEPNzKscm5Uj7MaJFwq2"),
+	programId: new PublicKey("F4RF3uKfQcPmTyshHMYEcJWnNofgjr3Tdte1qxnziVC1"),
 };
 ///
 
@@ -41,8 +36,6 @@ const getBaseClusterConfig = (): Partial<ClusterConfig> => {
 	switch (targetCluster) {
 		case SolanaCluster.DEVNET:
 			return devnetConfig;
-		case SolanaCluster.TESTNET:
-			return testnetConfig;
 		default:
 			return localnetConfig;
 	}

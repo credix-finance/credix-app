@@ -15,11 +15,11 @@ export const Footer = () => (
 		<div className="footer footer-right">
 			<a
 				className="green"
-				href="https://explorer.solana.com/address/7xxjTaGoqD9vTGGD2sr4krbKBozKrwQSB4GLsXsV5SYW?cluster=testnet"
+				href="https://explorer.solana.com/address/F4RF3uKfQcPmTyshHMYEcJWnNofgjr3Tdte1qxnziVC1?cluster=devnet"
 				target="_blank"
 				rel="noreferrer"
 			>
-				live on Solana testnet
+				live on Solana devnet
 			</a>
 			<a href="https://credix.gitbook.io/credix" target="_blank" rel="noreferrer">
 				docs

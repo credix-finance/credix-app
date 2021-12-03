@@ -15,8 +15,8 @@ export const Navbar = () => (
 			</span>
 		</div>
 		<div className="balance-wallet-container">
-			<FaucetButton text="Get USDC" />
 			<WalletMultiButton className="navbar-button credix-button" />
+			<FaucetButton text="Get USDC" />
 			<Balance />
 		</div>
 	</div>

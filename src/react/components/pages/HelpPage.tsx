@@ -13,7 +13,7 @@ export const HelpPage = () => {
 					<h3> 2 | Get yourself SOL and USDC </h3>
 					<p>
 						<br />
-						This demo is live on Solana Testnet. To interact with Credix:
+						This demo is live on Solana Devnet. To interact with Credix:
 						<br />
 						<br />
 						<FaucetButton text="Get SOL & USDC" />

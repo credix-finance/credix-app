@@ -4,7 +4,7 @@ import { useIntl } from "react-intl";
 import { DepositStakeForm } from "./DepositStakeForm";
 import { WithdrawStakeForm } from "./WithdrawStakeForm";
 import "../../../styles/stakeform.scss";
-import { getInvestorTokenUSDCBalance } from "store/api";
+import { getLPTokenUSDCBalance } from "store/api";
 import { useAnchorWallet, useConnection } from "@solana/wallet-adapter-react";
 import { Wallet } from "@project-serum/anchor";
 import { Button } from "@material-ui/core";
@@ -18,7 +18,7 @@ export const StakeForm = () => {
 
 	const checkStake = useCallback(async () => {
 		if (wallet) {
-			const stake = await getInvestorTokenUSDCBalance(connection.connection, wallet as Wallet);
+			const stake = await getLPTokenUSDCBalance(connection.connection, wallet as Wallet);
 			setStake(stake);
 		}
 	}, [connection.connection, wallet]);

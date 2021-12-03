@@ -26,7 +26,7 @@
           "isSigner": false
         },
         {
-          "name": "investorTokenMintAccount",
+          "name": "lpTokenMintAccount",
           "isMut": true,
           "isSigner": false
         },
@@ -72,12 +72,12 @@
           "isSigner": false
         },
         {
-          "name": "depositorInvestorTokenAccount",
+          "name": "depositorLpTokenAccount",
           "isMut": true,
           "isSigner": false
         },
         {
-          "name": "investorTokenMintAccount",
+          "name": "lpTokenMintAccount",
           "isMut": true,
           "isSigner": false
         },
@@ -128,12 +128,12 @@
           "isSigner": false
         },
         {
-          "name": "investorTokenMintAccount",
+          "name": "lpTokenMintAccount",
           "isMut": true,
           "isSigner": false
         },
         {
-          "name": "depositorInvestorTokenAccount",
+          "name": "depositorLpTokenAccount",
           "isMut": true,
           "isSigner": false
         },
@@ -189,8 +189,20 @@
           "type": "u64"
         },
         {
-          "name": "financingFee",
+          "name": "financingFeePercentage",
           "type": "u8"
+        },
+        {
+          "name": "leverageRatio",
+          "type": "u8"
+        },
+        {
+          "name": "underwriterPerformanceFeePercentage",
+          "type": "u8"
+        },
+        {
+          "name": "timeToMaturityDays",
+          "type": "u16"
         }
       ]
     },
@@ -274,6 +286,11 @@
           "isSigner": false
         },
         {
+          "name": "treasuryPoolTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
           "name": "usdcMintAccount",
           "isMut": false,
           "isSigner": false
@@ -293,6 +310,16 @@
         {
           "name": "amount",
           "type": "u64"
+        },
+        {
+          "name": "repaymentType",
+          "type": {
+            "defined": "DealRepaymentType"
+          }
+        },
+        {
+          "name": "liquidityPoolBump",
+          "type": "u8"
         }
       ]
     },
@@ -310,7 +337,7 @@
           "isSigner": false
         },
         {
-          "name": "withdrawerInvestorTokenAccount",
+          "name": "withdrawerLpTokenAccount",
           "isMut": true,
           "isSigner": false
         },
@@ -330,7 +357,7 @@
           "isSigner": false
         },
         {
-          "name": "investorTokenMintAccount",
+          "name": "lpTokenMintAccount",
           "isMut": true,
           "isSigner": false
         },
@@ -376,7 +403,7 @@
             "type": "u64"
           },
           {
-            "name": "financingFee",
+            "name": "financingFeePercentage",
             "type": "u8"
           },
           {
@@ -384,10 +411,24 @@
             "type": "u64"
           },
           {
-            "name": "status",
-            "type": {
-              "defined": "DealStatus"
-            }
+            "name": "timeToMaturityDays",
+            "type": "u16"
+          },
+          {
+            "name": "goLiveAt",
+            "type": "i64"
+          },
+          {
+            "name": "createdAt",
+            "type": "i64"
+          },
+          {
+            "name": "leverageRatio",
+            "type": "u8"
+          },
+          {
+            "name": "underwriterPerformanceFeePercentage",
+            "type": "u8"
           }
         ]
       }
@@ -410,20 +451,12 @@
             "type": "u8"
           },
           {
-            "name": "investorTokenMintAccount",
+            "name": "lpTokenMintAccount",
             "type": "publicKey"
-          },
-          {
-            "name": "totalValueBorrowed",
-            "type": "u64"
           },
           {
             "name": "totalOutstandingCredit",
             "type": "u64"
-          },
-          {
-            "name": "tokenProgram",
-            "type": "publicKey"
           },
           {
             "name": "treasuryPoolTokenAccount",
@@ -440,10 +473,6 @@
           {
             "name": "depositor",
             "type": "publicKey"
-          },
-          {
-            "name": "depositedAmount",
-            "type": "u64"
           }
         ]
       }
@@ -451,24 +480,43 @@
   ],
   "types": [
     {
-      "name": "DealStatus",
+      "name": "DealRepaymentType",
       "type": {
         "kind": "enum",
         "variants": [
           {
-            "name": "Pending"
+            "name": "Interest"
           },
           {
-            "name": "InProgress"
-          },
-          {
-            "name": "Closed"
+            "name": "Principal"
           }
         ]
       }
     }
   ],
+  "errors": [
+    {
+      "code": 300,
+      "name": "InvalidPrincipalAmount",
+      "msg": "This amount is not sufficient as a principal amount."
+    },
+    {
+      "code": 301,
+      "name": "InvalidInterestAmount",
+      "msg": "This amount is not sufficient as an interest amount."
+    },
+    {
+      "code": 302,
+      "name": "DealNotLive",
+      "msg": "This deal is not live yet."
+    },
+    {
+      "code": 303,
+      "name": "InvalidDealRepaymentType",
+      "msg": "Invalid deal repayment type."
+    }
+  ],
   "metadata": {
-    "address": "2aHEHSRNdS6P6LCwwEpR2Q9ZfEkk5GqAdzWh88Y6Ffgy"
+    "address": "F4RF3uKfQcPmTyshHMYEcJWnNofgjr3Tdte1qxnziVC1"
   }
 }
