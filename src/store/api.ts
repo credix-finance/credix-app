@@ -152,6 +152,13 @@ const getRunningAPY = multiAsync(async (connection: Connection, wallet: Wallet) 
 	const runningAPY = (deals as Array<ProgramAccount<Deal>>).reduce((result, deal) => {
 		const status = mapDealToStatus(deal.account, clusterTime);
 		if (status === DealStatus.IN_PROGRESS) {
+			console.log(deal);
+			console.log("principal");
+			console.log(deal.account.principal.toNumber() / 1000000);
+			console.log("amount that needs to be paid");
+			console.log((deal.account.principal.toNumber() * (1 + deal.account.financingFeePercentage / 100))  / 1000000  );
+			console.log("amount repaid");
+			console.log(deal.account.amountRepaid.toNumber() / 1000000);
 			result += (deal.account.financingFeePercentage / 1000000) * deal.account.principal.toNumber();
 		}
 
