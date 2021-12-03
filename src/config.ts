@@ -7,12 +7,12 @@ import idl from "credix.json";
 /// PREFILLED CONFIGS
 const localnetConfig: Partial<ClusterConfig> = {
 	RPCEndpoint: RPCEndpoint.LOCALNET,
-	programId: new PublicKey("2aHEHSRNdS6P6LCwwEpR2Q9ZfEkk5GqAdzWh88Y6Ffgy"),
+	programId: new PublicKey("F4RF3uKfQcPmTyshHMYEcJWnNofgjr3Tdte1qxnziVC1"),
 };
 
 const devnetConfig: ClusterConfig = {
 	RPCEndpoint: RPCEndpoint.DEVNET,
-	programId: new PublicKey("2aHEHSRNdS6P6LCwwEpR2Q9ZfEkk5GqAdzWh88Y6Ffgy"),
+	programId: new PublicKey("F4RF3uKfQcPmTyshHMYEcJWnNofgjr3Tdte1qxnziVC1"),
 };
 ///
 

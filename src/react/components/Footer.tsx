@@ -15,7 +15,7 @@ export const Footer = () => (
 		<div className="footer footer-right">
 			<a
 				className="green"
-				href="https://explorer.solana.com/address/2aHEHSRNdS6P6LCwwEpR2Q9ZfEkk5GqAdzWh88Y6Ffgy?cluster=devnet"
+				href="https://explorer.solana.com/address/F4RF3uKfQcPmTyshHMYEcJWnNofgjr3Tdte1qxnziVC1?cluster=devnet"
 				target="_blank"
 				rel="noreferrer"
 			>
