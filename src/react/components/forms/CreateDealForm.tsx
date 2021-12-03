@@ -131,7 +131,7 @@ export const CreateDealForm = () => {
 						placeholder={placeholder}
 						onChange={onChangeBorrower}
 						disabled={!wallet?.publicKey}
-						className="stake-input credix-button MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary balance-button"
+						className="stake-input borrower-pk credix-button MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary balance-button"
 					/>
 				</label>
 				<br />
