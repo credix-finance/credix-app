@@ -22,6 +22,7 @@ export const CreateDealForm = () => {
 	useEffect(() => {
 		if (wallet?.publicKey && connection.connection) {
 			setPlaceholder("0");
+			setBorrower(wallet?.publicKey.toString()); 
 		} else {
 			setPlaceholder("Connect wallet");
 		}
@@ -127,7 +128,7 @@ export const CreateDealForm = () => {
 						name="borrowerPublicKey"
 						type="text"
 						value={borrower}
-						placeholder={"Borrower"}
+						placeholder={placeholder}
 						onChange={onChangeBorrower}
 						disabled={!wallet?.publicKey}
 						className="stake-input credix-button MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary balance-button"
