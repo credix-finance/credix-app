@@ -26,8 +26,8 @@ export const DealOverview = () => {
 	const [dealStatus, setDealStatus] = useState<DealStatus | undefined>();
 	const [timeToMaturity, setTimeToMaturity] = useState<number | undefined>();
 	const [repaymentAmount, setRepaymentAmount] = useState<number | undefined>();
-	const [repaymentType, setRepaymentType] = useState<RepaymentType>(createPrincipalRepaymentType());
-	const [repaymentSelectValue, setRepaymentSelectValue] = useState<string>("principal");
+	const [repaymentType, setRepaymentType] = useState<RepaymentType>(createInterestRepaymentType());
+	const [repaymentSelectValue, setRepaymentSelectValue] = useState<string>("interest");
 	const notify = useNotify();
 	const triggerRefresh = useRefresh();
 
@@ -98,7 +98,7 @@ export const DealOverview = () => {
 
 		try {
 			await repayDeal(repaymentAmount, repaymentType, connection.connection, wallet as Wallet);
-			notify("success", "Deal successfully repaid");
+			notify("success", "Repayment successful");
 			triggerRefresh();
 		} catch (e: any) {
 			notify("error", `Transaction failed! ${e?.message}`);
@@ -178,7 +178,7 @@ export const DealOverview = () => {
 				</label>
 				<br />
 				<label className="stake-input-label">
-					(principal + interest)
+					USDC amount
 					<input
 						name="repayment"
 						type="number"
