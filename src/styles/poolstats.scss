@@ -30,9 +30,8 @@ $pool-box-size: 56vh;
 }
 
 .pool-box {
-	//height: $pool-box-size;
 	width: calc(3 * (#{$pool-box-size} / 2 - 1px));
-	display: flex; 
+	display: flex;
 	position: relative;
 	border: 1px solid grey;
 
@@ -51,7 +50,7 @@ $pool-box-size: 56vh;
 	border: 1px solid grey;
 	display: flex;
 	flex-direction: column;
-	position: relative; 
+	position: relative;
 }
 
 .pool-stat-title {
