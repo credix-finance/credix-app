@@ -41,21 +41,14 @@ export const PoolStatsDashboard = () => {
 				</Button>
 			</div>
 			<div className="pool-box">
-				<div className="pool-stat pool-stat-tl">
+				<div className="pool-stat">
 					<div className="hover-text">
 						<p>The total amount of USDC that has been provided to the credix protocol.</p>
 					</div>
 					<p className="pool-stat-number">{poolStats && millify(poolStats.TVL)}</p>
 					<p className="pool-stat-title">TVL [USDC]</p>
 				</div>
-				<div className="pool-stat pool-stat-tr">
-					<div className="hover-text">
-						<p>The expected APY that investors get; given the current deals and pool size.</p>
-					</div>
-					<p className="pool-stat-number">{poolStats && Math.round(poolStats.APY * 100)}%</p>
-					<p className="pool-stat-title">estimated APY</p>
-				</div>
-				<div className="pool-stat pool-stat-bl">
+				<div className="pool-stat">
 					<div className="hover-text">
 						<p>
 							The total amount of USDC that is currently supplied in credit lines to the borrowers.
@@ -64,12 +57,12 @@ export const PoolStatsDashboard = () => {
 					<p className="pool-stat-number">{poolStats && millify(poolStats.outstandingCredit)}</p>
 					<p className="pool-stat-title">Credit outstanding [USDC]</p>
 				</div>
-				<div className="pool-stat pool-stat-br">
+				<div className="pool-stat">
 					<div className="hover-text">
-						<p>Non-allocated capital is activated by staking it in Solend.</p>
+						<p>The expected APY that investors get; given the current deals and pool size.</p>
 					</div>
-					<p className="pool-stat-number">{poolStats && millify(poolStats.solendBuffer)}</p>
-					<p className="pool-stat-title">Solend buffer [USDC]</p>
+					<p className="pool-stat-number">{poolStats && Math.round(poolStats.APY * 100)}%</p>
+					<p className="pool-stat-title">estimated APY</p>
 				</div>
 			</div>
 		</div>

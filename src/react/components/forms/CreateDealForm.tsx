@@ -22,6 +22,7 @@ export const CreateDealForm = () => {
 	useEffect(() => {
 		if (wallet?.publicKey && connection.connection) {
 			setPlaceholder("0");
+			setBorrower(wallet?.publicKey.toString()); 
 		} else {
 			setPlaceholder("Connect wallet");
 		}
@@ -117,6 +118,12 @@ export const CreateDealForm = () => {
 		onChange(e, setTimeToMaturity);
 	};
 
+	const onBlurTimeToMaturity = (e: React.ChangeEvent<HTMLInputElement>) => {
+		if (timeToMaturity) {
+			setTimeToMaturity(Math.ceil(timeToMaturity/30)*30);
+		}
+	};
+
 	return (
 		<div>
 			<h2>New Deal</h2>
@@ -127,10 +134,10 @@ export const CreateDealForm = () => {
 						name="borrowerPublicKey"
 						type="text"
 						value={borrower}
-						placeholder={"Borrower"}
+						placeholder={placeholder}
 						onChange={onChangeBorrower}
 						disabled={!wallet?.publicKey}
-						className="stake-input credix-button MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary balance-button"
+						className="stake-input borrower-pk credix-button MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary balance-button"
 					/>
 				</label>
 				<br />
@@ -161,13 +168,15 @@ export const CreateDealForm = () => {
 				</label>
 				<br />
 				<label className="stake-input-label">
-					Time to maturity
+					Time to maturity (days)
 					<input
 						name="timeToMaturity"
 						type="number"
+						step={30}
 						value={timeToMaturity === undefined ? "" : timeToMaturity}
 						placeholder={placeholder}
 						onChange={onChangeTimeToMaturity}
+						onBlur={onBlurTimeToMaturity}
 						disabled={!wallet?.publicKey}
 						className="stake-input credix-button MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary balance-button"
 					/>

@@ -13,7 +13,7 @@
 .logo-and-tag-line {
 	width: 400px;
 	display: flex;
-	align-items: center;
+	align-items: flex-end;
 }
 
 .tag-line {
@@ -21,7 +21,6 @@
 	font-size: 12px;
 	max-width: 200px;
 	margin-left: 20px;
-	padding-bottom: 3px;
 }
 
 .navbar-button {

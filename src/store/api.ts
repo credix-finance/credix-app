@@ -136,11 +136,9 @@ export const getClusterTime = multiAsync(async (connection: Connection) => {
 
 const getRunningAPY = multiAsync(async (connection: Connection, wallet: Wallet) => {
 	const _deals = getDealAccounts(connection, wallet);
-	const _liquidityPoolBalance = getLiquidityPoolBalance(connection, wallet);
 	const _clusterTime = getClusterTime(connection);
 
-	const [liquidityPoolBalance, deals, clusterTime] = await Promise.all([
-		_liquidityPoolBalance,
+	const [deals, clusterTime] = await Promise.all([
 		_deals,
 		_clusterTime,
 	]);
@@ -158,7 +156,7 @@ const getRunningAPY = multiAsync(async (connection: Connection, wallet: Wallet) 
 		return result;
 	}, 0);
 
-	return runningAPY + 6 * formatNumber(liquidityPoolBalance);
+	return runningAPY;
 });
 
 const getAPY = multiAsync(async (connection: Connection, wallet: Wallet) => {

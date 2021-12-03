@@ -10,8 +10,7 @@ export const Navbar = () => (
 		<div className="logo-and-tag-line">
 			<img src={logo} alt="" className="logo" />
 			<span className="tag-line">
-				Democratizing <br /> credit investing
-				<br /> with a positive impact
+				Credit investing democratized
 			</span>
 		</div>
 		<div className="balance-wallet-container">
