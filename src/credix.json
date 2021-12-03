@@ -286,6 +286,11 @@
           "isSigner": false
         },
         {
+          "name": "treasuryPoolTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
           "name": "usdcMintAccount",
           "isMut": false,
           "isSigner": false
@@ -305,6 +310,16 @@
         {
           "name": "amount",
           "type": "u64"
+        },
+        {
+          "name": "repaymentType",
+          "type": {
+            "defined": "DealRepaymentType"
+          }
+        },
+        {
+          "name": "liquidityPoolBump",
+          "type": "u8"
         }
       ]
     },
@@ -461,6 +476,44 @@
           }
         ]
       }
+    }
+  ],
+  "types": [
+    {
+      "name": "DealRepaymentType",
+      "type": {
+        "kind": "enum",
+        "variants": [
+          {
+            "name": "Interest"
+          },
+          {
+            "name": "Principal"
+          }
+        ]
+      }
+    }
+  ],
+  "errors": [
+    {
+      "code": 300,
+      "name": "InvalidPrincipalAmount",
+      "msg": "This amount is not sufficient as a principal amount."
+    },
+    {
+      "code": 301,
+      "name": "InvalidInterestAmount",
+      "msg": "This amount is not sufficient as an interest amount."
+    },
+    {
+      "code": 302,
+      "name": "DealNotLive",
+      "msg": "This deal is not live yet."
+    },
+    {
+      "code": 303,
+      "name": "InvalidDealRepaymentType",
+      "msg": "Invalid deal repayment type."
     }
   ],
   "metadata": {

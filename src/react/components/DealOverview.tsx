@@ -1,12 +1,22 @@
 import { Wallet } from "@project-serum/anchor";
 import { useAnchorWallet, useConnection } from "@solana/wallet-adapter-react";
 import React, { useCallback, useEffect, useState } from "react";
-import { getClusterTime, getDealAccountData } from "store/api";
-import { Deal, DealStatus } from "types/program.types";
-import { mapDealToStatus } from "utils/deal.utils";
+import { useNotify } from "react/hooks/useNotify";
+import { useRefresh } from "react/hooks/useRefresh";
+import { getClusterTime, getDealAccountData, repayDeal } from "store/api";
+import { Deal, DealStatus, RepaymentType } from "types/program.types";
+import {
+	createInterestRepaymentType,
+	createPrincipalRepaymentType,
+	mapDealToStatus,
+} from "utils/deal.utils";
 import { formatNumber } from "utils/format.utils";
+import { round } from "utils/math.utils";
 import "../../styles/stakeform.scss";
+import { Select } from "@mui/material";
+import { MenuItem } from "@material-ui/core";
 
+// TODO: store deal in state instead of every property separately
 export const DealOverview = () => {
 	const wallet = useAnchorWallet();
 	const [placeholder, setPlaceholder] = useState<string>("Connect wallet");
@@ -14,7 +24,12 @@ export const DealOverview = () => {
 	const [financingFee, setFinancingFee] = useState<number | undefined>();
 	const [principal, setPrincipal] = useState<number | undefined>();
 	const [dealStatus, setDealStatus] = useState<DealStatus | undefined>();
+	const [timeToMaturity, setTimeToMaturity] = useState<number | undefined>();
 	const [repaymentAmount, setRepaymentAmount] = useState<number | undefined>();
+	const [repaymentType, setRepaymentType] = useState<RepaymentType>(createPrincipalRepaymentType());
+	const [repaymentSelectValue, setRepaymentSelectValue] = useState<string>("principal");
+	const notify = useNotify();
+	const triggerRefresh = useRefresh();
 
 	const fetchDealData = useCallback(async () => {
 		const _clusterTime = getClusterTime(connection.connection);
@@ -22,13 +37,11 @@ export const DealOverview = () => {
 
 		const [clusterTime, deal] = await Promise.all([_clusterTime, _dealData]);
 
-		const principal = formatNumber(deal.principal);
+		const principal = formatNumber(deal.principal.toNumber());
 
 		setPrincipal(principal);
 		setFinancingFee(deal.financingFeePercentage);
-
-		const repaymentAmount = principal * (1 + deal.financingFeePercentage / 100);
-		setRepaymentAmount(repaymentAmount);
+		setTimeToMaturity(deal.timeToMaturityDays);
 
 		if (!clusterTime) {
 			// TODO: DO SOMETHING
@@ -38,6 +51,27 @@ export const DealOverview = () => {
 		const dealStatus = mapDealToStatus(deal, clusterTime);
 		setDealStatus(dealStatus);
 	}, [connection.connection, wallet]);
+
+	// (principal * financing_fee) / time_to_maturity_days / 30
+	const calculateInterest = useCallback(() => {
+		if (!principal || !financingFee || !timeToMaturity) {
+			return 0;
+		}
+
+		return round((principal * (financingFee / 100)) / (timeToMaturity / 30));
+	}, [principal, financingFee, timeToMaturity]);
+
+	const calculateRepaymentAmount = useCallback(() => {
+		switch (repaymentSelectValue) {
+			case "interest": {
+				const interest = calculateInterest();
+				setRepaymentAmount(interest);
+				break;
+			}
+			default:
+				setRepaymentAmount(principal);
+		}
+	}, [principal, repaymentSelectValue, calculateInterest]);
 
 	useEffect(() => {
 		if (wallet?.publicKey && connection.connection) {
@@ -51,11 +85,42 @@ export const DealOverview = () => {
 		}
 	}, [connection.connection, wallet?.publicKey, fetchDealData]);
 
-	const onSubmit = () => {};
+	useEffect(() => {
+		calculateRepaymentAmount();
+	}, [calculateRepaymentAmount]);
+
+	const onSubmit = async (e: React.SyntheticEvent) => {
+		e.preventDefault();
+
+		if (!repaymentAmount) {
+			return;
+		}
+
+		try {
+			await repayDeal(repaymentAmount, repaymentType, connection.connection, wallet as Wallet);
+			notify("success", "Deal successfully repaid");
+			triggerRefresh();
+		} catch (e: any) {
+			notify("error", `Transaction failed! ${e?.message}`);
+		}
+	};
 
 	const canSubmit = () => wallet?.publicKey && dealStatus !== DealStatus.CLOSED;
 
 	const getButtonText = () => (dealStatus === DealStatus.CLOSED ? "Deal repaid" : "Make repayment");
+
+	const onRepaymentTypeChange = (e: any) => {
+		if (repaymentSelectValue !== e.target.value) {
+			switch (e.target.value) {
+				case "interest":
+					setRepaymentType(createInterestRepaymentType());
+					break;
+				default:
+					setRepaymentType(createPrincipalRepaymentType());
+			}
+			setRepaymentSelectValue(e.target.value);
+		}
+	};
 
 	return (
 		<div>
@@ -82,7 +147,7 @@ export const DealOverview = () => {
 						readOnly={true}
 						placeholder={placeholder}
 						disabled={true}
-						value={principal && Math.round(principal)}
+						value={(principal && Math.round(principal)) || ""}
 						className="stake-input credix-button MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary balance-button"
 					/>
 				</label>
@@ -98,6 +163,18 @@ export const DealOverview = () => {
 						value={financingFee === undefined ? "" : financingFee}
 						className="stake-input credix-button MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary balance-button"
 					/>
+				</label>
+				<br />
+				<label className="stake-input-label">
+					Select repayment type
+					<Select
+						onChange={onRepaymentTypeChange}
+						value={repaymentSelectValue}
+						className="repayment-select credix-button MuiButton-root"
+					>
+						<MenuItem value="principal">Principal</MenuItem>
+						<MenuItem value="interest">Interest</MenuItem>
+					</Select>
 				</label>
 				<br />
 				<label className="stake-input-label">

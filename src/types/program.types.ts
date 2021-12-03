@@ -1,3 +1,4 @@
+import { BN } from "@project-serum/anchor";
 import { PublicKey } from "@solana/web3.js";
 
 export interface PoolStats {
@@ -15,12 +16,17 @@ export enum DealStatus {
 
 export type Deal = {
 	borrower: PublicKey;
-	principal: number;
+	principal: BN;
 	financingFeePercentage: number;
-	amountRepaid: number;
+	amountRepaid: BN;
 	timeToMaturityDays: number;
-	goLiveAt: number;
+	goLiveAt: BN;
 	createdAt: number;
 	leverageRatio: number;
 	underwriterPerformanceFeePercentage: number;
 };
+
+export type PrincipalRepaymentType = { principal: {} };
+export type InterestRepaymentType = { interest: {} };
+
+export type RepaymentType = PrincipalRepaymentType | InterestRepaymentType;
