@@ -8,7 +8,7 @@ import {
 export const mapDealToStatus = (deal: Deal, clusterTime: number): DealStatus => {
 	const { amountRepaid, principal, financingFeePercentage, goLiveAt } = deal;
 
-	if (amountRepaid.toNumber() === principal.toNumber() * (1 + financingFeePercentage / 100)) {
+	if (amountRepaid.toNumber() >= principal.toNumber() * (1 + financingFeePercentage / 100)) {
 		return DealStatus.CLOSED;
 	}
 
