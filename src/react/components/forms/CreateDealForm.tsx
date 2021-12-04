@@ -22,7 +22,7 @@ export const CreateDealForm = () => {
 	useEffect(() => {
 		if (wallet?.publicKey && connection.connection) {
 			setPlaceholder("0");
-			setBorrower(wallet?.publicKey.toString()); 
+			setBorrower(wallet?.publicKey.toString());
 		} else {
 			setPlaceholder("Connect wallet");
 		}

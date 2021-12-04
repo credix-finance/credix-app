@@ -26,6 +26,7 @@ export const DealOverview = () => {
 	const [dealStatus, setDealStatus] = useState<DealStatus | undefined>();
 	const [timeToMaturity, setTimeToMaturity] = useState<number | undefined>();
 	const [repaymentAmount, setRepaymentAmount] = useState<number | undefined>();
+	const [repaymentAmountFee, setRepaymentAmountFee] = useState<number | undefined>();
 	const [repaymentType, setRepaymentType] = useState<RepaymentType>(createInterestRepaymentType());
 	const [repaymentSelectValue, setRepaymentSelectValue] = useState<string>("interest");
 	const notify = useNotify();
@@ -65,11 +66,14 @@ export const DealOverview = () => {
 		switch (repaymentSelectValue) {
 			case "interest": {
 				const interest = calculateInterest();
+				const repayAmountFee = interest * 0.10; // 10 percent fee
 				setRepaymentAmount(interest);
+				setRepaymentAmountFee(repayAmountFee);
 				break;
 			}
 			default:
 				setRepaymentAmount(principal);
+				setRepaymentAmountFee(0.);
 		}
 	}, [principal, repaymentSelectValue, calculateInterest]);
 
@@ -98,7 +102,11 @@ export const DealOverview = () => {
 
 		try {
 			await repayDeal(repaymentAmount, repaymentType, connection.connection, wallet as Wallet);
-			notify("success", "Repayment successful");
+			if (repaymentAmountFee === 0) {
+				notify("success", `Successfully repaid ${repaymentAmount} USDC with a ${repaymentAmountFee } fee`);
+			} else {
+				notify("success", `Successfully repaid ${repaymentAmount} USDC`);
+			}
 			triggerRefresh();
 		} catch (e: any) {
 			notify("error", `Transaction failed! ${e?.message}`);

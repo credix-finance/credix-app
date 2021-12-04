@@ -21,9 +21,11 @@ export const WithdrawStakeForm = () => {
 			return;
 		}
 
+		const withdrawAmountFee = withdrawAmount * 0.005; // 0.5 percent fee;
+
 		try {
 			await withdrawInvestment(withdrawAmount, connection.connection, wallet as Wallet);
-			notify("success", `Successful withdraw of ${withdrawAmount} USDC`);
+			notify("success", `Successful withdraw of ${withdrawAmount} USDC with a ${withdrawAmountFee} fee`);
 			triggerRefresh();
 		} catch (e: any) {
 			notify("error", `Transaction failed! ${e?.message}`);
