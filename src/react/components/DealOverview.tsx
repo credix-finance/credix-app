@@ -73,7 +73,7 @@ export const DealOverview = () => {
 			}
 			default:
 				setRepaymentAmount(principal);
-				setRepaymentAmountFee(0.);
+				setRepaymentAmountFee(0);
 		}
 	}, [principal, repaymentSelectValue, calculateInterest]);
 
@@ -103,7 +103,7 @@ export const DealOverview = () => {
 		try {
 			await repayDeal(repaymentAmount, repaymentType, connection.connection, wallet as Wallet);
 			if (repaymentAmountFee === 0) {
-				notify("success", `Successfully repaid ${repaymentAmount} USDC with a ${repaymentAmountFee } fee`);
+				notify("success", `Successfully repaid ${repaymentAmount} USDC with a ${repaymentAmountFee} fee`);
 			} else {
 				notify("success", `Successfully repaid ${repaymentAmount} USDC`);
 			}
