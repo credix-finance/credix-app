@@ -15,6 +15,7 @@ import { round } from "utils/math.utils";
 import "../../styles/stakeform.scss";
 import { Select } from "@mui/material";
 import { MenuItem } from "@material-ui/core";
+import { FEES } from "consts";
 
 // TODO: store deal in state instead of every property separately
 export const DealOverview = () => {
@@ -66,7 +67,7 @@ export const DealOverview = () => {
 		switch (repaymentSelectValue) {
 			case "interest": {
 				const interest = calculateInterest();
-				const repayAmountFee = interest * 0.10; // 10 percent fee
+				const repayAmountFee = interest * FEES.INTEREST_PAYMENT; // 10 percent fee
 				setRepaymentAmount(interest);
 				setRepaymentAmountFee(repayAmountFee);
 				break;

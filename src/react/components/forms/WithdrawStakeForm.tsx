@@ -5,6 +5,7 @@ import { useRefresh } from "react/hooks/useRefresh";
 import { withdrawInvestment } from "store/api";
 import "../../../styles/depositstakeform.scss";
 import { useNotify } from "../../hooks/useNotify";
+import { FEES } from "consts";
 
 export const WithdrawStakeForm = () => {
 	const wallet = useAnchorWallet();
@@ -21,7 +22,7 @@ export const WithdrawStakeForm = () => {
 			return;
 		}
 
-		const withdrawAmountFee = withdrawAmount * 0.005; // 0.5 percent fee;
+		const withdrawAmountFee = withdrawAmount * FEES.WITHDRAW; // 0.5 percent fee
 
 		try {
 			await withdrawInvestment(withdrawAmount, connection.connection, wallet as Wallet);
