@@ -11,3 +11,9 @@ export const SEEDS = {
 	MARKET_USDC_TOKEN_ACCOUNT: "market-liquidity-pool",
 	DEAL: "deal-info",
 };
+
+// TODO: turn into enum
+export const FEES = {
+	WITHDRAW: 0.005,
+	INTEREST_PAYMENT: 0.1,
+};

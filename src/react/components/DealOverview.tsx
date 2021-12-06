@@ -15,6 +15,7 @@ import { round } from "utils/math.utils";
 import "../../styles/stakeform.scss";
 import { Select } from "@mui/material";
 import { MenuItem } from "@material-ui/core";
+import { FEES } from "consts";
 
 // TODO: store deal in state instead of every property separately
 export const DealOverview = () => {
@@ -26,6 +27,7 @@ export const DealOverview = () => {
 	const [dealStatus, setDealStatus] = useState<DealStatus | undefined>();
 	const [timeToMaturity, setTimeToMaturity] = useState<number | undefined>();
 	const [repaymentAmount, setRepaymentAmount] = useState<number | undefined>();
+	const [repaymentAmountFee, setRepaymentAmountFee] = useState<number | undefined>();
 	const [repaymentType, setRepaymentType] = useState<RepaymentType>(createInterestRepaymentType());
 	const [repaymentSelectValue, setRepaymentSelectValue] = useState<string>("interest");
 	const notify = useNotify();
@@ -65,11 +67,14 @@ export const DealOverview = () => {
 		switch (repaymentSelectValue) {
 			case "interest": {
 				const interest = calculateInterest();
+				const repayAmountFee = interest * FEES.INTEREST_PAYMENT; // 10 percent fee
 				setRepaymentAmount(interest);
+				setRepaymentAmountFee(repayAmountFee);
 				break;
 			}
 			default:
 				setRepaymentAmount(principal);
+				setRepaymentAmountFee(0);
 		}
 	}, [principal, repaymentSelectValue, calculateInterest]);
 
@@ -98,7 +103,11 @@ export const DealOverview = () => {
 
 		try {
 			await repayDeal(repaymentAmount, repaymentType, connection.connection, wallet as Wallet);
-			notify("success", "Repayment successful");
+			if (repaymentAmountFee !== 0) {
+				notify("success", `Successfully repaid ${repaymentAmount} USDC with a ${repaymentAmountFee} USDC fee`);
+			} else {
+				notify("success", `Successfully repaid ${repaymentAmount} USDC`);
+			}
 			triggerRefresh();
 		} catch (e: any) {
 			notify("error", `Transaction failed! ${e?.message}`);
