@@ -206,6 +206,21 @@ const getTreasuryPoolTokenAccountPK = multiAsync(async (connection: Connection, 
 	return globalMarketStateData.treasuryPoolTokenAccount;
 });
 
+const SPL_ASSOCIATED_TOKEN_ACCOUNT_PROGRAM_ID: PublicKey = new PublicKey(
+	"ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL",
+);
+
+const getAssociatedUSDCTokenAddressPK = multiAsync(async (_usdcMintPK: PublicKey, wallet: Wallet) => {
+	return (await PublicKey.findProgramAddress(
+		[
+			wallet.publicKey.toBuffer(),
+			TOKEN_PROGRAM_ID.toBuffer(),
+			_usdcMintPK.toBuffer(),
+		],
+		SPL_ASSOCIATED_TOKEN_ACCOUNT_PROGRAM_ID
+	))[0];
+});
+
 export const getPoolStats = multiAsync(async (connection: Connection, wallet: Wallet) => {
 	const _tvl = getTVL(connection, wallet);
 	const _apy = getAPY(connection, wallet);
@@ -415,24 +430,20 @@ export const createDeal = multiAsync(
 
 export const activateDeal = multiAsync(async (connection: Connection, wallet: Wallet) => {
 	const program = constructProgram(connection, wallet);
-	const _userUSDCTokenAccount = getUserUSDCTokenAccount(connection, wallet);
 	const _usdcMintPK = getUSDCMintPK(connection, wallet);
 	const _marketUSDCTokenPDA = findMarketUSDCTokenPDA();
 	const _globalMarketStatePDA = findGlobalMarketStatePDA();
 	const _dealPDA = findDealPDA(wallet.publicKey);
 
-	const [userUSDCTokenAccount, usdcMintPK, marketUSDCTokenPDA, globalMarketStatePDA, dealPDA] =
+	const [usdcMintPK, marketUSDCTokenPDA, globalMarketStatePDA, dealPDA] =
 		await Promise.all([
-			_userUSDCTokenAccount,
 			_usdcMintPK,
 			_marketUSDCTokenPDA,
 			_globalMarketStatePDA,
 			_dealPDA,
 		]);
 
-	if (!userUSDCTokenAccount) {
-		throw Error("No USDC token accounts found for depositor");
-	}
+	const userAssociatedUSDCTokenAddressPK = await getAssociatedUSDCTokenAddressPK(usdcMintPK, wallet);
 
 	return program.rpc.activateDeal(marketUSDCTokenPDA[1], {
 		accounts: {
@@ -440,7 +451,7 @@ export const activateDeal = multiAsync(async (connection: Connection, wallet: Wa
 			globalMarketState: globalMarketStatePDA[0],
 			deal: dealPDA[0],
 			liquidityPoolTokenAccount: marketUSDCTokenPDA[0],
-			borrowerTokenAccount: userUSDCTokenAccount.pubkey,
+			borrowerTokenAccount: userAssociatedUSDCTokenAddressPK,
 			usdcMintAccount: usdcMintPK,
 			tokenProgram: TOKEN_PROGRAM_ID,
 			systemProgram: SystemProgram.programId,

@@ -3,7 +3,7 @@ import { useAnchorWallet, useConnection } from "@solana/wallet-adapter-react";
 import { serialAsync } from "utils/async.utils";
 import React, { useEffect, useState } from "react";
 import { useNotify } from "react/hooks/useNotify";
-import { activateDeal, createDeal, getUserUSDCTokenAccount } from "store/api";
+import { activateDeal, createDeal, getAssociatedTokenAddress } from "store/api";
 import "../../../styles/stakeform.scss";
 import { PublicKey } from "@solana/web3.js";
 import { useRefresh } from "react/hooks/useRefresh";
@@ -48,17 +48,6 @@ export const CreateDealForm = () => {
 
 		if (timeToMaturity % 30) {
 			notify("error", "Time to maturity needs to be a multiple of 30");
-			return;
-		}
-
-		const depositorLiquidityPoolTokenAccount = await getUserUSDCTokenAccount(
-			connection.connection,
-			wallet as Wallet
-		);
-
-		// Can't we just create a token account using the associated token program when it doesn't exist yet?
-		if (!depositorLiquidityPoolTokenAccount) {
-			notify("error", "Please opt in for USDC in your wallet");
 			return;
 		}
 
