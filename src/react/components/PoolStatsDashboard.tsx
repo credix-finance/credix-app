@@ -46,7 +46,7 @@ export const PoolStatsDashboard = () => {
 					<div className="hover-text">
 						<p>The total amount of USDC that has been provided to the credix protocol.</p>
 					</div>
-					<p className="pool-stat-number">{poolStats && toUIAmount(poolStats.TVL)}</p>
+					<p className="pool-stat-number">{poolStats && millify(toUIAmount(poolStats.TVL))}</p>
 					<p className="pool-stat-title">TVL [USDC]</p>
 				</div>
 				<div className="pool-stat">
