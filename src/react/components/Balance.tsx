@@ -6,6 +6,7 @@ import { useIntl } from "react-intl";
 import { getUserUSDCBalance } from "store/api";
 import { Button } from "@material-ui/core";
 import { useRefresh } from "react/hooks/useRefresh";
+import { toUIAmount } from "utils/format.utils";
 
 export const Balance = () => {
 	const wallet = useAnchorWallet();
@@ -37,7 +38,7 @@ export const Balance = () => {
 				Check balance
 			</Button>
 			<div className="balance-and-pk">
-				<h1>{intl.formatMessage(MESSAGES.balance, { balance })}</h1>
+				<h1>{intl.formatMessage(MESSAGES.balance, { balance: toUIAmount(balance) })}</h1>
 			</div>
 		</>
 	);

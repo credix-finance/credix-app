@@ -120,7 +120,7 @@ export const CreateDealForm = () => {
 
 	const onBlurTimeToMaturity = (e: React.ChangeEvent<HTMLInputElement>) => {
 		if (timeToMaturity) {
-			setTimeToMaturity(Math.ceil(timeToMaturity/30)*30);
+			setTimeToMaturity(Math.ceil(timeToMaturity / 30) * 30);
 		}
 	};
 

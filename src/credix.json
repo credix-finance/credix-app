@@ -190,7 +190,7 @@
         },
         {
           "name": "financingFeePercentage",
-          "type": "u8"
+          "type": "u16"
         },
         {
           "name": "leverageRatio",
@@ -198,7 +198,7 @@
         },
         {
           "name": "underwriterPerformanceFeePercentage",
-          "type": "u8"
+          "type": "u16"
         },
         {
           "name": "timeToMaturityDays",
@@ -316,10 +316,6 @@
           "type": {
             "defined": "DealRepaymentType"
           }
-        },
-        {
-          "name": "liquidityPoolBump",
-          "type": "u8"
         }
       ]
     },
@@ -404,10 +400,14 @@
           },
           {
             "name": "financingFeePercentage",
-            "type": "u8"
+            "type": "u16"
           },
           {
-            "name": "amountRepaid",
+            "name": "principalAmountRepaid",
+            "type": "u64"
+          },
+          {
+            "name": "interestAmountRepaid",
             "type": "u64"
           },
           {
@@ -428,7 +428,7 @@
           },
           {
             "name": "underwriterPerformanceFeePercentage",
-            "type": "u8"
+            "type": "u16"
           }
         ]
       }
@@ -496,24 +496,44 @@
   ],
   "errors": [
     {
-      "code": 300,
+      "code": 1300,
       "name": "InvalidPrincipalAmount",
       "msg": "This amount is not sufficient as a principal amount."
     },
     {
-      "code": 301,
+      "code": 1301,
       "name": "InvalidInterestAmount",
       "msg": "This amount is not sufficient as an interest amount."
     },
     {
-      "code": 302,
+      "code": 1302,
       "name": "DealNotLive",
       "msg": "This deal is not live yet."
     },
     {
-      "code": 303,
+      "code": 1303,
       "name": "InvalidDealRepaymentType",
       "msg": "Invalid deal repayment type."
+    },
+    {
+      "code": 1304,
+      "name": "MathOverflow",
+      "msg": "Math overflow."
+    },
+    {
+      "code": 1305,
+      "name": "NotEnoughLiquidity",
+      "msg": "Not enough liquidity."
+    },
+    {
+      "code": 1306,
+      "name": "PrincipalRepaid",
+      "msg": "Principal is already repaid"
+    },
+    {
+      "code": 1307,
+      "name": "InterestRepaid",
+      "msg": "Interest is already repaid"
     }
   ],
   "metadata": {

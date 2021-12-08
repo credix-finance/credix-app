@@ -18,7 +18,6 @@ export const WithdrawStakeForm = () => {
 		e.preventDefault();
 
 		if (!withdrawAmount) {
-			console.error("Need withdraw value to submit");
 			return;
 		}
 
@@ -26,7 +25,10 @@ export const WithdrawStakeForm = () => {
 
 		try {
 			await withdrawInvestment(withdrawAmount, connection.connection, wallet as Wallet);
-			notify("success", `Successful withdraw of ${withdrawAmount} USDC with a ${withdrawAmountFee} USDC fee`);
+			notify(
+				"success",
+				`Successful withdraw of ${withdrawAmount} USDC with a ${withdrawAmountFee} USDC fee`
+			);
 			triggerRefresh();
 		} catch (e: any) {
 			notify("error", `Transaction failed! ${e?.message}`);
