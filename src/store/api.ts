@@ -213,7 +213,8 @@ const SPL_ASSOCIATED_TOKEN_ACCOUNT_PROGRAM_ID: PublicKey = new PublicKey(
 	"ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL",
 );
 
-const getAssociatedUSDCTokenAddressPK = multiAsync(async (_usdcMintPK: PublicKey, wallet: Wallet) => {
+const getAssociatedUSDCTokenAddressPK = multiAsync(async (connection: Connection, wallet: Wallet) => {
+	const _usdcMintPK = await getUSDCMintPK(connection, wallet);
 	return (await PublicKey.findProgramAddress(
 		[
 			wallet.publicKey.toBuffer(),
@@ -433,20 +434,20 @@ export const createDeal = multiAsync(
 
 export const activateDeal = multiAsync(async (connection: Connection, wallet: Wallet) => {
 	const program = constructProgram(connection, wallet);
+	const _userAssociatedUSDCTokenAddressPK = getAssociatedUSDCTokenAddressPK(connection, wallet);
 	const _usdcMintPK = getUSDCMintPK(connection, wallet);
 	const _marketUSDCTokenPDA = findMarketUSDCTokenPDA();
 	const _globalMarketStatePDA = findGlobalMarketStatePDA();
 	const _dealPDA = findDealPDA(wallet.publicKey);
 
-	const [usdcMintPK, marketUSDCTokenPDA, globalMarketStatePDA, dealPDA] =
+	const [userAssociatedUSDCTokenAddressPK, usdcMintPK, marketUSDCTokenPDA, globalMarketStatePDA, dealPDA] =
 		await Promise.all([
+			_userAssociatedUSDCTokenAddressPK,
 			_usdcMintPK,
 			_marketUSDCTokenPDA,
 			_globalMarketStatePDA,
 			_dealPDA,
 		]);
-
-	const userAssociatedUSDCTokenAddressPK = await getAssociatedUSDCTokenAddressPK(usdcMintPK, wallet);
 
 	return program.rpc.activateDeal(marketUSDCTokenPDA[1], {
 		accounts: {
@@ -458,6 +459,7 @@ export const activateDeal = multiAsync(async (connection: Connection, wallet: Wa
 			usdcMintAccount: usdcMintPK,
 			tokenProgram: TOKEN_PROGRAM_ID,
 			systemProgram: SystemProgram.programId,
+			rent: web3.SYSVAR_RENT_PUBKEY,
 		},
 	});
 });
