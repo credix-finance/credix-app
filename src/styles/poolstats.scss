@@ -1,4 +1,4 @@
-$pool-box-size: 56vh;
+$pool-box-size: 30vw;
 
 .hover-text {
 	max-width: calc(#{$pool-box-size} / 2 - 2px);
@@ -7,17 +7,16 @@ $pool-box-size: 56vh;
 	opacity: 0;
 	background: black;
 	margin: 0 !important;
-	padding: 10px;
+	display: flex; 
+	flex-direction: column; 
+	align-items: center; 
+	justify-content: center; 
 
 	p {
 		color: white !important;
 		font-size: 12px;
 		text-align: center;
-		flex-grow: 1;
-		position: absolute;
-		top: 50%;
-		left: 50%;
-		transform: translate(-50%, -50%);
+		padding: 10% !important; 
 	}
 
 	&:hover {
@@ -26,7 +25,7 @@ $pool-box-size: 56vh;
 }
 
 .pool-container {
-	margin-right: 100px;
+	margin-right: 1vw;
 }
 
 .pool-box {
@@ -58,6 +57,7 @@ $pool-box-size: 56vh;
 	font-size: 12px;
 	right: 10px;
 	bottom: 0;
+	text-align: right; 
 }
 
 .pool-stat-number {
@@ -73,4 +73,21 @@ $pool-box-size: 56vh;
 
 .refresh-stats {
 	margin-bottom: 1em !important;
+}
+
+@media only screen and (max-width: 1124px) {
+	$pool-box-size: 400px; 
+	.hover-text {
+		max-width: calc(#{$pool-box-size} / 2 - 2px);
+		height: calc(#{$pool-box-size} / 2 - 2px);
+	}
+
+	.pool-box {
+		width: calc(3 * (#{$pool-box-size} / 2 - 1px));
+	}
+
+	.pool-stat {
+		width: calc(#{$pool-box-size} / 2 - 1px);
+		height: calc(#{$pool-box-size} / 2 - 1px);
+	}
 }

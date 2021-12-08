@@ -8,7 +8,11 @@ import "../../../styles/stakeform.scss";
 import { PublicKey } from "@solana/web3.js";
 import { useRefresh } from "react/hooks/useRefresh";
 
-export const CreateDealForm = () => {
+interface Props {
+	disabled?: boolean;
+}
+
+export const CreateDealForm = (props: Props) => {
 	const wallet = useAnchorWallet();
 	const connection = useConnection();
 	const [principal, setPrincipal] = useState<number | undefined>();
@@ -91,7 +95,9 @@ export const CreateDealForm = () => {
 			validKey = false; // can't have an empty block..
 		}
 
-		return wallet?.publicKey && principal && financingFee && borrower && validKey;
+		return (
+			wallet?.publicKey && principal && financingFee && borrower && validKey && !props.disabled
+		);
 	};
 
 	const onChange = (
@@ -120,7 +126,7 @@ export const CreateDealForm = () => {
 
 	const onBlurTimeToMaturity = (e: React.ChangeEvent<HTMLInputElement>) => {
 		if (timeToMaturity) {
-			setTimeToMaturity(Math.ceil(timeToMaturity/30)*30);
+			setTimeToMaturity(Math.ceil(timeToMaturity / 30) * 30);
 		}
 	};
 
@@ -136,7 +142,7 @@ export const CreateDealForm = () => {
 						value={borrower}
 						placeholder={placeholder}
 						onChange={onChangeBorrower}
-						disabled={!wallet?.publicKey}
+						disabled={!wallet?.publicKey || props.disabled}
 						className="stake-input borrower-pk credix-button MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary balance-button"
 					/>
 				</label>
@@ -149,7 +155,7 @@ export const CreateDealForm = () => {
 						value={principal === undefined ? "" : principal}
 						placeholder={placeholder}
 						onChange={onChangePrincipal}
-						disabled={!wallet?.publicKey}
+						disabled={!wallet?.publicKey || props.disabled}
 						className="stake-input credix-button MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary balance-button"
 					/>
 				</label>
@@ -162,7 +168,7 @@ export const CreateDealForm = () => {
 						value={financingFee === undefined ? "" : financingFee}
 						placeholder={placeholder}
 						onChange={onChangeFinancingFee}
-						disabled={!wallet?.publicKey}
+						disabled={!wallet?.publicKey || props.disabled}
 						className="stake-input credix-button MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary balance-button"
 					/>
 				</label>
@@ -177,7 +183,7 @@ export const CreateDealForm = () => {
 						placeholder={placeholder}
 						onChange={onChangeTimeToMaturity}
 						onBlur={onBlurTimeToMaturity}
-						disabled={!wallet?.publicKey}
+						disabled={!wallet?.publicKey || props.disabled}
 						className="stake-input credix-button MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary balance-button"
 					/>
 				</label>
@@ -185,7 +191,7 @@ export const CreateDealForm = () => {
 				<input
 					type="submit"
 					disabled={!canSubmit()}
-					value="Create Deal"
+					value={props.disabled ? "Max deals reached" : "Create Deal"}
 					className="stake-submit credix-button MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary balance-button"
 				/>
 			</form>

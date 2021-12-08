@@ -3,11 +3,18 @@ import { TOKEN_PROGRAM_ID } from "@solana/spl-token";
 import { Connection, ParsedAccountData, PublicKey, SystemProgram } from "@solana/web3.js";
 import { config } from "config";
 import { SEEDS } from "consts";
+import { divide } from "lodash";
 import { Deal, DealStatus, PoolStats, RepaymentType } from "types/program.types";
 import { PdaSeeds } from "types/solana.types";
 import { multiAsync } from "utils/async.utils";
 import { mapDealToStatus } from "utils/deal.utils";
-import { encodeSeedString, formatNumber, mapPKToSeed } from "utils/format.utils";
+import {
+	encodeSeedString,
+	mapPKToSeed,
+	toProgramAmount,
+	toProgramPercentage,
+} from "utils/format.utils";
+import { percentage } from "utils/math.utils";
 
 const constructProgram = (connection: Connection, wallet: Wallet) => {
 	const provider = new Provider(connection, wallet, config.confirmOptions);
@@ -114,9 +121,7 @@ export const getUserUSDCBalance = multiAsync(async (connection: Connection, wall
 		return 0;
 	}
 
-	// TODO: is it ok to only show the balance of the first one? do we need to add them all up?
-	const balance = 1.0 * tokenAccount.account.data.parsed.info.tokenAmount.uiAmount;
-	return Math.round(balance * 100) / 100;
+	return Number(tokenAccount.account.data.parsed.info.tokenAmount.amount);
 });
 
 const getLiquidityPoolBalance = multiAsync(async (connection: Connection, wallet: Wallet) => {
@@ -135,22 +140,23 @@ export const getClusterTime = multiAsync(async (connection: Connection) => {
 });
 
 const getRunningAPY = multiAsync(async (connection: Connection, wallet: Wallet) => {
-	const _deals = getDealAccounts(connection, wallet);
+	const _deals = await getDealAccounts(connection, wallet);
 	const _clusterTime = getClusterTime(connection);
 
-	const [deals, clusterTime] = await Promise.all([
-		_deals,
-		_clusterTime,
-	]);
+	const [deals, clusterTime] = await Promise.all([_deals, _clusterTime]);
 
 	if (!clusterTime) {
 		throw Error("Could not fetch cluster time");
 	}
 
+	// TODO: is this still correct
 	const runningAPY = (deals as Array<ProgramAccount<Deal>>).reduce((result, deal) => {
 		const status = mapDealToStatus(deal.account, clusterTime);
 		if (status === DealStatus.IN_PROGRESS) {
-			result += (deal.account.financingFeePercentage / 1000000) * deal.account.principal.toNumber();
+			const financingFeePercentage = deal.account.financingFeePercentage;
+			const principal = deal.account.principal.toNumber();
+
+			result += percentage(principal, financingFeePercentage);
 		}
 
 		return result;
@@ -160,8 +166,8 @@ const getRunningAPY = multiAsync(async (connection: Connection, wallet: Wallet) 
 });
 
 const getAPY = multiAsync(async (connection: Connection, wallet: Wallet) => {
-	const _outstandingCredit = getOutstandingCredit(connection, wallet);
-	const _liquidityPoolBalance = getLiquidityPoolBalance(connection, wallet);
+	const _outstandingCredit: Promise<number> = getOutstandingCredit(connection, wallet);
+	const _liquidityPoolBalance: Promise<number> = getLiquidityPoolBalance(connection, wallet);
 	const _runningApy = getRunningAPY(connection, wallet);
 
 	const [liquidityPoolBalance, outstandingCredit, runningAPY] = await Promise.all([
@@ -170,19 +176,16 @@ const getAPY = multiAsync(async (connection: Connection, wallet: Wallet) => {
 		_runningApy,
 	]);
 
-	const outstandingCreditFormatted = formatNumber(outstandingCredit);
-	const liqudityPoolBalanceFormatted = formatNumber(liquidityPoolBalance);
-
-	if (liqudityPoolBalanceFormatted === 0 && outstandingCreditFormatted === 0) {
+	if (liquidityPoolBalance === 0 && outstandingCredit === 0) {
 		return 0;
 	}
 
-	return Math.round(runningAPY / (outstandingCreditFormatted + liqudityPoolBalanceFormatted)) / 100;
+	return divide(runningAPY, outstandingCredit + liquidityPoolBalance) / 100;
 });
 
 const getSolendBuffer = multiAsync(async (connection: Connection, wallet: Wallet) => {
 	const liquidityPoolBalance = await getLiquidityPoolBalance(connection, wallet);
-	return formatNumber(liquidityPoolBalance);
+	return liquidityPoolBalance;
 });
 
 const getTVL = multiAsync(async (connection: Connection, wallet: Wallet) => {
@@ -193,7 +196,7 @@ const getTVL = multiAsync(async (connection: Connection, wallet: Wallet) => {
 		outstandingCreditCall,
 	]);
 
-	return formatNumber(liquidityPoolBalance) + formatNumber(outstandingCredit);
+	return liquidityPoolBalance + outstandingCredit;
 });
 
 const getMarketUSDCTokenAccountPK = multiAsync(async (connection: Connection, wallet: Wallet) => {
@@ -222,7 +225,7 @@ export const getPoolStats = multiAsync(async (connection: Connection, wallet: Wa
 	const poolStats: PoolStats = {
 		TVL,
 		APY,
-		outstandingCredit: formatNumber(outstandingCredit),
+		outstandingCredit,
 		solendBuffer,
 	};
 
@@ -267,8 +270,7 @@ export const createDepositor = multiAsync(async (connection: Connection, wallet:
 
 export const depositInvestment = multiAsync(
 	async (amount: number, connection: Connection, wallet: Wallet) => {
-		// TODO: turn into constant
-		const depositAmount = new BN(amount * 1000000);
+		const depositAmount = new BN(toProgramAmount(amount));
 		const program = constructProgram(connection, wallet);
 		const _globalMarketStatePDA = findGlobalMarketStatePDA();
 		const _lpTokenMintPDA = findLPTokenMintPDA();
@@ -351,7 +353,8 @@ export const withdrawInvestment = multiAsync(
 			_treasuryPoolTokenAccountPK,
 		]);
 
-		const withdrawAmount = new BN(Math.floor((amount / lpTokenPrice) * 1000000));
+		// TODO: should we floor here to be safe?
+		const withdrawAmount = new BN(toProgramAmount(amount / lpTokenPrice));
 
 		if (!userUSDCTokenAccount) {
 			throw Error("No USDC token accounts found for depositor");
@@ -399,8 +402,8 @@ export const createDeal = multiAsync(
 
 		const [dealPDA, globalMarketStatePDA] = await Promise.all([_dealPDA, _globalMarketStatePDA]);
 
-		const principalAmount = new BN(principal * 1000000);
-		const financingFeeAmount = new BN(financingFee);
+		const principalAmount = new BN(toProgramAmount(principal));
+		const financingFeeAmount = new BN(toProgramPercentage(financingFee));
 
 		return program.rpc.createDeal(principalAmount, financingFeeAmount, 0, 0, timeToMaturity, {
 			accounts: {
@@ -450,7 +453,9 @@ export const activateDeal = multiAsync(async (connection: Connection, wallet: Wa
 
 const getLPTokenSupply = multiAsync(async (connection: Connection) => {
 	const lpTokenMintPDA = await findLPTokenMintPDA();
-	return connection.getTokenSupply(lpTokenMintPDA[0]).then((response) => response.value);
+	return connection
+		.getTokenSupply(lpTokenMintPDA[0])
+		.then((response) => Number(response.value.amount));
 });
 
 const getLPTokenPrice = multiAsync(async (connection: Connection, wallet: Wallet) => {
@@ -464,10 +469,7 @@ const getLPTokenPrice = multiAsync(async (connection: Connection, wallet: Wallet
 		_lpTokenSupply,
 	]);
 
-	return (
-		Number(lpTokenSupply.amount) &&
-		((outstandingCredit + liquidityPoolBalance) * 1.0) / Number(lpTokenSupply.amount)
-	);
+	return lpTokenSupply && divide(outstandingCredit + liquidityPoolBalance, lpTokenSupply);
 });
 
 export const getLPTokenUSDCBalance = multiAsync(async (connection: Connection, wallet: Wallet) => {
@@ -483,14 +485,15 @@ export const getLPTokenUSDCBalance = multiAsync(async (connection: Connection, w
 		return 0;
 	}
 
-	const stake = userLPTokenAccount.account.data.parsed.info.tokenAmount.uiAmount * lpTokenPrice;
-	return Math.round(stake * 100) / 100;
+	const userLPTokenAmount = Number(userLPTokenAccount.account.data.parsed.info.tokenAmount.amount);
+
+	return userLPTokenAmount * lpTokenPrice;
 });
 
 export const repayDeal = multiAsync(
 	async (amount: number, repaymentType: RepaymentType, connection: Connection, wallet: Wallet) => {
 		const program = constructProgram(connection, wallet);
-		const repayAmount = new BN(amount * 1000000);
+		const repayAmount = new BN(amount);
 
 		const _globalMarketStatePDA = findGlobalMarketStatePDA();
 		const _userUSDCTokenAccount = getUserUSDCTokenAccount(connection, wallet);
@@ -519,7 +522,7 @@ export const repayDeal = multiAsync(
 			throw Error("No USDC token accounts found for depositor");
 		}
 
-		await program.rpc.makeDealRepayment(repayAmount, repaymentType, marketUSDCTokenPDA[1], {
+		await program.rpc.makeDealRepayment(repayAmount, repaymentType, {
 			accounts: {
 				borrower: wallet.publicKey,
 				globalMarketState: globalMarketStatePDA[0],

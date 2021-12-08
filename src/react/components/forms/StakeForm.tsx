@@ -9,6 +9,7 @@ import { useAnchorWallet, useConnection } from "@solana/wallet-adapter-react";
 import { Wallet } from "@project-serum/anchor";
 import { Button } from "@material-ui/core";
 import { useRefresh } from "react/hooks/useRefresh";
+import { toUIAmount } from "utils/format.utils";
 
 export const StakeForm = () => {
 	const intl = useIntl();
@@ -32,7 +33,7 @@ export const StakeForm = () => {
 	return (
 		<div className="stake-and-withdraw-container">
 			<div className="row">
-				<h1>{intl.formatMessage(MESSAGES.stake, { stake })}</h1>
+				<h1>{intl.formatMessage(MESSAGES.stake, { stake: toUIAmount(stake) })}</h1>
 				<Button
 					variant="contained"
 					className="MuiButton-containedPrimary stake-button credix-button"

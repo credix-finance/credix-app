@@ -18,7 +18,6 @@ export const DepositStakeForm = () => {
 		e.preventDefault();
 
 		if (!stake) {
-			console.error("Need stake value to submit");
 			return;
 		}
 

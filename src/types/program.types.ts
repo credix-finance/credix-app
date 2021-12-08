@@ -18,10 +18,11 @@ export type Deal = {
 	borrower: PublicKey;
 	principal: BN;
 	financingFeePercentage: number;
-	amountRepaid: BN;
-	timeToMaturityDays: number;
+	principalAmountRepaid: BN;
+	interestAmountRepaid: BN;
+	timeToMaturityDays: BN;
 	goLiveAt: BN;
-	createdAt: number;
+	createdAt: BN;
 	leverageRatio: number;
 	underwriterPerformanceFeePercentage: number;
 };

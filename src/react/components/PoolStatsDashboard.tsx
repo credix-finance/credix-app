@@ -7,6 +7,7 @@ import { getPoolStats } from "store/api";
 import { PoolStats } from "types/program.types";
 import "../../styles/poolstats.scss";
 import { useRefresh } from "react/hooks/useRefresh";
+import { toUIAmount } from "utils/format.utils";
 
 export const PoolStatsDashboard = () => {
 	const wallet = useAnchorWallet();
@@ -45,7 +46,7 @@ export const PoolStatsDashboard = () => {
 					<div className="hover-text">
 						<p>The total amount of USDC that has been provided to the credix protocol.</p>
 					</div>
-					<p className="pool-stat-number">{poolStats && millify(poolStats.TVL)}</p>
+					<p className="pool-stat-number">{poolStats && millify(toUIAmount(poolStats.TVL))}</p>
 					<p className="pool-stat-title">TVL [USDC]</p>
 				</div>
 				<div className="pool-stat">
@@ -54,15 +55,17 @@ export const PoolStatsDashboard = () => {
 							The total amount of USDC that is currently supplied in credit lines to the borrowers.
 						</p>
 					</div>
-					<p className="pool-stat-number">{poolStats && millify(poolStats.outstandingCredit)}</p>
+					<p className="pool-stat-number">
+						{poolStats && millify(toUIAmount(poolStats.outstandingCredit))}
+					</p>
 					<p className="pool-stat-title">Credit outstanding [USDC]</p>
 				</div>
 				<div className="pool-stat">
 					<div className="hover-text">
-						<p>The expected APY that investors get; given the current deals and pool size.</p>
+						<p>The expected APY that investors get; calculated based on the weighted average of the financing fees of outstanding deals.</p>
 					</div>
 					<p className="pool-stat-number">{poolStats && Math.round(poolStats.APY * 100)}%</p>
-					<p className="pool-stat-title">estimated APY</p>
+					<p className="pool-stat-title">Estimated APY</p>
 				</div>
 			</div>
 		</div>
