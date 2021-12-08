@@ -94,7 +94,7 @@ export const DealOverview = () => {
 			const feeNotification = ` with a ${toUIAmount(
 				repaymentAmount * FEES.INTEREST_PAYMENT
 			)} USDC fee`;
-			notify("success", `${paymentNotification}${showFeeNotification && feeNotification}`);
+			notify("success", `${paymentNotification}${showFeeNotification ? feeNotification : ""}`);
 			triggerRefresh();
 		} catch (e: any) {
 			notify("error", `Transaction failed! ${e?.message}`);
