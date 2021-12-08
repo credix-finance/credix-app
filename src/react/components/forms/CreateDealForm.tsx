@@ -96,7 +96,14 @@ export const CreateDealForm = (props: Props) => {
 		}
 
 		return (
-			wallet?.publicKey && principal && financingFee && borrower && validKey && !props.disabled
+			wallet?.publicKey &&
+			principal &&
+			financingFee &&
+			borrower &&
+			validKey &&
+			!props.disabled &&
+			timeToMaturity &&
+			!(timeToMaturity % 30)
 		);
 	};
 
@@ -161,7 +168,7 @@ export const CreateDealForm = (props: Props) => {
 				</label>
 				<br />
 				<label className="stake-input-label">
-					Financing fee
+					Financing fee %
 					<input
 						name="financingFee"
 						type="number"
