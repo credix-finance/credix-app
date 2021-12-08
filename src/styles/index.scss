@@ -149,3 +149,15 @@ button {
 		margin-right: 20px;
 	}
 }
+
+@media only screen and (max-width: 1124px) {
+	.pool-and-stake-withdraw-container {
+		flex-direction: column; 
+
+		.pool-container {
+			margin: 0; 
+			margin-bottom: 10vh; 
+		}
+	}
+
+}
