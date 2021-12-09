@@ -20,7 +20,7 @@ import "../../styles/stakeform.scss";
 
 export const DealOverview = () => {
 	const wallet = useAnchorWallet();
-	const [placeholder, setPlaceholder] = useState<string>("Connect wallet");
+	const [placeholder, setPlaceholder] = useState<string>("CONNECT WALLET");
 	const connection = useConnection();
 	const [deal, setDeal] = useState<Deal | undefined>();
 	const [dealStatus, setDealStatus] = useState<DealStatus | undefined>();

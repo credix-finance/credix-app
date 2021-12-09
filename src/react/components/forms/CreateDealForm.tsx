@@ -19,7 +19,7 @@ export const CreateDealForm = (props: Props) => {
 	const [financingFee, setFinancingFee] = useState<number | undefined>();
 	const [timeToMaturity, setTimeToMaturity] = useState<number | undefined>();
 	const [borrower, setBorrower] = useState<string>("");
-	const [placeholder, setPlaceholder] = useState<string>("Connect wallet");
+	const [placeholder, setPlaceholder] = useState<string>("CONNECT WALLET");
 	const notify = useNotify();
 	const triggerRefresh = useRefresh();
 
