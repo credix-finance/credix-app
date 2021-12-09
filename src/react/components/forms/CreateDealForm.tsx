@@ -156,6 +156,7 @@ export const CreateDealForm = (props: Props) => {
 				<br />
 				<label className="stake-input-label">
 					Principal
+					<p>The total amount of USDC to borrow</p>
 					<input
 						name="principal"
 						type="number"
@@ -169,6 +170,7 @@ export const CreateDealForm = (props: Props) => {
 				<br />
 				<label className="stake-input-label">
 					Financing fee %
+					<p>The percentage on top of the principal that needs to be repaid as interest</p> 
 					<input
 						name="financingFee"
 						type="number"
@@ -182,6 +184,7 @@ export const CreateDealForm = (props: Props) => {
 				<br />
 				<label className="stake-input-label">
 					Time to maturity (days)
+					<p>How many days before you have to pay back the principal</p>
 					<input
 						name="timeToMaturity"
 						type="number"
