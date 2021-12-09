@@ -25,7 +25,7 @@ export const DealOverview = () => {
 	const [deal, setDeal] = useState<Deal | undefined>();
 	const [dealStatus, setDealStatus] = useState<DealStatus | undefined>();
 	const [repaymentAmount, setRepaymentAmount] = useState<number | undefined>();
-	const [repaymentSelectValue, setRepaymentSelectValue] = useState<string>("principal");
+	const [repaymentSelectValue, setRepaymentSelectValue] = useState<string>("interest");
 	const notify = useNotify();
 
 	const fetchDealData = useCallback(async () => {
