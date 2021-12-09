@@ -6,8 +6,8 @@ import "../../styles/footer.scss";
 export const Footer = () => (
 	<div>
 		<div className="footer footer-left">
-			<Link to={Path.OVERVIEW}>Pool</Link>
-			<Link to={Path.DEALS}>Deals</Link>
+			<Link to={Path.OVERVIEW}>Invest</Link>
+			<Link to={Path.DEALS}>Borrow/Repay</Link>
 			<Link to={Path.HELP} className="start-here animated bounce">
 				Start here
 			</Link>
