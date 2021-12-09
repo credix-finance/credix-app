@@ -1,5 +1,5 @@
 import { BN, Program, ProgramAccount, Provider, Wallet, web3 } from "@project-serum/anchor";
-import { TOKEN_PROGRAM_ID } from "@solana/spl-token";
+import { TOKEN_PROGRAM_ID, ASSOCIATED_TOKEN_PROGRAM_ID, Token } from "@solana/spl-token";
 import { Connection, ParsedAccountData, PublicKey, SystemProgram } from "@solana/web3.js";
 import { config } from "config";
 import { SEEDS } from "consts";
@@ -209,20 +209,14 @@ const getTreasuryPoolTokenAccountPK = multiAsync(async (connection: Connection, 
 	return globalMarketStateData.treasuryPoolTokenAccount;
 });
 
-const SPL_ASSOCIATED_TOKEN_ACCOUNT_PROGRAM_ID: PublicKey = new PublicKey(
-	"ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL",
-);
-
 const getAssociatedUSDCTokenAddressPK = multiAsync(async (connection: Connection, wallet: Wallet) => {
 	const _usdcMintPK = await getUSDCMintPK(connection, wallet);
-	return (await PublicKey.findProgramAddress(
-		[
-			wallet.publicKey.toBuffer(),
-			TOKEN_PROGRAM_ID.toBuffer(),
-			_usdcMintPK.toBuffer(),
-		],
-		SPL_ASSOCIATED_TOKEN_ACCOUNT_PROGRAM_ID
-	))[0];
+	return await Token.getAssociatedTokenAddress(
+		ASSOCIATED_TOKEN_PROGRAM_ID,
+		TOKEN_PROGRAM_ID,
+		_usdcMintPK,
+		wallet.publicKey,
+	);
 });
 
 export const getPoolStats = multiAsync(async (connection: Connection, wallet: Wallet) => {
