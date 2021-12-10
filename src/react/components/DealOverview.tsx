@@ -25,7 +25,7 @@ export const DealOverview = () => {
 	const [deal, setDeal] = useState<Deal | undefined>();
 	const [dealStatus, setDealStatus] = useState<DealStatus | undefined>();
 	const [amountToRepay, setAmountToRepay] = useState<number | undefined>();	
-	const [repaymentAmount, setRepaymentAmount] = useState<number | undefined>(0);
+	const [repaymentAmount, setRepaymentAmount] = useState<number | undefined>();
 	const [repaymentSelectValue, setRepaymentSelectValue] = useState<string>("interest");
 	const notify = useNotify();
 
@@ -114,7 +114,7 @@ export const DealOverview = () => {
 				Math.min(repaymentAmount, amountToRepay) * FEES.INTEREST_PAYMENT
 			)} USDC fee`;
 			notify("success", `${paymentNotification}${showFeeNotification ? feeNotification : ""}`);
-			setRepaymentAmount(0);
+			setRepaymentAmount(undefined);
 			triggerRefresh();
 		} catch (e: any) {
 			notify("error", `Transaction failed! ${e?.message}`);
@@ -129,7 +129,7 @@ export const DealOverview = () => {
 	const onRepaymentTypeChange = (e: any) => {
 		if (repaymentSelectValue !== e.target.value) {
 			setRepaymentSelectValue(e.target.value);
-			setRepaymentAmount(0);
+			setRepaymentAmount(undefined);
 		}
 	};
 
@@ -138,7 +138,6 @@ export const DealOverview = () => {
 		setter: (val: number | undefined) => any
 	) => {
 		const newValue = e.target.value === "" ? undefined : toProgramAmount(Number(e.target.value));
-		console.log(newValue);
 		setter(newValue);
 	};
 
