@@ -37,7 +37,7 @@ const findGlobalMarketStatePDA = multiAsync(async () => {
 });
 
 const findSigningAuthorityPDA = multiAsync(async () => {
-	const seeds: PdaSeeds = [config.clusterConfig.programId.toBuffer()];
+	const seeds: PdaSeeds = [Buffer.from(config.clusterConfig.programId.toString()).subarray(0, 32)];
 	return findPDA(seeds);
 });
 
