@@ -16,6 +16,11 @@
           "isSigner": false
         },
         {
+          "name": "signingAuthority",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
           "name": "liquidityPoolTokenAccount",
           "isMut": true,
           "isSigner": false
@@ -59,6 +64,11 @@
         {
           "name": "owner",
           "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "signingAuthority",
+          "isMut": false,
           "isSigner": false
         },
         {
@@ -113,6 +123,11 @@
           "isSigner": false
         },
         {
+          "name": "signingAuthority",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
           "name": "depositorInfo",
           "isMut": true,
           "isSigner": false
@@ -150,7 +165,7 @@
       ],
       "args": [
         {
-          "name": "nonce",
+          "name": "signingAuthorityBump",
           "type": "u8"
         },
         {
@@ -220,6 +235,11 @@
           "isSigner": false
         },
         {
+          "name": "signingAuthority",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
           "name": "deal",
           "isMut": true,
           "isSigner": false
@@ -252,7 +272,7 @@
       ],
       "args": [
         {
-          "name": "liquidityPoolBump",
+          "name": "signingAuthorityBump",
           "type": "u8"
         }
       ]
@@ -333,6 +353,11 @@
           "isSigner": false
         },
         {
+          "name": "signingAuthority",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
           "name": "withdrawerLpTokenAccount",
           "isMut": true,
           "isSigner": false
@@ -370,11 +395,7 @@
       ],
       "args": [
         {
-          "name": "liquidityPoolBump",
-          "type": "u8"
-        },
-        {
-          "name": "itTokenAccountBump",
+          "name": "signingAuthorityBump",
           "type": "u8"
         },
         {
@@ -496,42 +517,42 @@
   ],
   "errors": [
     {
-      "code": 1300,
+      "code": 300,
       "name": "InvalidPrincipalAmount",
       "msg": "This amount is not sufficient as a principal amount."
     },
     {
-      "code": 1301,
+      "code": 301,
       "name": "InvalidInterestAmount",
       "msg": "This amount is not sufficient as an interest amount."
     },
     {
-      "code": 1302,
+      "code": 302,
       "name": "DealNotLive",
       "msg": "This deal is not live yet."
     },
     {
-      "code": 1303,
+      "code": 303,
       "name": "InvalidDealRepaymentType",
       "msg": "Invalid deal repayment type."
     },
     {
-      "code": 1304,
+      "code": 304,
       "name": "MathOverflow",
       "msg": "Math overflow."
     },
     {
-      "code": 1305,
+      "code": 305,
       "name": "NotEnoughLiquidity",
       "msg": "Not enough liquidity."
     },
     {
-      "code": 1306,
+      "code": 306,
       "name": "PrincipalRepaid",
       "msg": "Principal is already repaid"
     },
     {
-      "code": 1307,
+      "code": 307,
       "name": "InterestRepaid",
       "msg": "Interest is already repaid"
     }
