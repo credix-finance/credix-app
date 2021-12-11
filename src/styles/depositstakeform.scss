@@ -1,6 +1,10 @@
 .stake-input-label {
 	flex-grow: 2;
 	margin-right: 10px;
+
+	p {
+		font-size: 12px; 
+	}
 }
 
 .stake-input {
@@ -34,7 +38,7 @@
 .stake-form-column {
 	flex-direction: column;
 	align-items: flex-start;
-	width: 300px;
+	width: 600px;
 	border: 1px solid black;
 	padding: 30px;
 	margin-top: 0;
