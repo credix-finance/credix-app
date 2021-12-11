@@ -183,11 +183,6 @@
           "isSigner": true
         },
         {
-          "name": "globalMarketState",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
           "name": "deal",
           "isMut": true,
           "isSigner": false
@@ -556,8 +551,5 @@
       "name": "InterestRepaid",
       "msg": "Interest is already repaid"
     }
-  ],
-  "metadata": {
-    "address": "F4RF3uKfQcPmTyshHMYEcJWnNofgjr3Tdte1qxnziVC1"
-  }
+  ]
 }
