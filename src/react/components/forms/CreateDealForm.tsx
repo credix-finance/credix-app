@@ -3,23 +3,19 @@ import { useAnchorWallet, useConnection } from "@solana/wallet-adapter-react";
 import { serialAsync } from "utils/async.utils";
 import React, { useEffect, useState } from "react";
 import { useNotify } from "react/hooks/useNotify";
-import { activateDeal, createDeal, getUserUSDCTokenAccount } from "store/api";
+import { activateDeal, createDeal } from "store/api";
 import "../../../styles/stakeform.scss";
 import { PublicKey } from "@solana/web3.js";
 import { useRefresh } from "react/hooks/useRefresh";
 
-interface Props {
-	disabled?: boolean;
-}
-
-export const CreateDealForm = (props: Props) => {
+export const CreateDealForm = () => {
 	const wallet = useAnchorWallet();
 	const connection = useConnection();
 	const [principal, setPrincipal] = useState<number | undefined>();
 	const [financingFee, setFinancingFee] = useState<number | undefined>();
 	const [timeToMaturity, setTimeToMaturity] = useState<number | undefined>();
 	const [borrower, setBorrower] = useState<string>("");
-	const [placeholder, setPlaceholder] = useState<string>("CONNECT WALLET");
+	const [placeholder, setPlaceholder] = useState<string>("Connect wallet");
 	const notify = useNotify();
 	const triggerRefresh = useRefresh();
 
@@ -55,17 +51,6 @@ export const CreateDealForm = (props: Props) => {
 			return;
 		}
 
-		const depositorLiquidityPoolTokenAccount = await getUserUSDCTokenAccount(
-			connection.connection,
-			wallet as Wallet
-		);
-
-		// Can't we just create a token account using the associated token program when it doesn't exist yet?
-		if (!depositorLiquidityPoolTokenAccount) {
-			notify("error", "Please opt in for USDC in your wallet");
-			return;
-		}
-
 		try {
 			await createDeal(
 				principal,
@@ -95,16 +80,7 @@ export const CreateDealForm = (props: Props) => {
 			validKey = false; // can't have an empty block..
 		}
 
-		return (
-			wallet?.publicKey &&
-			principal &&
-			financingFee &&
-			borrower &&
-			validKey &&
-			!props.disabled &&
-			timeToMaturity &&
-			!(timeToMaturity % 30)
-		);
+		return wallet?.publicKey && principal && financingFee && borrower && validKey;
 	};
 
 	const onChange = (
@@ -149,42 +125,39 @@ export const CreateDealForm = (props: Props) => {
 						value={borrower}
 						placeholder={placeholder}
 						onChange={onChangeBorrower}
-						disabled={!wallet?.publicKey || props.disabled}
+						disabled={!wallet?.publicKey}
 						className="stake-input borrower-pk credix-button MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary balance-button"
 					/>
 				</label>
 				<br />
 				<label className="stake-input-label">
 					Principal
-					<p>The total amount of USDC to borrow</p>
 					<input
 						name="principal"
 						type="number"
 						value={principal === undefined ? "" : principal}
 						placeholder={placeholder}
 						onChange={onChangePrincipal}
-						disabled={!wallet?.publicKey || props.disabled}
+						disabled={!wallet?.publicKey}
 						className="stake-input credix-button MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary balance-button"
 					/>
 				</label>
 				<br />
 				<label className="stake-input-label">
-					Financing fee %
-					<p>The percentage on top of the principal that needs to be repaid as interest</p> 
+					Financing fee
 					<input
 						name="financingFee"
 						type="number"
 						value={financingFee === undefined ? "" : financingFee}
 						placeholder={placeholder}
 						onChange={onChangeFinancingFee}
-						disabled={!wallet?.publicKey || props.disabled}
+						disabled={!wallet?.publicKey}
 						className="stake-input credix-button MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary balance-button"
 					/>
 				</label>
 				<br />
 				<label className="stake-input-label">
 					Time to maturity (days)
-					<p>How many days before you have to pay back the principal</p>
 					<input
 						name="timeToMaturity"
 						type="number"
@@ -193,7 +166,7 @@ export const CreateDealForm = (props: Props) => {
 						placeholder={placeholder}
 						onChange={onChangeTimeToMaturity}
 						onBlur={onBlurTimeToMaturity}
-						disabled={!wallet?.publicKey || props.disabled}
+						disabled={!wallet?.publicKey}
 						className="stake-input credix-button MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary balance-button"
 					/>
 				</label>
@@ -201,7 +174,7 @@ export const CreateDealForm = (props: Props) => {
 				<input
 					type="submit"
 					disabled={!canSubmit()}
-					value={props.disabled ? "Max deals reached" : "Create Deal"}
+					value="Create Deal"
 					className="stake-submit credix-button MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary balance-button"
 				/>
 			</form>
