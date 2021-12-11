@@ -90,34 +90,16 @@ const getUSDCMintPK = multiAsync(async (connection: Connection, wallet: Wallet) 
 	);
 });
 
-const getTokenAccount = multiAsync(
-	async (connection: Connection, pubkey: PublicKey, mint: PublicKey) => {
-		const tokenAccounts = await connection.getParsedTokenAccountsByOwner(pubkey, {
-			mint,
-		});
-
-		return tokenAccounts.value[0];
-	}
-);
-
 export const getUserUSDCTokenAccount = multiAsync(
 	async (connection: Connection, wallet: Wallet) => {
 		const usdcMint = await getUSDCMintPK(connection, wallet);
-		return getTokenAccount(connection, wallet.publicKey, usdcMint);
+		const accounts = await connection.getParsedTokenAccountsByOwner(wallet.publicKey, {
+			mint: usdcMint,
+		});
+
+		return accounts.value[0];
 	}
 );
-
-const getUserLPTokenAccount = multiAsync(async (connection: Connection, wallet: Wallet) => {
-	const _depositorLPTokenPDA = findDepositorLPTokenPDA(wallet.publicKey);
-	const _lpTokenMintPDA = findLPTokenMintPDA();
-
-	const [depositorInvestorTokenPDA, lpTokenMintPDA] = await Promise.all([
-		_depositorLPTokenPDA,
-		_lpTokenMintPDA,
-	]);
-
-	return getTokenAccount(connection, depositorInvestorTokenPDA[0], lpTokenMintPDA[0]);
-});
 
 export const getUserUSDCBalance = multiAsync(async (connection: Connection, wallet: Wallet) => {
 	const tokenAccount = await getUserUSDCTokenAccount(connection, wallet);
@@ -411,11 +393,8 @@ export const createDeal = multiAsync(
 		connection: Connection,
 		wallet: Wallet
 	) => {
-		const _dealPDA = findDealPDA(wallet.publicKey);
-		const _globalMarketStatePDA = findGlobalMarketStatePDA();
+		const dealPDA = await findDealPDA(wallet.publicKey);
 		const program = constructProgram(connection, wallet);
-
-		const [dealPDA, globalMarketStatePDA] = await Promise.all([_dealPDA, _globalMarketStatePDA]);
 
 		const principalAmount = new BN(toProgramAmount(principal));
 		const financingFeeAmount = new BN(toProgramPercentage(financingFee));
@@ -423,7 +402,6 @@ export const createDeal = multiAsync(
 		return program.rpc.createDeal(principalAmount, financingFeeAmount, 0, 0, timeToMaturity, {
 			accounts: {
 				borrower: borrower,
-				globalMarketState: globalMarketStatePDA[0],
 				deal: dealPDA[0],
 				systemProgram: SystemProgram.programId,
 			},
@@ -496,20 +474,21 @@ const getLPTokenPrice = multiAsync(async (connection: Connection, wallet: Wallet
 	return lpTokenSupply && divide(outstandingCredit + liquidityPoolBalance, lpTokenSupply);
 });
 
+const getUserLPTokenBalance = multiAsync(async (connection: Connection, wallet: Wallet) => {
+	const depositorLPTokenPDA = await findDepositorLPTokenPDA(wallet.publicKey);
+	return connection.getTokenAccountBalance(depositorLPTokenPDA[0]);
+});
+
 export const getLPTokenUSDCBalance = multiAsync(async (connection: Connection, wallet: Wallet) => {
 	const _lpTokenPrice = getLPTokenPrice(connection, wallet);
-	const _userLPTokenAccount = getUserLPTokenAccount(connection, wallet);
+	const _userLPTokenBalance = getUserLPTokenBalance(connection, wallet);
 
-	const [lpTokenPrice, userLPTokenAccount] = await Promise.all([
+	const [lpTokenPrice, userLPTokenBalance] = await Promise.all([
 		_lpTokenPrice,
-		_userLPTokenAccount,
+		_userLPTokenBalance,
 	]);
 
-	if (!userLPTokenAccount) {
-		return 0;
-	}
-
-	const userLPTokenAmount = Number(userLPTokenAccount.account.data.parsed.info.tokenAmount.amount);
+	const userLPTokenAmount = Number(userLPTokenBalance.value.amount);
 
 	return userLPTokenAmount * lpTokenPrice;
 });
