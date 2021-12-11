@@ -90,9 +90,25 @@ const getUSDCMintPK = multiAsync(async (connection: Connection, wallet: Wallet) 
 	);
 });
 
+export const getUserUSDCTokenAccount = multiAsync(
+	async (connection: Connection, wallet: Wallet) => {
+		const usdcMint = await getUSDCMintPK(connection, wallet);
+		const accounts = await connection.getParsedTokenAccountsByOwner(wallet.publicKey, {
+			mint: usdcMint,
+		});
+
+		return accounts.value[0];
+	}
+);
+
 export const getUserUSDCBalance = multiAsync(async (connection: Connection, wallet: Wallet) => {
-	const userUSDCTokenBalance = await getUserUSDCTokenBalance(connection, wallet);
-	return Number(userUSDCTokenBalance.value.amount);
+	const tokenAccount = await getUserUSDCTokenAccount(connection, wallet);
+
+	if (!tokenAccount) {
+		return 0;
+	}
+
+	return Number(tokenAccount.account.data.parsed.info.tokenAmount.amount);
 });
 
 const getLiquidityPoolBalance = multiAsync(async (connection: Connection, wallet: Wallet) => {
@@ -462,11 +478,6 @@ const getLPTokenPrice = multiAsync(async (connection: Connection, wallet: Wallet
 const getUserLPTokenBalance = multiAsync(async (connection: Connection, wallet: Wallet) => {
 	const depositorLPTokenPDA = await findDepositorLPTokenPDA(wallet.publicKey);
 	return connection.getTokenAccountBalance(depositorLPTokenPDA[0]);
-});
-
-const getUserUSDCTokenBalance = multiAsync(async (connection: Connection, wallet: Wallet) => {
-	const depositorUSDCTokenAccountPK = await getAssociatedUSDCTokenAddressPK(connection, wallet);
-	return connection.getTokenAccountBalance(depositorUSDCTokenAccountPK);
 });
 
 export const getLPTokenUSDCBalance = multiAsync(async (connection: Connection, wallet: Wallet) => {
