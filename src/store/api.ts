@@ -37,7 +37,8 @@ const findGlobalMarketStatePDA = multiAsync(async () => {
 });
 
 const findSigningAuthorityPDA = multiAsync(async () => {
-	const seeds: PdaSeeds = [Buffer.from(config.clusterConfig.programId.toString()).subarray(0, 32)];
+	const globalMarketStatePDA = await findGlobalMarketStatePDA();
+	const seeds: PdaSeeds = [globalMarketStatePDA[0].toBuffer()];
 	return findPDA(seeds);
 });
 
@@ -474,21 +475,43 @@ const getLPTokenPrice = multiAsync(async (connection: Connection, wallet: Wallet
 	return lpTokenSupply && divide(outstandingCredit + liquidityPoolBalance, lpTokenSupply);
 });
 
-const getUserLPTokenBalance = multiAsync(async (connection: Connection, wallet: Wallet) => {
-	const depositorLPTokenPDA = await findDepositorLPTokenPDA(wallet.publicKey);
-	return connection.getTokenAccountBalance(depositorLPTokenPDA[0]);
+const getUserLPTokenAccount = multiAsync(async (connection: Connection, wallet: Wallet) => {
+	const _signingAuthorityPDA = findSigningAuthorityPDA();
+	const _lpTokenMintPDA = findLPTokenMintPDA();
+	const _depositorLPTokenPDA = findDepositorLPTokenPDA(wallet.publicKey);
+
+	const [signingAuthorityPDA, lpTokenMintPDA, depositorLPTokenPDA] = await Promise.all([
+		_signingAuthorityPDA,
+		_lpTokenMintPDA,
+		_depositorLPTokenPDA,
+	]);
+
+	const tokenAccounts = await connection.getParsedTokenAccountsByOwner(signingAuthorityPDA[0], {
+		mint: lpTokenMintPDA[0],
+	});
+
+	return tokenAccounts.value.filter((tokenAccount) =>
+		tokenAccount.pubkey.equals(depositorLPTokenPDA[0])
+	)[0];
+});
+
+const getUserLPTokenAmount = multiAsync(async (connection: Connection, wallet: Wallet) => {
+	const userLPTokenAccount = await getUserLPTokenAccount(connection, wallet);
+
+	if (!userLPTokenAccount) {
+		return 0;
+	}
+
+	return Number(userLPTokenAccount.account.data.parsed.info.tokenAmount.amount);
 });
 
 export const getLPTokenUSDCBalance = multiAsync(async (connection: Connection, wallet: Wallet) => {
 	const _lpTokenPrice = getLPTokenPrice(connection, wallet);
-	const _userLPTokenBalance = getUserLPTokenBalance(connection, wallet);
+	const _userLPTokenAmount = getUserLPTokenAmount(connection, wallet);
 
-	const [lpTokenPrice, userLPTokenBalance] = await Promise.all([
-		_lpTokenPrice,
-		_userLPTokenBalance,
-	]);
+	const [lpTokenPrice, userLPTokenAmount] = await Promise.all([_lpTokenPrice, _userLPTokenAmount]);
 
-	const userLPTokenAmount = Number(userLPTokenBalance.value.amount);
+	console.log("token", userLPTokenAmount);
 
 	return userLPTokenAmount * lpTokenPrice;
 });
