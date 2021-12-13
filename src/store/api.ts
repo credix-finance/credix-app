@@ -512,8 +512,6 @@ export const getLPTokenUSDCBalance = multiAsync(async (connection: Connection, w
 
 	const [lpTokenPrice, userLPTokenAmount] = await Promise.all([_lpTokenPrice, _userLPTokenAmount]);
 
-	console.log("token", userLPTokenAmount);
-
 	return userLPTokenAmount * lpTokenPrice;
 });
 
