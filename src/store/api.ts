@@ -36,6 +36,12 @@ const findGlobalMarketStatePDA = multiAsync(async () => {
 	return findPDA([seed]);
 });
 
+const findSigningAuthorityPDA = multiAsync(async () => {
+	const globalMarketStatePDA = await findGlobalMarketStatePDA();
+	const seeds: PdaSeeds = [globalMarketStatePDA[0].toBuffer()];
+	return findPDA(seeds);
+});
+
 const findDepositorLPTokenPDA = multiAsync(async (publicKey: PublicKey) => {
 	const seed = encodeSeedString(SEEDS.DEPOSITOR_LP_TOKEN_ACCOUNT);
 	const seeds: PdaSeeds = [mapPKToSeed(publicKey), seed];
@@ -85,34 +91,16 @@ const getUSDCMintPK = multiAsync(async (connection: Connection, wallet: Wallet) 
 	);
 });
 
-const getTokenAccount = multiAsync(
-	async (connection: Connection, pubkey: PublicKey, mint: PublicKey) => {
-		const tokenAccounts = await connection.getParsedTokenAccountsByOwner(pubkey, {
-			mint,
-		});
-
-		return tokenAccounts.value[0];
-	}
-);
-
 export const getUserUSDCTokenAccount = multiAsync(
 	async (connection: Connection, wallet: Wallet) => {
 		const usdcMint = await getUSDCMintPK(connection, wallet);
-		return getTokenAccount(connection, wallet.publicKey, usdcMint);
+		const accounts = await connection.getParsedTokenAccountsByOwner(wallet.publicKey, {
+			mint: usdcMint,
+		});
+
+		return accounts.value[0];
 	}
 );
-
-const getUserLPTokenAccount = multiAsync(async (connection: Connection, wallet: Wallet) => {
-	const _depositorLPTokenPDA = findDepositorLPTokenPDA(wallet.publicKey);
-	const _lpTokenMintPDA = findLPTokenMintPDA();
-
-	const [depositorInvestorTokenPDA, lpTokenMintPDA] = await Promise.all([
-		_depositorLPTokenPDA,
-		_lpTokenMintPDA,
-	]);
-
-	return getTokenAccount(connection, depositorInvestorTokenPDA[0], lpTokenMintPDA[0]);
-});
 
 export const getUserUSDCBalance = multiAsync(async (connection: Connection, wallet: Wallet) => {
 	const tokenAccount = await getUserUSDCTokenAccount(connection, wallet);
@@ -149,7 +137,6 @@ const getRunningAPY = multiAsync(async (connection: Connection, wallet: Wallet) 
 		throw Error("Could not fetch cluster time");
 	}
 
-	// TODO: is this still correct
 	const runningAPY = (deals as Array<ProgramAccount<Deal>>).reduce((result, deal) => {
 		const status = mapDealToStatus(deal.account, clusterTime);
 		if (status === DealStatus.IN_PROGRESS) {
@@ -242,11 +229,21 @@ export const getDepositorInfoAccountData = multiAsync(
 );
 
 export const createDepositor = multiAsync(async (connection: Connection, wallet: Wallet) => {
+	const _globalMarketStatePDA = findGlobalMarketStatePDA();
+	const _signingAuthorityPDA = findSigningAuthorityPDA();
 	const _depositorPDA = findDepositorInfoPDA(wallet.publicKey);
 	const _depositorLPTokenPDA = findDepositorLPTokenPDA(wallet.publicKey);
 	const _lpTokenMintPDA = findLPTokenMintPDA();
 
-	const [depositorPDA, depositorLPTokenPDA, lpTokenMintPDA] = await Promise.all([
+	const [
+		globalMarketStatePDA,
+		signingAuthorityPDA,
+		depositorPDA,
+		depositorLPTokenPDA,
+		lpTokenMintPDA,
+	] = await Promise.all([
+		_globalMarketStatePDA,
+		_signingAuthorityPDA,
 		_depositorPDA,
 		_depositorLPTokenPDA,
 		_lpTokenMintPDA,
@@ -257,6 +254,8 @@ export const createDepositor = multiAsync(async (connection: Connection, wallet:
 	return program.rpc.createDepositor({
 		accounts: {
 			owner: wallet.publicKey,
+			globalMarketState: globalMarketStatePDA[0],
+			signingAuthority: signingAuthorityPDA[0],
 			depositor: wallet.publicKey,
 			depositorInfo: depositorPDA[0],
 			depositorLpTokenAccount: depositorLPTokenPDA[0],
@@ -279,6 +278,7 @@ export const depositInvestment = multiAsync(
 		const _userUSDCTokenAccount = getUserUSDCTokenAccount(connection, wallet);
 		const _usdcMintPK = getUSDCMintPK(connection, wallet);
 		const _marketUSDCTokenAccountPK = getMarketUSDCTokenAccountPK(connection, wallet);
+		const _signingAuthorityPDA = findSigningAuthorityPDA();
 
 		const [
 			globalMarketStatePDA,
@@ -288,6 +288,7 @@ export const depositInvestment = multiAsync(
 			userUSDCTokenAccount,
 			usdcMintPK,
 			marketUSDCTokenAccountPK,
+			signingAuthorityPDA,
 		] = await Promise.all([
 			_globalMarketStatePDA,
 			_lpTokenMintPDA,
@@ -296,16 +297,18 @@ export const depositInvestment = multiAsync(
 			_userUSDCTokenAccount,
 			_usdcMintPK,
 			_marketUSDCTokenAccountPK,
+			_signingAuthorityPDA,
 		]);
 
 		if (!userUSDCTokenAccount) {
 			throw Error("No USDC token accounts found for depositor");
 		}
 
-		return program.rpc.depositFunds(lpTokenMintPDA[1], depositAmount, {
+		return program.rpc.depositFunds(signingAuthorityPDA[1], depositAmount, {
 			accounts: {
 				depositor: wallet.publicKey,
 				globalMarketState: globalMarketStatePDA[0],
+				signingAuthority: signingAuthorityPDA[0],
 				depositorInfo: depositorInfoPDA[0],
 				depositorTokenAccount: userUSDCTokenAccount.pubkey,
 				liquidityPoolTokenAccount: marketUSDCTokenAccountPK,
@@ -325,59 +328,54 @@ export const withdrawInvestment = multiAsync(
 		const _globalMarketStatePDA = findGlobalMarketStatePDA();
 		const _depositorLPTokenPDA = findDepositorLPTokenPDA(wallet.publicKey);
 		const _userUSDCTokenAccount = getUserUSDCTokenAccount(connection, wallet);
-		const _marketUSDCTokenPDA = findMarketUSDCTokenPDA();
 		const _lpTokenMintPDA = findLPTokenMintPDA();
 		const _usdcMint = getUSDCMintPK(connection, wallet);
 		const _marketUSDCTokenAccountPK = getMarketUSDCTokenAccountPK(connection, wallet);
 		const _treasuryPoolTokenAccountPK = getTreasuryPoolTokenAccountPK(connection, wallet);
+		const _signingAuthorityPDA = findSigningAuthorityPDA();
 
 		const [
 			lpTokenPrice,
 			globalMarketStatePDA,
 			depositorLPTokenPDA,
 			userUSDCTokenAccount,
-			marketUSDCTokenPDA,
 			lpTokenMintPDA,
 			usdcMint,
 			marketUSDCTokenAccountPK,
 			treasuryPoolTokenAccountPK,
+			signingAuthorityPDA,
 		] = await Promise.all([
 			_lpTokenPrice,
 			_globalMarketStatePDA,
 			_depositorLPTokenPDA,
 			_userUSDCTokenAccount,
-			_marketUSDCTokenPDA,
 			_lpTokenMintPDA,
 			_usdcMint,
 			_marketUSDCTokenAccountPK,
 			_treasuryPoolTokenAccountPK,
+			_signingAuthorityPDA,
 		]);
 
-		// TODO: should we floor here to be safe?
 		const withdrawAmount = new BN(toProgramAmount(amount / lpTokenPrice));
 
 		if (!userUSDCTokenAccount) {
 			throw Error("No USDC token accounts found for depositor");
 		}
 
-		return program.rpc.withdrawFunds(
-			marketUSDCTokenPDA[1],
-			depositorLPTokenPDA[1],
-			withdrawAmount,
-			{
-				accounts: {
-					withdrawer: wallet.publicKey,
-					globalMarketState: globalMarketStatePDA[0],
-					withdrawerLpTokenAccount: depositorLPTokenPDA[0],
-					withdrawerTokenAccount: userUSDCTokenAccount.pubkey,
-					liquidityPoolTokenAccount: marketUSDCTokenAccountPK,
-					treasuryPoolTokenAccount: treasuryPoolTokenAccountPK,
-					lpTokenMintAccount: lpTokenMintPDA[0],
-					usdcMintAccount: usdcMint,
-					tokenProgram: TOKEN_PROGRAM_ID,
-				},
-			}
-		);
+		return program.rpc.withdrawFunds(signingAuthorityPDA[1], withdrawAmount, {
+			accounts: {
+				withdrawer: wallet.publicKey,
+				globalMarketState: globalMarketStatePDA[0],
+				signingAuthority: signingAuthorityPDA[0],
+				withdrawerLpTokenAccount: depositorLPTokenPDA[0],
+				withdrawerTokenAccount: userUSDCTokenAccount.pubkey,
+				liquidityPoolTokenAccount: marketUSDCTokenAccountPK,
+				treasuryPoolTokenAccount: treasuryPoolTokenAccountPK,
+				lpTokenMintAccount: lpTokenMintPDA[0],
+				usdcMintAccount: usdcMint,
+				tokenProgram: TOKEN_PROGRAM_ID,
+			},
+		});
 	}
 );
 
@@ -396,11 +394,8 @@ export const createDeal = multiAsync(
 		connection: Connection,
 		wallet: Wallet
 	) => {
-		const _dealPDA = findDealPDA(wallet.publicKey);
-		const _globalMarketStatePDA = findGlobalMarketStatePDA();
+		const dealPDA = await findDealPDA(wallet.publicKey);
 		const program = constructProgram(connection, wallet);
-
-		const [dealPDA, globalMarketStatePDA] = await Promise.all([_dealPDA, _globalMarketStatePDA]);
 
 		const principalAmount = new BN(toProgramAmount(principal));
 		const financingFeeAmount = new BN(toProgramPercentage(financingFee));
@@ -408,7 +403,6 @@ export const createDeal = multiAsync(
 		return program.rpc.createDeal(principalAmount, financingFeeAmount, 0, 0, timeToMaturity, {
 			accounts: {
 				borrower: borrower,
-				globalMarketState: globalMarketStatePDA[0],
 				deal: dealPDA[0],
 				systemProgram: SystemProgram.programId,
 			},
@@ -423,24 +417,33 @@ export const activateDeal = multiAsync(async (connection: Connection, wallet: Wa
 	const _marketUSDCTokenPDA = findMarketUSDCTokenPDA();
 	const _globalMarketStatePDA = findGlobalMarketStatePDA();
 	const _dealPDA = findDealPDA(wallet.publicKey);
+	const _signingAuthorityPDA = findSigningAuthorityPDA();
 
-	const [userUSDCTokenAccount, usdcMintPK, marketUSDCTokenPDA, globalMarketStatePDA, dealPDA] =
-		await Promise.all([
-			_userUSDCTokenAccount,
-			_usdcMintPK,
-			_marketUSDCTokenPDA,
-			_globalMarketStatePDA,
-			_dealPDA,
-		]);
+	const [
+		userUSDCTokenAccount,
+		usdcMintPK,
+		marketUSDCTokenPDA,
+		globalMarketStatePDA,
+		dealPDA,
+		signingAuthorityPDA,
+	] = await Promise.all([
+		_userUSDCTokenAccount,
+		_usdcMintPK,
+		_marketUSDCTokenPDA,
+		_globalMarketStatePDA,
+		_dealPDA,
+		_signingAuthorityPDA,
+	]);
 
 	if (!userUSDCTokenAccount) {
 		throw Error("No USDC token accounts found for depositor");
 	}
 
-	return program.rpc.activateDeal(marketUSDCTokenPDA[1], {
+	return program.rpc.activateDeal(signingAuthorityPDA[1], {
 		accounts: {
 			owner: wallet.publicKey,
 			globalMarketState: globalMarketStatePDA[0],
+			signingAuthority: signingAuthorityPDA[0],
 			deal: dealPDA[0],
 			liquidityPoolTokenAccount: marketUSDCTokenPDA[0],
 			borrowerTokenAccount: userUSDCTokenAccount.pubkey,
@@ -472,20 +475,41 @@ const getLPTokenPrice = multiAsync(async (connection: Connection, wallet: Wallet
 	return lpTokenSupply && divide(outstandingCredit + liquidityPoolBalance, lpTokenSupply);
 });
 
-export const getLPTokenUSDCBalance = multiAsync(async (connection: Connection, wallet: Wallet) => {
-	const _lpTokenPrice = getLPTokenPrice(connection, wallet);
-	const _userLPTokenAccount = getUserLPTokenAccount(connection, wallet);
+const getUserLPTokenAccount = multiAsync(async (connection: Connection, wallet: Wallet) => {
+	const _signingAuthorityPDA = findSigningAuthorityPDA();
+	const _lpTokenMintPDA = findLPTokenMintPDA();
+	const _depositorLPTokenPDA = findDepositorLPTokenPDA(wallet.publicKey);
 
-	const [lpTokenPrice, userLPTokenAccount] = await Promise.all([
-		_lpTokenPrice,
-		_userLPTokenAccount,
+	const [signingAuthorityPDA, lpTokenMintPDA, depositorLPTokenPDA] = await Promise.all([
+		_signingAuthorityPDA,
+		_lpTokenMintPDA,
+		_depositorLPTokenPDA,
 	]);
+
+	const tokenAccounts = await connection.getParsedTokenAccountsByOwner(signingAuthorityPDA[0], {
+		mint: lpTokenMintPDA[0],
+	});
+
+	return tokenAccounts.value.filter((tokenAccount) =>
+		tokenAccount.pubkey.equals(depositorLPTokenPDA[0])
+	)[0];
+});
+
+const getUserLPTokenAmount = multiAsync(async (connection: Connection, wallet: Wallet) => {
+	const userLPTokenAccount = await getUserLPTokenAccount(connection, wallet);
 
 	if (!userLPTokenAccount) {
 		return 0;
 	}
 
-	const userLPTokenAmount = Number(userLPTokenAccount.account.data.parsed.info.tokenAmount.amount);
+	return Number(userLPTokenAccount.account.data.parsed.info.tokenAmount.amount);
+});
+
+export const getLPTokenUSDCBalance = multiAsync(async (connection: Connection, wallet: Wallet) => {
+	const _lpTokenPrice = getLPTokenPrice(connection, wallet);
+	const _userLPTokenAmount = getUserLPTokenAmount(connection, wallet);
+
+	const [lpTokenPrice, userLPTokenAmount] = await Promise.all([_lpTokenPrice, _userLPTokenAmount]);
 
 	return userLPTokenAmount * lpTokenPrice;
 });
