@@ -250,8 +250,18 @@
           "isSigner": false
         },
         {
+          "name": "borrowerAccount",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
           "name": "borrowerTokenAccount",
           "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "associatedTokenProgram",
+          "isMut": false,
           "isSigner": false
         },
         {
@@ -266,6 +276,11 @@
         },
         {
           "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rent",
           "isMut": false,
           "isSigner": false
         }
@@ -549,12 +564,12 @@
     {
       "code": 306,
       "name": "PrincipalRepaid",
-      "msg": "Principal is already repaid"
+      "msg": "Principal is already repaid."
     },
     {
       "code": 307,
       "name": "InterestRepaid",
-      "msg": "Interest is already repaid"
+      "msg": "Interest is already repaid."
     }
   ],
   "metadata": {
