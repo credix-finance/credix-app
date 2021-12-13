@@ -445,7 +445,7 @@ export const activateDeal = multiAsync(async (connection: Connection, wallet: Wa
 			deal: dealPDA[0],
 			liquidityPoolTokenAccount: marketUSDCTokenPDA[0],
 			borrowerAccount: wallet.publicKey,
-			associated_token_program: ASSOCIATED_TOKEN_PROGRAM_ID,
+			associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
 			borrowerTokenAccount: userAssociatedUSDCTokenAddressPK,
 			usdcMintAccount: usdcMintPK,
 			tokenProgram: TOKEN_PROGRAM_ID,
