@@ -56,7 +56,16 @@
           "isSigner": false
         }
       ],
-      "args": []
+      "args": [
+        {
+          "name": "signingAuthorityBump",
+          "type": "u8"
+        },
+        {
+          "name": "globalMarketStateBump",
+          "type": "u8"
+        }
+      ]
     },
     {
       "name": "createDepositor",
@@ -165,10 +174,6 @@
       ],
       "args": [
         {
-          "name": "signingAuthorityBump",
-          "type": "u8"
-        },
-        {
           "name": "amount",
           "type": "u64"
         }
@@ -197,6 +202,10 @@
         {
           "name": "principal",
           "type": "u64"
+        },
+        {
+          "name": "dealBump",
+          "type": "u8"
         },
         {
           "name": "financingFeePercentage",
@@ -280,12 +289,7 @@
           "isSigner": false
         }
       ],
-      "args": [
-        {
-          "name": "signingAuthorityBump",
-          "type": "u8"
-        }
-      ]
+      "args": []
     },
     {
       "name": "makeDealRepayment",
@@ -395,10 +399,6 @@
       ],
       "args": [
         {
-          "name": "signingAuthorityBump",
-          "type": "u8"
-        },
-        {
           "name": "itWithdrawalAmount",
           "type": "u64"
         }
@@ -450,6 +450,10 @@
           {
             "name": "underwriterPerformanceFeePercentage",
             "type": "u16"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
           }
         ]
       }
@@ -482,6 +486,14 @@
           {
             "name": "treasuryPoolTokenAccount",
             "type": "publicKey"
+          },
+          {
+            "name": "signingAuthorityBump",
+            "type": "u8"
+          },
+          {
+            "name": "globalMarketStateBump",
+            "type": "u8"
           }
         ]
       }

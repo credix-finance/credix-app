@@ -312,7 +312,7 @@ export const depositInvestment = multiAsync(
 			_signingAuthorityPDA,
 		]);
 
-		return program.rpc.depositFunds(signingAuthorityPDA[1], depositAmount, {
+		return program.rpc.depositFunds(depositAmount, {
 			accounts: {
 				depositor: wallet.publicKey,
 				globalMarketState: globalMarketStatePDA[0],
@@ -366,7 +366,7 @@ export const withdrawInvestment = multiAsync(
 
 		const withdrawAmount = new BN(toProgramAmount(amount / lpTokenPrice));
 
-		return program.rpc.withdrawFunds(signingAuthorityPDA[1], withdrawAmount, {
+		return program.rpc.withdrawFunds(withdrawAmount, {
 			accounts: {
 				withdrawer: wallet.publicKey,
 				globalMarketState: globalMarketStatePDA[0],
@@ -404,13 +404,21 @@ export const createDeal = multiAsync(
 		const principalAmount = new BN(toProgramAmount(principal));
 		const financingFeeAmount = new BN(toProgramPercentage(financingFee));
 
-		return program.rpc.createDeal(principalAmount, financingFeeAmount, 0, 0, timeToMaturity, {
-			accounts: {
-				borrower: borrower,
-				deal: dealPDA[0],
-				systemProgram: SystemProgram.programId,
-			},
-		});
+		return program.rpc.createDeal(
+			principalAmount,
+			dealPDA[1],
+			financingFeeAmount,
+			0,
+			0,
+			timeToMaturity,
+			{
+				accounts: {
+					borrower: borrower,
+					deal: dealPDA[0],
+					systemProgram: SystemProgram.programId,
+				},
+			}
+		);
 	}
 );
 
@@ -439,7 +447,7 @@ export const activateDeal = multiAsync(async (connection: Connection, wallet: Wa
 		_signingAuthorityPDA,
 	]);
 
-	return program.rpc.activateDeal(signingAuthorityPDA[1], {
+	return program.rpc.activateDeal({
 		accounts: {
 			owner: wallet.publicKey,
 			globalMarketState: globalMarketStatePDA[0],
