@@ -1,10 +1,14 @@
 import { utils } from "@project-serum/anchor";
-import { PublicKey } from "@solana/web3.js";
-
-export const formatNumber = (n: number) => (1.0 * n) / 1000000;
-//export const formatBN = (n: BN) => n.mul(1.0).div(1000000);
-
-export const mapPKToSeed = (publicKey: PublicKey) => publicKey.toBuffer().slice(0, 10);
+import { DECIMALS, PERCENTAGE_FACTOR } from "consts";
+import { round } from "./math.utils";
 
 export const encodeSeedString = (seedString: string) =>
 	Buffer.from(utils.bytes.utf8.encode(seedString));
+
+export const toAppAmount = (n: number) => n / Math.pow(10, DECIMALS);
+export const toProgramAmount = (n: number) => n * Math.pow(10, DECIMALS);
+export const toProgramPercentage = (n: number) => n * PERCENTAGE_FACTOR;
+export const toAppPercentage = (n: number) => round(n / PERCENTAGE_FACTOR);
+
+export const toUIAmount = (n: number) => round(Math.floor(toAppAmount(n) * 100) / 100);
+export const toUIPercentage = (n: number) => round(toAppPercentage(n));

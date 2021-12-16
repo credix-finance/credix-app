@@ -5,6 +5,8 @@ import { useRefresh } from "react/hooks/useRefresh";
 import { withdrawInvestment } from "store/api";
 import "../../../styles/depositstakeform.scss";
 import { useNotify } from "../../hooks/useNotify";
+import { FEES } from "consts";
+import millify from "millify";
 
 export const WithdrawStakeForm = () => {
 	const wallet = useAnchorWallet();
@@ -17,13 +19,19 @@ export const WithdrawStakeForm = () => {
 		e.preventDefault();
 
 		if (!withdrawAmount) {
-			console.error("Need withdraw value to submit");
 			return;
 		}
 
+		const withdrawAmountFee = withdrawAmount * FEES.WITHDRAW; // 0.5 percent fee
+
 		try {
 			await withdrawInvestment(withdrawAmount, connection.connection, wallet as Wallet);
-			notify("success", `Successful withdraw of ${withdrawAmount} USDC`);
+			notify(
+				"success",
+				`Successful withdraw of ${withdrawAmount} USDC with a ${millify(
+					withdrawAmountFee
+				)} USDC fee`
+			);
 			triggerRefresh();
 		} catch (e: any) {
 			notify("error", `Transaction failed! ${e?.message}`);

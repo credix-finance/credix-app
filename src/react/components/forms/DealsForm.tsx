@@ -14,6 +14,7 @@ export const DealsForm = () => {
 	const wallet = useAnchorWallet();
 	const connection = useConnection();
 	const [dealExists, setDealExists] = useState<boolean>(false);
+	const [closedDealExists, setClosedDealExists] = useState<boolean>(false);
 
 	const checkDealExists = useCallback(
 		serialAsync(async () => {
@@ -29,6 +30,7 @@ export const DealsForm = () => {
 
 				const status = mapDealToStatus(dealData as Deal, clusterTime);
 				setDealExists(status !== DealStatus.CLOSED);
+				setClosedDealExists(status === DealStatus.CLOSED);
 			} catch (err) {
 				setDealExists(false);
 			}
@@ -44,5 +46,5 @@ export const DealsForm = () => {
 		}
 	}, [checkDealExists, wallet]);
 
-	return dealExists ? <DealOverview /> : <CreateDealForm />;
+	return dealExists ? <DealOverview /> : <CreateDealForm disabled={closedDealExists} />;
 };
