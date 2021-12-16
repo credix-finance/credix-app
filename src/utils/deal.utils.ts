@@ -14,7 +14,8 @@ export const mapDealToStatus = (deal: Deal, clusterTime: number): DealStatus => 
 		return DealStatus.CLOSED;
 	}
 
-	if (deal.goLiveAt.toNumber() <= clusterTime) {
+	// We store max u64 as a hack to know it's not live yet. BN can't handle this.
+	if (deal.goLiveAt.bitLength() < 53 && deal.goLiveAt.toNumber() <= clusterTime) {
 		return DealStatus.IN_PROGRESS;
 	}
 

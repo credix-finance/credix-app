@@ -6,6 +6,7 @@ import { withdrawInvestment } from "store/api";
 import "../../../styles/depositstakeform.scss";
 import { useNotify } from "../../hooks/useNotify";
 import { FEES } from "consts";
+import millify from "millify";
 
 export const WithdrawStakeForm = () => {
 	const wallet = useAnchorWallet();
@@ -27,7 +28,9 @@ export const WithdrawStakeForm = () => {
 			await withdrawInvestment(withdrawAmount, connection.connection, wallet as Wallet);
 			notify(
 				"success",
-				`Successful withdraw of ${withdrawAmount} USDC with a ${withdrawAmountFee} USDC fee`
+				`Successful withdraw of ${withdrawAmount} USDC with a ${millify(
+					withdrawAmountFee
+				)} USDC fee`
 			);
 			triggerRefresh();
 		} catch (e: any) {
