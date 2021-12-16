@@ -77,7 +77,7 @@ jobs:
       - name: Authenticate with registry
         run: gcloud auth configure-docker -q
       - name: Build Docker image
-        run: docker build . --build-arg PROGRAM_ADDRESS=${{ secrets.PROGRAM_ADDRESS }} --build-arg ENVIRONMENT=testnet -t ${{ env.REGISTRY }}/${{ secrets.GCP_PROJECT_ID }}/${{ env.REPOSITORY_NAME }}:latest
+        run: docker build . --build-arg PROGRAM_ADDRESS=${{ secrets.PROGRAM_ADDRESS }} --build-arg ENVIRONMENT=devnet -t ${{ env.REGISTRY }}/${{ secrets.GCP_PROJECT_ID }}/${{ env.REPOSITORY_NAME }}:latest
       - name: Push Docker image
         run: docker push ${{ env.REGISTRY }}/${{ secrets.GCP_PROJECT_ID }}/${{ env.REPOSITORY_NAME }}:latest
       - name: Deploy to Google App Engine
