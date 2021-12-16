@@ -5,7 +5,6 @@ export const SESSION_STORAGE = {
 // TODO: turn into enum
 export const SEEDS = {
 	GLOBAL_MARKET_STATE_PDA: "global-market-state",
-	DEPOSITOR_LP_TOKEN_ACCOUNT: "depositor-token",
 	MARKET_USDC_TOKEN_ACCOUNT: "market-liquidity-pool",
 	DEAL: "deal-info",
 };
