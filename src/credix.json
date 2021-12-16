@@ -26,8 +26,13 @@
           "isSigner": false
         },
         {
-          "name": "treasuryPoolTokenAccount",
+          "name": "treasury",
           "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "treasuryPoolTokenAccount",
+          "isMut": true,
           "isSigner": false
         },
         {
@@ -37,6 +42,11 @@
         },
         {
           "name": "usdcMintAccount",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "associatedTokenProgram",
           "isMut": false,
           "isSigner": false
         },
@@ -517,6 +527,6 @@
     }
   ],
   "metadata": {
-    "address": "F4RF3uKfQcPmTyshHMYEcJWnNofgjr3Tdte1qxnziVC1"
+    "address": "B7PiFKNiBvQPMVtsJt8bM86U69a1ivev4VvnkLViMiUZ"
   }
 }
