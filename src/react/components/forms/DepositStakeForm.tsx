@@ -3,9 +3,9 @@ import { useAnchorWallet, useConnection } from "@solana/wallet-adapter-react";
 import { serialAsync } from "utils/async.utils";
 import React, { useState } from "react";
 import { useRefresh } from "react/hooks/useRefresh";
-import { createDepositor, depositInvestment, getDepositorInfoAccountData } from "store/api";
 import "../../../styles/depositstakeform.scss";
 import { useNotify } from "../../hooks/useNotify";
+import { depositInvestment } from "store/api";
 
 export const DepositStakeForm = () => {
 	const wallet = useAnchorWallet();
@@ -19,14 +19,6 @@ export const DepositStakeForm = () => {
 
 		if (!stake) {
 			return;
-		}
-
-		// TODO: do some error checking before just creating a depositor \
-		//  should every error result in the creation of a depositor ?
-		try {
-			await getDepositorInfoAccountData(connection.connection, wallet as Wallet);
-		} catch {
-			await createDepositor(connection.connection, wallet as Wallet);
 		}
 
 		try {

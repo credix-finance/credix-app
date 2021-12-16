@@ -68,67 +68,11 @@
       ]
     },
     {
-      "name": "createDepositor",
-      "accounts": [
-        {
-          "name": "owner",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "globalMarketState",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "signingAuthority",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "depositor",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "depositorInfo",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "depositorLpTokenAccount",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "lpTokenMintAccount",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "rent",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
-        }
-      ],
-      "args": []
-    },
-    {
       "name": "depositFunds",
       "accounts": [
         {
           "name": "depositor",
-          "isMut": false,
+          "isMut": true,
           "isSigner": true
         },
         {
@@ -139,11 +83,6 @@
         {
           "name": "signingAuthority",
           "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "depositorInfo",
-          "isMut": true,
           "isSigner": false
         },
         {
@@ -168,6 +107,16 @@
         },
         {
           "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rent",
           "isMut": false,
           "isSigner": false
         }
@@ -494,18 +443,6 @@
           {
             "name": "globalMarketStateBump",
             "type": "u8"
-          }
-        ]
-      }
-    },
-    {
-      "name": "DepositorInfo",
-      "type": {
-        "kind": "struct",
-        "fields": [
-          {
-            "name": "depositor",
-            "type": "publicKey"
           }
         ]
       }
