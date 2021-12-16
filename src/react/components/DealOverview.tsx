@@ -24,7 +24,7 @@ export const DealOverview = () => {
 	const connection = useConnection();
 	const [deal, setDeal] = useState<Deal | undefined>();
 	const [dealStatus, setDealStatus] = useState<DealStatus | undefined>();
-	const [amountToRepay, setAmountToRepay] = useState<number | undefined>();	
+	const [amountToRepay, setAmountToRepay] = useState<number | undefined>();
 	const [repaymentAmount, setRepaymentAmount] = useState<number | undefined>();
 	const [repaymentSelectValue, setRepaymentSelectValue] = useState<string>("interest");
 	const notify = useNotify();
@@ -109,7 +109,9 @@ export const DealOverview = () => {
 					: createPrincipalRepaymentType();
 			await repayDeal(repaymentAmount, repaymentTypeObj, connection.connection, wallet as Wallet);
 			const showFeeNotification = repaymentSelectValue === "interest";
-			const paymentNotification = `Successfully repaid ${toUIAmount(Math.min(repaymentAmount, amountToRepay))} USDC`;
+			const paymentNotification = `Successfully repaid ${toUIAmount(
+				Math.min(repaymentAmount, amountToRepay)
+			)} USDC`;
 			const feeNotification = ` with a ${toUIAmount(
 				Math.min(repaymentAmount, amountToRepay) * FEES.INTEREST_PAYMENT
 			)} USDC fee`;
@@ -178,7 +180,7 @@ export const DealOverview = () => {
 				<br />
 				<label className="stake-input-label">
 					Financing Fee %
-					<p>The percentage on top of the principal that needs to be repaid as interest</p> 
+					<p>The percentage on top of the principal that needs to be repaid as interest</p>
 					<input
 						name="financingFee"
 						type="number"

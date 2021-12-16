@@ -8,12 +8,7 @@ import { Deal, DealStatus, PoolStats, RepaymentType } from "types/program.types"
 import { PdaSeeds } from "types/solana.types";
 import { multiAsync } from "utils/async.utils";
 import { mapDealToStatus } from "utils/deal.utils";
-import {
-	encodeSeedString,
-	mapPKToSeed,
-	toProgramAmount,
-	toProgramPercentage,
-} from "utils/format.utils";
+import { encodeSeedString, toProgramAmount, toProgramPercentage } from "utils/format.utils";
 import { percentage } from "utils/math.utils";
 
 const constructProgram = (connection: Connection, wallet: Wallet) => {
@@ -48,8 +43,12 @@ const findMarketUSDCTokenPDA = multiAsync(async () => {
 });
 
 const findDealPDA = multiAsync(async (publicKey: PublicKey) => {
-	const seed = encodeSeedString(SEEDS.DEAL);
-	const seeds: PdaSeeds = [mapPKToSeed(publicKey), seed];
+	const globalMarketStatePDA = await findGlobalMarketStatePDA();
+
+	const globalMarketStateSeed = globalMarketStatePDA[0].toBuffer().slice(0, 16);
+	const borrowerSeed = publicKey.toBuffer().slice(0, 16);
+
+	const seeds: PdaSeeds = [globalMarketStateSeed, borrowerSeed];
 	return findPDA(seeds);
 });
 
@@ -150,7 +149,7 @@ const getAPY = multiAsync(async (connection: Connection, wallet: Wallet) => {
 		return 0;
 	}
 
-	return divide(runningAPY, outstandingCredit + liquidityPoolBalance) / 100;
+	return divide(runningAPY, outstandingCredit + liquidityPoolBalance);
 });
 
 const getSolendBuffer = multiAsync(async (connection: Connection, wallet: Wallet) => {
@@ -344,15 +343,19 @@ export const createDeal = multiAsync(
 		connection: Connection,
 		wallet: Wallet
 	) => {
-		const dealPDA = await findDealPDA(wallet.publicKey);
+		const _dealPDA = findDealPDA(wallet.publicKey);
+		const _globalMarketStatePDA = findGlobalMarketStatePDA();
+
+		const [dealPDA, globalMarketStatePDA] = await Promise.all([_dealPDA, _globalMarketStatePDA]);
+
 		const program = constructProgram(connection, wallet);
 
 		const principalAmount = new BN(toProgramAmount(principal));
 		const financingFeeAmount = new BN(toProgramPercentage(financingFee));
 
 		return program.rpc.createDeal(
-			principalAmount,
 			dealPDA[1],
+			principalAmount,
 			financingFeeAmount,
 			0,
 			0,
@@ -360,6 +363,7 @@ export const createDeal = multiAsync(
 			{
 				accounts: {
 					borrower: borrower,
+					globalMarketState: globalMarketStatePDA[0],
 					deal: dealPDA[0],
 					systemProgram: SystemProgram.programId,
 				},

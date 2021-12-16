@@ -142,6 +142,11 @@
           "isSigner": true
         },
         {
+          "name": "globalMarketState",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
           "name": "deal",
           "isMut": true,
           "isSigner": false
@@ -154,12 +159,12 @@
       ],
       "args": [
         {
-          "name": "principal",
-          "type": "u64"
-        },
-        {
           "name": "dealBump",
           "type": "u8"
+        },
+        {
+          "name": "principal",
+          "type": "u64"
         },
         {
           "name": "financingFeePercentage",
