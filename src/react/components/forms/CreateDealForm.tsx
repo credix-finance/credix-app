@@ -3,7 +3,8 @@ import { useAnchorWallet, useConnection } from "@solana/wallet-adapter-react";
 import { serialAsync } from "utils/async.utils";
 import React, { useEffect, useState } from "react";
 import { useNotify } from "react/hooks/useNotify";
-import { activateDeal, createDeal } from "store/api";
+import { activateDeal, createDeal, getLiquidityPoolBalance } from "store/api";
+import { toUIAmount } from "utils/format.utils";
 import "../../../styles/stakeform.scss";
 import { PublicKey } from "@solana/web3.js";
 import { useRefresh } from "react/hooks/useRefresh";
@@ -16,6 +17,7 @@ export const CreateDealForm = (props: Props) => {
 	const wallet = useAnchorWallet();
 	const connection = useConnection();
 	const [principal, setPrincipal] = useState<number | undefined>();
+	const [liquidityPoolBalance, setLiquidityPoolBalance] = useState<number>(0); 
 	const [financingFee, setFinancingFee] = useState<number | undefined>();
 	const [timeToMaturity, setTimeToMaturity] = useState<number | undefined>();
 	const [borrower, setBorrower] = useState<string>("");
@@ -27,10 +29,16 @@ export const CreateDealForm = (props: Props) => {
 		if (wallet?.publicKey && connection.connection) {
 			setPlaceholder("0");
 			setBorrower(wallet?.publicKey.toString());
+			updateLiquidityPoolBalance(); 
 		} else {
 			setPlaceholder("Connect wallet");
 		}
 	}, [connection.connection, wallet?.publicKey]);
+
+	const updateLiquidityPoolBalance = async () => {
+		const balance = await getLiquidityPoolBalance(connection.connection, wallet as Wallet);
+		setLiquidityPoolBalance(toUIAmount(balance)); 
+	};
 
 	const onSubmit = serialAsync(async (e: React.SyntheticEvent) => {
 		e.preventDefault();
@@ -120,6 +128,12 @@ export const CreateDealForm = (props: Props) => {
 		onChange(e, setTimeToMaturity);
 	};
 
+	const onBlurPrincipal = (e: React.ChangeEvent<HTMLInputElement>) => {
+		if (principal && principal > liquidityPoolBalance) {
+			setPrincipal(liquidityPoolBalance);
+		}
+	};
+
 	const onBlurTimeToMaturity = (e: React.ChangeEvent<HTMLInputElement>) => {
 		if (timeToMaturity) {
 			setTimeToMaturity(Math.ceil(timeToMaturity / 30) * 30);
@@ -145,13 +159,14 @@ export const CreateDealForm = (props: Props) => {
 				<br />
 				<label className="stake-input-label">
 					Principal
-					<p>The total amount of USDC to borrow</p>
+					<p>The total amount of USDC to borrow, borrow limit: {liquidityPoolBalance} USDC</p>
 					<input
 						name="principal"
 						type="number"
 						value={principal === undefined ? "" : principal}
 						placeholder={placeholder}
 						onChange={onChangePrincipal}
+						onBlur={onBlurPrincipal}
 						disabled={!wallet?.publicKey || props.disabled}
 						className="stake-input credix-button MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary balance-button"
 					/>
