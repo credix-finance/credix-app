@@ -20,7 +20,7 @@ export type Deal = {
 	financingFeePercentage: number;
 	principalAmountRepaid: BN;
 	interestAmountRepaid: BN;
-	timeToMaturityDays: BN;
+	timeToMaturityDays: number;
 	goLiveAt: BN;
 	createdAt: BN;
 	leverageRatio: number;

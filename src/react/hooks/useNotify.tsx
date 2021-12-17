@@ -44,7 +44,13 @@ export function useNotify() {
 						</Link>
 					)}
 				</span>,
-				{ variant }
+				{ 
+					variant: variant,
+					anchorOrigin: {
+						vertical: "bottom",
+						horizontal: "right",
+					},
+				},
 			);
 		},
 		[enqueueSnackbar, styles]
