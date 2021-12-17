@@ -94,7 +94,7 @@ export const getUserUSDCBalance = multiAsync(async (connection: Connection, wall
 	return Number(tokenAccount.account.data.parsed.info.tokenAmount.amount);
 });
 
-const getLiquidityPoolBalance = multiAsync(async (connection: Connection, wallet: Wallet) => {
+export const getLiquidityPoolBalance = multiAsync(async (connection: Connection, wallet: Wallet) => {
 	const globalMarketStateData = await getGlobalMarketStateAccountData(connection, wallet);
 	return globalMarketStateData.liquidityPoolUsdcAmount.toNumber();
 });
