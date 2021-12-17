@@ -5,12 +5,14 @@ import { RPCEndpoint, SolanaCluster } from "types/solana.types";
 import idl from "credix.json";
 
 /// PREFILLED CONFIGS
-const localnetConfig: Partial<ClusterConfig> = {
+const localnetConfig: ClusterConfig = {
+	name: SolanaCluster.LOCALNET,
 	RPCEndpoint: RPCEndpoint.LOCALNET,
 	programId: new PublicKey("B7PiFKNiBvQPMVtsJt8bM86U69a1ivev4VvnkLViMiUZ"),
 };
 
 const devnetConfig: ClusterConfig = {
+	name: SolanaCluster.DEVNET,
 	RPCEndpoint: RPCEndpoint.DEVNET,
 	programId: new PublicKey("B7PiFKNiBvQPMVtsJt8bM86U69a1ivev4VvnkLViMiUZ"),
 };
@@ -30,7 +32,7 @@ const getTargetClusterFromEnv = (): SolanaCluster => {
 	return SolanaCluster.LOCALNET;
 };
 
-const getBaseClusterConfig = (): Partial<ClusterConfig> => {
+const getBaseClusterConfig = (): ClusterConfig => {
 	const targetCluster = getTargetClusterFromEnv();
 
 	switch (targetCluster) {
@@ -77,6 +79,7 @@ const getClusterConfig = (): ClusterConfig => {
 	}
 
 	const clusterConfig: ClusterConfig = {
+		...baseClusterConfig,
 		RPCEndpoint: rpcEndpoint,
 		programId,
 	};
