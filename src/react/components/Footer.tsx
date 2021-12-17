@@ -1,3 +1,4 @@
+import { config } from "config";
 import React from "react";
 import { Link } from "react-router-dom";
 import { Path } from "types/navigation.types";
@@ -15,7 +16,9 @@ export const Footer = () => (
 		<div className="footer footer-right">
 			<a
 				className="green"
-				href="https://explorer.solana.com/address/F4RF3uKfQcPmTyshHMYEcJWnNofgjr3Tdte1qxnziVC1?cluster=devnet"
+				href={`https://explorer.solana.com/address/${config.clusterConfig.programId.toString()}?cluster=${
+					config.clusterConfig.name
+				}`}
 				target="_blank"
 				rel="noreferrer"
 			>
