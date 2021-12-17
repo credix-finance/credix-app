@@ -14,6 +14,7 @@ import {
 	getInterestToRepay,
 	getPrincipalToRepay,
 	mapDealToStatus,
+	getDaysRemaining,
 } from "utils/deal.utils";
 import { toUIAmount, toUIPercentage, toProgramAmount } from "utils/format.utils";
 import "../../styles/stakeform.scss";
@@ -26,6 +27,7 @@ export const DealOverview = () => {
 	const [dealStatus, setDealStatus] = useState<DealStatus | undefined>();
 	const [amountToRepay, setAmountToRepay] = useState<number | undefined>();
 	const [repaymentAmount, setRepaymentAmount] = useState<number | undefined>();
+	const [daysRemaining, setDaysRemaining] = useState<number | string>("X");
 	const [repaymentSelectValue, setRepaymentSelectValue] = useState<string>("interest");
 	const notify = useNotify();
 
@@ -44,6 +46,9 @@ export const DealOverview = () => {
 
 		const dealStatus = mapDealToStatus(deal, clusterTime);
 		setDealStatus(dealStatus);
+
+		const daysRemaining = Math.round(getDaysRemaining(deal, clusterTime) * 10) / 10;
+		setDaysRemaining(daysRemaining); 
 	}, [connection.connection, wallet]);
 
 	const triggerRefresh = useRefresh(fetchDealData);
@@ -149,7 +154,7 @@ export const DealOverview = () => {
 
 	return (
 		<div>
-			<h2>Your deal</h2>
+			<h2>Your deal, [{daysRemaining} / {deal?.timeToMaturityDays}] days remaining</h2>
 			<form onSubmit={onSubmit} className="row stake-form-column">
 				<label className="stake-input-label">
 					Borrower Public Key

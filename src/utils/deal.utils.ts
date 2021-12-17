@@ -6,6 +6,8 @@ import {
 } from "types/program.types";
 import { percentage } from "./math.utils";
 
+const SECONDS_IN_DAY = 86400;
+
 export const mapDealToStatus = (deal: Deal, clusterTime: number): DealStatus => {
 	const principalToPay = getPrincipalToRepay(deal);
 	const interestToPay = getInterestToRepay(deal);
@@ -20,6 +22,10 @@ export const mapDealToStatus = (deal: Deal, clusterTime: number): DealStatus => 
 	}
 
 	return DealStatus.PENDING;
+};
+
+export const getDaysRemaining = (deal: Deal, clusterTime: number) => {
+	return ((deal.goLiveAt.toNumber() + deal.timeToMaturityDays * SECONDS_IN_DAY - clusterTime) / SECONDS_IN_DAY);
 };
 
 export const getTotalInterest = (deal: Deal) => {
