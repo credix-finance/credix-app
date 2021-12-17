@@ -152,9 +152,14 @@
       "name": "createDeal",
       "accounts": [
         {
-          "name": "borrower",
+          "name": "owner",
           "isMut": true,
           "isSigner": true
+        },
+        {
+          "name": "borrowerAccount",
+          "isMut": true,
+          "isSigner": false
         },
         {
           "name": "globalMarketState",

@@ -174,13 +174,13 @@ const getTreasuryPoolTokenAccountPK = multiAsync(async (connection: Connection, 
 });
 
 const getAssociatedUSDCTokenAddressPK = multiAsync(
-	async (connection: Connection, wallet: Wallet) => {
+	async (connection: Connection, wallet: Wallet, publicKey: PublicKey) => {
 		const _usdcMintPK = await getUSDCMintPK(connection, wallet);
 		return await Token.getAssociatedTokenAddress(
 			ASSOCIATED_TOKEN_PROGRAM_ID,
 			TOKEN_PROGRAM_ID,
 			_usdcMintPK,
-			wallet.publicKey
+			publicKey
 		);
 	}
 );
@@ -245,7 +245,7 @@ export const depositInvestment = multiAsync(
 		const program = constructProgram(connection, wallet);
 		const _globalMarketStatePDA = findGlobalMarketStatePDA();
 		const _lpTokenMintPK = getLPTokenMintPK(connection, wallet);
-		const _userAssociatedUSDCTokenAddressPK = getAssociatedUSDCTokenAddressPK(connection, wallet);
+		const _userAssociatedUSDCTokenAddressPK = getAssociatedUSDCTokenAddressPK(connection, wallet, wallet.publicKey);
 		const _usdcMintPK = getUSDCMintPK(connection, wallet);
 		const _marketUSDCTokenAccountPK = getMarketUSDCTokenAccountPK(connection, wallet);
 		const _signingAuthorityPDA = findSigningAuthorityPDA();
@@ -296,7 +296,7 @@ export const withdrawInvestment = multiAsync(
 		const program = constructProgram(connection, wallet);
 		const _lpTokenPrice = getLPTokenPrice(connection, wallet);
 		const _globalMarketStatePDA = findGlobalMarketStatePDA();
-		const _userAssociatedUSDCTokenAddressPK = getAssociatedUSDCTokenAddressPK(connection, wallet);
+		const _userAssociatedUSDCTokenAddressPK = getAssociatedUSDCTokenAddressPK(connection, wallet, wallet.publicKey);
 		const _lpTokenMintPK = getLPTokenMintPK(connection, wallet);
 		const _usdcMint = getUSDCMintPK(connection, wallet);
 		const _marketUSDCTokenAccountPK = getMarketUSDCTokenAccountPK(connection, wallet);
@@ -366,7 +366,7 @@ export const createDeal = multiAsync(
 		connection: Connection,
 		wallet: Wallet
 	) => {
-		const _dealPDA = findDealPDA(wallet.publicKey);
+		const _dealPDA = findDealPDA(borrower);
 		const _globalMarketStatePDA = findGlobalMarketStatePDA();
 
 		const [dealPDA, globalMarketStatePDA] = await Promise.all([_dealPDA, _globalMarketStatePDA]);
@@ -385,7 +385,8 @@ export const createDeal = multiAsync(
 			timeToMaturity,
 			{
 				accounts: {
-					borrower: borrower,
+					owner: wallet.publicKey,
+					borrowerAccount: borrower,
 					globalMarketState: globalMarketStatePDA[0],
 					deal: dealPDA[0],
 					systemProgram: SystemProgram.programId,
@@ -395,13 +396,13 @@ export const createDeal = multiAsync(
 	}
 );
 
-export const activateDeal = multiAsync(async (connection: Connection, wallet: Wallet) => {
+export const activateDeal = multiAsync(async (borrower: PublicKey, connection: Connection, wallet: Wallet) => {
 	const program = constructProgram(connection, wallet);
-	const _userAssociatedUSDCTokenAddressPK = getAssociatedUSDCTokenAddressPK(connection, wallet);
+	const _userAssociatedUSDCTokenAddressPK = getAssociatedUSDCTokenAddressPK(connection, wallet, borrower);
 	const _usdcMintPK = getUSDCMintPK(connection, wallet);
 	const _liquidityPoolAssociatedUSDCTokenAddressPK = getAssociatedLiquidityPoolUSDCTokenAddressPK(connection, wallet);
 	const _globalMarketStatePDA = findGlobalMarketStatePDA();
-	const _dealPDA = findDealPDA(wallet.publicKey);
+	const _dealPDA = findDealPDA(borrower);
 	const _signingAuthorityPDA = findSigningAuthorityPDA();
 
 	const [
@@ -427,7 +428,7 @@ export const activateDeal = multiAsync(async (connection: Connection, wallet: Wa
 			signingAuthority: signingAuthorityPDA[0],
 			deal: dealPDA[0],
 			liquidityPoolTokenAccount: liquidityPoolAssociatedUSDCTokenAddressPK,
-			borrowerAccount: wallet.publicKey,
+			borrowerAccount: borrower,
 			associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
 			borrowerTokenAccount: userAssociatedUSDCTokenAddressPK,
 			usdcMintAccount: usdcMintPK,
@@ -503,7 +504,7 @@ export const repayDeal = multiAsync(
 		const repayAmount = new BN(amount);
 
 		const _globalMarketStatePDA = findGlobalMarketStatePDA();
-		const _userAssociatedUSDCTokenAddressPK = getAssociatedUSDCTokenAddressPK(connection, wallet);
+		const _userAssociatedUSDCTokenAddressPK = getAssociatedUSDCTokenAddressPK(connection, wallet, wallet.publicKey);
 		const _dealPDA = findDealPDA(wallet.publicKey);
 		const _liquidityPoolAssociatedUSDCTokenAddressPK = getAssociatedLiquidityPoolUSDCTokenAddressPK(connection, wallet);
 		const _usdcMintPK = getUSDCMintPK(connection, wallet);
