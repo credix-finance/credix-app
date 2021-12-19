@@ -155,87 +155,91 @@ export const DealOverview = () => {
 	return (
 		<div>
 			<h2>Your deal, [{daysRemaining} / {deal?.timeToMaturityDays}] days remaining</h2>
-			<form onSubmit={onSubmit} className="row stake-form-column">
-				<label className="stake-input-label">
-					Borrower Public Key
+			<form onSubmit={onSubmit} className="row stake-form-column deal-info-repayment">
+				<div className="deal-info">
+					<label className="stake-input-label">
+						Borrower Public Key
+						<input
+							name="borrowerPublicKey"
+							type="text"
+							readOnly={true}
+							disabled={true}
+							value={wallet?.publicKey.toString()}
+							placeholder={placeholder}
+							className="deal-input stake-input credix-button MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary balance-button"
+						/>
+					</label>
+					<br />
+					<label className="stake-input-label">
+						Principal
+						<p>The total amount of USDC borrowed</p>
+						<input
+							name="principal"
+							type="number"
+							readOnly={true}
+							placeholder={placeholder}
+							disabled={true}
+							value={(deal?.principal && toUIAmount(deal.principal.toNumber())) || ""}
+							className="deal-input stake-input credix-button MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary balance-button"
+						/>
+					</label>
+					<br />
+					<label className="stake-input-label">
+						Financing Fee %
+						<p>The percentage on top of the principal that needs to be repaid as interest</p>
+						<input
+							name="financingFee"
+							type="number"
+							readOnly={true}
+							placeholder={placeholder}
+							disabled={true}
+							value={
+								deal?.financingFeePercentage === undefined
+									? ""
+									: toUIPercentage(deal.financingFeePercentage)
+							}
+							className="deal-input stake-input credix-button MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary balance-button"
+						/>
+					</label>
+				</div>
+				<div className="deal-repayment">
+					<label className="stake-input-label">
+						Select repayment type
+						<br />
+						<Select
+							onChange={onRepaymentTypeChange}
+							value={repaymentSelectValue}
+							className="repayment-select credix-button MuiButton-root"
+						>
+							<MenuItem value="principal" disabled={!deal || !getPrincipalToRepay(deal)}>
+								Principal
+							</MenuItem>
+							<MenuItem value="interest" disabled={!deal || !getInterestToRepay(deal)}>
+								Interest
+							</MenuItem>
+						</Select>
+					</label>
+					<br />
+					<label className="stake-input-label">
+						USDC amount
+						<p>To repay: {amountToRepay === undefined ? "" : toUIAmount(amountToRepay)} USDC</p>
+						<input
+							name="repayment"
+							type="number"
+							placeholder={placeholder}
+							onChange={onChangeRepaymentAmount}
+							value={repaymentAmount === undefined ? "" : toUIAmount(repaymentAmount)}
+							className="deal-input stake-input credix-button MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary balance-button"
+						/>
+					</label>
+					<br />
 					<input
-						name="borrowerPublicKey"
-						type="text"
-						readOnly={true}
-						disabled={true}
-						value={wallet?.publicKey.toString()}
-						placeholder={placeholder}
-						className="stake-input credix-button MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary balance-button"
+						type="submit"
+						disabled={!canSubmit()}
+						value={getButtonText()}
+						className="stake-submit credix-button MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary balance-button"
 					/>
-				</label>
-				<br />
-				<label className="stake-input-label">
-					Principal
-					<p>The total amount of USDC to borrow</p>
-					<input
-						name="principal"
-						type="number"
-						readOnly={true}
-						placeholder={placeholder}
-						disabled={true}
-						value={(deal?.principal && toUIAmount(deal.principal.toNumber())) || ""}
-						className="stake-input credix-button MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary balance-button"
-					/>
-				</label>
-				<br />
-				<label className="stake-input-label">
-					Financing Fee %
-					<p>The percentage on top of the principal that needs to be repaid as interest</p>
-					<input
-						name="financingFee"
-						type="number"
-						readOnly={true}
-						placeholder={placeholder}
-						disabled={true}
-						value={
-							deal?.financingFeePercentage === undefined
-								? ""
-								: toUIPercentage(deal.financingFeePercentage)
-						}
-						className="stake-input credix-button MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary balance-button"
-					/>
-				</label>
-				<br />
-				<label className="stake-input-label">
-					Select repayment type
-					<Select
-						onChange={onRepaymentTypeChange}
-						value={repaymentSelectValue}
-						className="repayment-select credix-button MuiButton-root"
-					>
-						<MenuItem value="principal" disabled={!deal || !getPrincipalToRepay(deal)}>
-							Principal
-						</MenuItem>
-						<MenuItem value="interest" disabled={!deal || !getInterestToRepay(deal)}>
-							Interest
-						</MenuItem>
-					</Select>
-				</label>
-				<br />
-				<label className="stake-input-label">
-					USDC amount
-					<p>To repay: {amountToRepay === undefined ? "" : toUIAmount(amountToRepay)} USDC</p>
-					<input
-						name="repayment"
-						type="number"
-						placeholder={placeholder}
-						onChange={onChangeRepaymentAmount}
-						value={repaymentAmount === undefined ? "" : toUIAmount(repaymentAmount)}
-						className="stake-input credix-button MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary balance-button"
-					/>
-				</label>
-				<br />
-				<input
-					type="submit"
-					disabled={!canSubmit()}
-					value={getButtonText()}
-					className="stake-submit credix-button MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary balance-button"
-				/>
+				</div>
 			</form>
 		</div>
 	);
