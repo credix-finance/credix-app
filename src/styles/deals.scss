@@ -8,3 +8,34 @@
 .borrower-pk {
 	text-transform: none !important; 
 }
+
+.deal-info-repayment {
+	display: flex; 
+	//align-items: flex-end;
+	flex-direction: row; 
+	width: 700px; 
+
+	input {
+		width: 300px; 
+		margin-bottom: 30px; 
+	}
+
+	.repayment-select {
+		width: 300px; 
+		margin-bottom: 30px; 
+	}
+
+	.stake-submit {
+		margin-top: 79px;
+	}
+}
+
+.deal-info {
+	width: 350px; 
+	opacity: 50%; 
+	border-right: 1px solid black; 
+}
+
+.deal-input {
+	width: 200px;
+}
