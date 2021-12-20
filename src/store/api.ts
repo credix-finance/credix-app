@@ -343,9 +343,7 @@ export const withdrawInvestment = multiAsync(
 				lpTokenMintAccount: lpTokenMintPK,
 				usdcMintAccount: usdcMint,
 				tokenProgram: TOKEN_PROGRAM_ID,
-				associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
-				systemProgram: SystemProgram.programId,
-				rent: web3.SYSVAR_RENT_PUBKEY,
+				associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID
 			},
 		});
 	}
@@ -539,9 +537,7 @@ export const repayDeal = multiAsync(
 				signingAuthority: signingAuthorityPDA[0],
 				usdcMintAccount: usdcMintPK,
 				tokenProgram: TOKEN_PROGRAM_ID,
-				systemProgram: SystemProgram.programId,
-				associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
-				rent: web3.SYSVAR_RENT_PUBKEY,
+				associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID
 			},
 		});
 	}
