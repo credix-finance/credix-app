@@ -17,7 +17,7 @@ export const CreateDealForm = (props: Props) => {
 	const wallet = useAnchorWallet();
 	const connection = useConnection();
 	const [principal, setPrincipal] = useState<number | undefined>();
-	const [liquidityPoolBalance, setLiquidityPoolBalance] = useState<number>(0); 
+	const [liquidityPoolBalance, setLiquidityPoolBalance] = useState<number>(0);
 	const [financingFee, setFinancingFee] = useState<number | undefined>();
 	const [timeToMaturity, setTimeToMaturity] = useState<number | undefined>();
 	const [borrower, setBorrower] = useState<string>("");
@@ -36,7 +36,7 @@ export const CreateDealForm = (props: Props) => {
 
 	const updateLiquidityPoolBalance = async () => {
 		const balance = await getLiquidityPoolBalance(connection.connection, wallet as Wallet);
-		setLiquidityPoolBalance(toUIAmount(balance)); 
+		setLiquidityPoolBalance(toUIAmount(balance));
 	};
 
 	const onSubmit = serialAsync(async (e: React.SyntheticEvent) => {
@@ -73,7 +73,10 @@ export const CreateDealForm = (props: Props) => {
 			);
 			notify("success", "Deal created successfully");
 
-			await activateDeal(connection.connection, wallet as Wallet);
+			await activateDeal(
+				new PublicKey(borrower),
+				connection.connection,
+				wallet as Wallet);
 			notify("success", "Deal activated successfully");
 			triggerRefresh();
 		} catch (err: any) {

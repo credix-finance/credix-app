@@ -44,7 +44,7 @@ export function useNotify() {
 						</Link>
 					)}
 				</span>,
-				{ 
+				{
 					variant: variant,
 					anchorOrigin: {
 						vertical: "bottom",
