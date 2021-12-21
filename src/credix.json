@@ -116,7 +116,17 @@
           "isSigner": false
         },
         {
+          "name": "usdcMintAccount",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
           "name": "associatedTokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rent",
           "isMut": false,
           "isSigner": false
         },
@@ -127,11 +137,6 @@
         },
         {
           "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "rent",
           "isMut": false,
           "isSigner": false
         }
@@ -147,9 +152,14 @@
       "name": "createDeal",
       "accounts": [
         {
-          "name": "borrower",
+          "name": "owner",
           "isMut": true,
           "isSigner": true
+        },
+        {
+          "name": "borrowerAccount",
+          "isMut": true,
+          "isSigner": false
         },
         {
           "name": "globalMarketState",
@@ -233,12 +243,17 @@
           "isSigner": false
         },
         {
+          "name": "usdcMintAccount",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
           "name": "associatedTokenProgram",
           "isMut": false,
           "isSigner": false
         },
         {
-          "name": "usdcMintAccount",
+          "name": "rent",
           "isMut": false,
           "isSigner": false
         },
@@ -249,11 +264,6 @@
         },
         {
           "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "rent",
           "isMut": false,
           "isSigner": false
         }
@@ -294,12 +304,22 @@
           "isSigner": false
         },
         {
-          "name": "tokenProgram",
+          "name": "signingAuthority",
           "isMut": false,
           "isSigner": false
         },
         {
-          "name": "systemProgram",
+          "name": "usdcMintAccount",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "associatedTokenProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
           "isMut": false,
           "isSigner": false
         }
@@ -358,6 +378,16 @@
         {
           "name": "lpTokenMintAccount",
           "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "usdcMintAccount",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "associatedTokenProgram",
+          "isMut": false,
           "isSigner": false
         },
         {
@@ -525,8 +555,5 @@
       "name": "InterestRepaid",
       "msg": "Interest is already repaid."
     }
-  ],
-  "metadata": {
-    "address": "B7PiFKNiBvQPMVtsJt8bM86U69a1ivev4VvnkLViMiUZ"
-  }
+  ]
 }

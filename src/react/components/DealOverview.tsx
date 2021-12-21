@@ -48,7 +48,7 @@ export const DealOverview = () => {
 		setDealStatus(dealStatus);
 
 		const daysRemaining = Math.round(getDaysRemaining(deal, clusterTime) * 10) / 10;
-		setDaysRemaining(daysRemaining); 
+		setDaysRemaining(daysRemaining);
 	}, [connection.connection, wallet]);
 
 	const triggerRefresh = useRefresh(fetchDealData);
