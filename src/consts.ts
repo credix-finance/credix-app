@@ -6,6 +6,7 @@ export const SESSION_STORAGE = {
 export const SEEDS = {
 	GLOBAL_MARKET_STATE_PDA: "global-market-state",
 	MARKET_USDC_TOKEN_ACCOUNT: "market-liquidity-pool",
+	DEAL_INFO: "deal-info"
 };
 
 export const FEES = {

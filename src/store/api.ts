@@ -42,8 +42,9 @@ const findDealPDA = multiAsync(async (publicKey: PublicKey) => {
 
 	const globalMarketStateSeed = globalMarketStatePDA[0].toBuffer();
 	const borrowerSeed = publicKey.toBuffer();
+	const dealInfo = encodeSeedString(SEEDS.DEAL_INFO);
 
-	const seeds: PdaSeeds = [globalMarketStateSeed, borrowerSeed];
+	const seeds: PdaSeeds = [globalMarketStateSeed, borrowerSeed, dealInfo];
 	return findPDA(seeds);
 });
 
