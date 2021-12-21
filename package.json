@@ -62,7 +62,7 @@
     "craco-alias": "^3.0.1",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-formatjs": "^2.18.0",
+    "eslint-plugin-formatjs": "^2.19.1",
     "eslint-plugin-react-hooks": "^4.3.0",
     "prettier": "2.5.1"
   }
