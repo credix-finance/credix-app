@@ -28,8 +28,7 @@ export const CreateDealForm = (props: Props) => {
 	useEffect(() => {
 		if (wallet?.publicKey && connection.connection) {
 			setPlaceholder("0");
-			setBorrower(wallet?.publicKey.toString());
-			updateLiquidityPoolBalance();
+			updateLiquidityPoolBalance(); 
 		} else {
 			setPlaceholder("Connect wallet");
 		}

@@ -1,5 +1,5 @@
 {
-  "version": "0.1.0",
+  "version": "0.0.0",
   "name": "credix",
   "instructions": [
     {
@@ -7,7 +7,7 @@
       "accounts": [
         {
           "name": "owner",
-          "isMut": false,
+          "isMut": true,
           "isSigner": true
         },
         {
@@ -74,6 +74,18 @@
         {
           "name": "globalMarketStateBump",
           "type": "u8"
+        },
+        {
+          "name": "globalMarketSeed",
+          "type": "string"
+        },
+        {
+          "name": "interestFee",
+          "type": "u32"
+        },
+        {
+          "name": "withdrawalFee",
+          "type": "u32"
         }
       ]
     },
@@ -158,12 +170,12 @@
         },
         {
           "name": "borrowerAccount",
-          "isMut": true,
+          "isMut": false,
           "isSigner": false
         },
         {
           "name": "globalMarketState",
-          "isMut": false,
+          "isMut": true,
           "isSigner": false
         },
         {
@@ -209,7 +221,7 @@
       "accounts": [
         {
           "name": "owner",
-          "isMut": false,
+          "isMut": true,
           "isSigner": true
         },
         {
@@ -493,6 +505,14 @@
           {
             "name": "globalMarketStateBump",
             "type": "u8"
+          },
+          {
+            "name": "interestFee",
+            "type": "u32"
+          },
+          {
+            "name": "withrawalFee",
+            "type": "u32"
           }
         ]
       }
@@ -516,44 +536,52 @@
   ],
   "errors": [
     {
-      "code": 6000,
+      "code": 300,
       "name": "InvalidPrincipalAmount",
       "msg": "This amount is not sufficient as a principal amount."
     },
     {
-      "code": 6001,
+      "code": 301,
       "name": "InvalidInterestAmount",
       "msg": "This amount is not sufficient as an interest amount."
     },
     {
-      "code": 6002,
+      "code": 302,
       "name": "DealNotLive",
       "msg": "This deal is not live yet."
     },
     {
-      "code": 6003,
+      "code": 303,
       "name": "InvalidDealRepaymentType",
       "msg": "Invalid deal repayment type."
     },
     {
-      "code": 6004,
+      "code": 304,
       "name": "MathOverflow",
       "msg": "Math overflow."
     },
     {
-      "code": 6005,
+      "code": 305,
       "name": "NotEnoughLiquidity",
       "msg": "Not enough liquidity."
     },
     {
-      "code": 6006,
+      "code": 306,
       "name": "PrincipalRepaid",
       "msg": "Principal is already repaid."
     },
     {
-      "code": 6007,
+      "code": 307,
       "name": "InterestRepaid",
       "msg": "Interest is already repaid."
+    },
+    {
+      "code": 308,
+      "name": "UnauthorizedSigner",
+      "msg": "The Signer is not authorized to use this instruction."
     }
-  ]
+  ],
+  "metadata": {
+    "address": "B7PiFKNiBvQPMVtsJt8bM86U69a1ivev4VvnkLViMiUZ"
+  }
 }
