@@ -74,7 +74,10 @@ export const CreateDealForm = (props: Props) => {
 			);
 			notify("success", "Deal created successfully");
 
-			await activateDeal(connection.connection, wallet as Wallet);
+			await activateDeal(
+				new PublicKey(borrower),
+				connection.connection,
+				wallet as Wallet);
 			notify("success", "Deal activated successfully");
 			triggerRefresh();
 		} catch (err: any) {
