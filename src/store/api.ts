@@ -40,10 +40,11 @@ const findSigningAuthorityPDA = multiAsync(async () => {
 const findDealPDA = multiAsync(async (publicKey: PublicKey) => {
 	const globalMarketStatePDA = await findGlobalMarketStatePDA();
 
-	const globalMarketStateSeed = globalMarketStatePDA[0].toBuffer().slice(0, 16);
-	const borrowerSeed = publicKey.toBuffer().slice(0, 16);
+	const globalMarketStateSeed = globalMarketStatePDA[0].toBuffer();
+	const borrowerSeed = publicKey.toBuffer();
+	const dealInfo = encodeSeedString(SEEDS.DEAL_INFO);
 
-	const seeds: PdaSeeds = [globalMarketStateSeed, borrowerSeed];
+	const seeds: PdaSeeds = [globalMarketStateSeed, borrowerSeed, dealInfo];
 	return findPDA(seeds);
 });
 
