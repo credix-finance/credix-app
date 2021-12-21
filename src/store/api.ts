@@ -343,7 +343,7 @@ export const createDeal = multiAsync(
 		connection: Connection,
 		wallet: Wallet
 	) => {
-		const _dealPDA = findDealPDA(wallet.publicKey);
+		const _dealPDA = findDealPDA(borrower);
 		const _globalMarketStatePDA = findGlobalMarketStatePDA();
 
 		const [dealPDA, globalMarketStatePDA] = await Promise.all([_dealPDA, _globalMarketStatePDA]);
@@ -362,7 +362,8 @@ export const createDeal = multiAsync(
 			timeToMaturity,
 			{
 				accounts: {
-					borrower: borrower,
+					owner: wallet.publicKey,
+					borrowerAccount: borrower,
 					globalMarketState: globalMarketStatePDA[0],
 					deal: dealPDA[0],
 					systemProgram: SystemProgram.programId,
