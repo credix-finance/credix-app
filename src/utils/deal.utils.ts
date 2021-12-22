@@ -25,7 +25,10 @@ export const mapDealToStatus = (deal: Deal, clusterTime: number): DealStatus => 
 };
 
 export const getDaysRemaining = (deal: Deal, clusterTime: number) => {
-	return ((deal.goLiveAt.toNumber() + deal.timeToMaturityDays * SECONDS_IN_DAY - clusterTime) / SECONDS_IN_DAY);
+	return (
+		(deal.goLiveAt.toNumber() + deal.timeToMaturityDays * SECONDS_IN_DAY - clusterTime) /
+		SECONDS_IN_DAY
+	);
 };
 
 export const getTotalInterest = (deal: Deal) => {

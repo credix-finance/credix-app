@@ -1,5 +1,5 @@
 {
-  "version": "0.0.0",
+  "version": "0.1.0",
   "name": "credix",
   "instructions": [
     {
@@ -536,47 +536,47 @@
   ],
   "errors": [
     {
-      "code": 300,
+      "code": 6000,
       "name": "InvalidPrincipalAmount",
       "msg": "This amount is not sufficient as a principal amount."
     },
     {
-      "code": 301,
+      "code": 6001,
       "name": "InvalidInterestAmount",
       "msg": "This amount is not sufficient as an interest amount."
     },
     {
-      "code": 302,
+      "code": 6002,
       "name": "DealNotLive",
       "msg": "This deal is not live yet."
     },
     {
-      "code": 303,
+      "code": 6003,
       "name": "InvalidDealRepaymentType",
       "msg": "Invalid deal repayment type."
     },
     {
-      "code": 304,
+      "code": 6004,
       "name": "MathOverflow",
       "msg": "Math overflow."
     },
     {
-      "code": 305,
+      "code": 6005,
       "name": "NotEnoughLiquidity",
       "msg": "Not enough liquidity."
     },
     {
-      "code": 306,
+      "code": 6006,
       "name": "PrincipalRepaid",
       "msg": "Principal is already repaid."
     },
     {
-      "code": 307,
+      "code": 6007,
       "name": "InterestRepaid",
       "msg": "Interest is already repaid."
     },
     {
-      "code": 308,
+      "code": 6008,
       "name": "UnauthorizedSigner",
       "msg": "The Signer is not authorized to use this instruction."
     }
