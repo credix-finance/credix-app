@@ -1,7 +1,6 @@
 import { Wallet } from "@project-serum/anchor";
 import { useAnchorWallet, useConnection } from "@solana/wallet-adapter-react";
 import React, { useCallback, useEffect, useState } from "react";
-import { getClusterTime, getDealAccountData } from "store/api";
 import { CreateDealForm } from "./CreateDealForm";
 import "../../../styles/deals.scss";
 import { DealOverview } from "@components/DealOverview";
@@ -9,6 +8,7 @@ import { useRefresh } from "react/hooks/useRefresh";
 import { mapDealToStatus } from "utils/deal.utils";
 import { Deal, DealStatus } from "types/program.types";
 import { serialAsync } from "utils/async.utils";
+import { getClusterTime, getDealAccountData } from "client/api";
 
 export const DealsForm = () => {
 	const wallet = useAnchorWallet();

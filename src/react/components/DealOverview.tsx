@@ -2,11 +2,11 @@ import { MenuItem } from "@material-ui/core";
 import { Select } from "@mui/material";
 import { Wallet } from "@project-serum/anchor";
 import { useAnchorWallet, useConnection } from "@solana/wallet-adapter-react";
+import { getClusterTime, repayDeal, getDealAccountData } from "client/api";
 import { FEES } from "consts";
 import React, { useCallback, useEffect, useState } from "react";
 import { useNotify } from "react/hooks/useNotify";
 import { useRefresh } from "react/hooks/useRefresh";
-import { getClusterTime, getDealAccountData, repayDeal } from "store/api";
 import { Deal, DealStatus } from "types/program.types";
 import {
 	createInterestRepaymentType,
@@ -154,7 +154,9 @@ export const DealOverview = () => {
 
 	return (
 		<div>
-			<h2>Your deal, [{daysRemaining} / {deal?.timeToMaturityDays}] days remaining</h2>
+			<h2>
+				Your deal, [{daysRemaining} / {deal?.timeToMaturityDays}] days remaining
+			</h2>
 			<form onSubmit={onSubmit} className="row stake-form-column deal-info-repayment">
 				<div className="deal-info">
 					<label className="stake-input-label">
