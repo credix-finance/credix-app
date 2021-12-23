@@ -186,7 +186,7 @@ export const DealOverview = () => {
 					<br />
 					<label className="stake-input-label">
 						Financing Fee %
-						<p>The percentage on top of the principal that needs to be repaid as interest</p>
+						<p>The percentage on top of the principal that needs to be repaid as interest (APR)</p>
 						<input
 							name="financingFee"
 							type="number"
