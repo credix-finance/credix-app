@@ -3,10 +3,10 @@ import { useAnchorWallet, useConnection } from "@solana/wallet-adapter-react";
 import { MESSAGES } from "messages";
 import React, { useCallback, useEffect, useState } from "react";
 import { useIntl } from "react-intl";
-import { getUserUSDCBalance } from "store/api";
 import { Button } from "@material-ui/core";
 import { useRefresh } from "react/hooks/useRefresh";
 import { toUIAmount } from "utils/format.utils";
+import { getUserUSDCBalance } from "client/api";
 
 export const Balance = () => {
 	const wallet = useAnchorWallet();

@@ -2,11 +2,13 @@ import { MenuItem } from "@material-ui/core";
 import { Select } from "@mui/material";
 import { Wallet } from "@project-serum/anchor";
 import { useAnchorWallet, useConnection } from "@solana/wallet-adapter-react";
+import { getClusterTime, repayDeal, getDealAccountData } from "client/api";
 import { FEES } from "consts";
 import React, { useCallback, useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { useNotify } from "react/hooks/useNotify";
 import { useRefresh } from "react/hooks/useRefresh";
-import { getClusterTime, getDealAccountData, repayDeal } from "store/api";
+import { Path } from "types/navigation.types";
 import { Deal, DealStatus } from "types/program.types";
 import {
 	createInterestRepaymentType,
@@ -18,6 +20,7 @@ import {
 } from "utils/deal.utils";
 import { toUIAmount, toUIPercentage, toProgramAmount } from "utils/format.utils";
 import "../../styles/stakeform.scss";
+import "../../styles/deals.scss";
 
 export const DealOverview = () => {
 	const wallet = useAnchorWallet();
@@ -29,13 +32,29 @@ export const DealOverview = () => {
 	const [repaymentAmount, setRepaymentAmount] = useState<number | undefined>();
 	const [daysRemaining, setDaysRemaining] = useState<number | string>("X");
 	const [repaymentSelectValue, setRepaymentSelectValue] = useState<string>("interest");
+	const [dealNumber, setDealNumber] = useState<number>(0);
 	const notify = useNotify();
+	const params = useParams();
+	const navigate = useNavigate();
 
 	const fetchDealData = useCallback(async () => {
+		const dealNumber = params.deal && parseInt(params.deal);
+
+		if (!dealNumber && dealNumber !== 0) {
+			navigate(Path.NOT_FOUND);
+			return;
+		}
+
+		setDealNumber(dealNumber);
 		const _clusterTime = getClusterTime(connection.connection);
-		const _dealData = getDealAccountData(connection.connection, wallet as Wallet) as Promise<Deal>;
+		const _dealData = getDealAccountData(connection.connection, wallet as Wallet, dealNumber);
 
 		const [clusterTime, deal] = await Promise.all([_clusterTime, _dealData]);
+
+		if (!deal) {
+			navigate(Path.NOT_FOUND);
+			return;
+		}
 
 		setDeal(deal);
 
@@ -47,7 +66,7 @@ export const DealOverview = () => {
 		const dealStatus = mapDealToStatus(deal, clusterTime);
 		setDealStatus(dealStatus);
 
-		const daysRemaining = Math.round(getDaysRemaining(deal, clusterTime) * 10) / 10;
+		const daysRemaining = getDaysRemaining(deal, clusterTime, dealStatus);
 		setDaysRemaining(daysRemaining);
 	}, [connection.connection, wallet]);
 
@@ -112,7 +131,13 @@ export const DealOverview = () => {
 				repaymentSelectValue === "interest"
 					? createInterestRepaymentType()
 					: createPrincipalRepaymentType();
-			await repayDeal(repaymentAmount, repaymentTypeObj, connection.connection, wallet as Wallet);
+			await repayDeal(
+				repaymentAmount,
+				repaymentTypeObj,
+				dealNumber,
+				connection.connection,
+				wallet as Wallet
+			);
 			const showFeeNotification = repaymentSelectValue === "interest";
 			const paymentNotification = `Successfully repaid ${toUIAmount(
 				Math.min(repaymentAmount, amountToRepay)
@@ -154,7 +179,9 @@ export const DealOverview = () => {
 
 	return (
 		<div>
-			<h2>Your deal, [{daysRemaining} / {deal?.timeToMaturityDays}] days remaining</h2>
+			<h2>
+				Your deal, [{daysRemaining} / {deal?.timeToMaturityDays}] days remaining
+			</h2>
 			<form onSubmit={onSubmit} className="row stake-form-column deal-info-repayment">
 				<div className="deal-info">
 					<label className="stake-input-label">
@@ -207,6 +234,7 @@ export const DealOverview = () => {
 						Select repayment type
 						<br />
 						<Select
+							disabled={!wallet?.publicKey}
 							onChange={onRepaymentTypeChange}
 							value={repaymentSelectValue}
 							className="repayment-select credix-button MuiButton-root"
@@ -224,6 +252,7 @@ export const DealOverview = () => {
 						USDC amount
 						<p>To repay: {amountToRepay === undefined ? "" : toUIAmount(amountToRepay)} USDC</p>
 						<input
+							disabled={!wallet?.publicKey}
 							name="repayment"
 							type="number"
 							placeholder={placeholder}

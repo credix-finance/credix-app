@@ -24,8 +24,16 @@ export const mapDealToStatus = (deal: Deal, clusterTime: number): DealStatus => 
 	return DealStatus.PENDING;
 };
 
-export const getDaysRemaining = (deal: Deal, clusterTime: number) => {
-	return ((deal.goLiveAt.toNumber() + deal.timeToMaturityDays * SECONDS_IN_DAY - clusterTime) / SECONDS_IN_DAY);
+export const getDaysRemaining = (deal: Deal, clusterTime: number, dealStatus: DealStatus) => {
+	if (dealStatus === DealStatus.CLOSED) {
+		return 0;
+	}
+
+	const daysRemaining =
+		(deal.goLiveAt.toNumber() + deal.timeToMaturityDays * SECONDS_IN_DAY - clusterTime) /
+		SECONDS_IN_DAY;
+
+	return Math.max(Math.round(daysRemaining * 10) / 10, 0);
 };
 
 export const getTotalInterest = (deal: Deal) => {
