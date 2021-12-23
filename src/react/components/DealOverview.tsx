@@ -38,10 +38,8 @@ export const DealOverview = () => {
 
 	const fetchDealData = useCallback(async () => {
 		const dealNumber = params.deal && parseInt(params.deal);
-		console.log(params, params.deal, dealNumber);
 
 		if (!dealNumber && dealNumber !== 0) {
-			console.log("wetf");
 			navigate(Path.NOT_FOUND);
 			return;
 		}
