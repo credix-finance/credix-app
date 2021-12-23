@@ -1,21 +1,30 @@
 import { Table, TableHead, TableBody, TableCell, TableRow, TableContainer } from "@mui/material";
-import { Wallet } from "@project-serum/anchor";
+import { BN, Wallet } from "@project-serum/anchor";
 import { useAnchorWallet, useConnection } from "@solana/wallet-adapter-react";
 import React, { useCallback, useEffect, useState } from "react";
-import { getDealAccounts } from "client/api";
+import { getClusterTime, getDealAccounts } from "client/api";
 import { Deal } from "types/program.types";
 import { useNavigate } from "react-router-dom";
 import { Path } from "types/navigation.types";
+import "../../styles/dealstable.scss";
+import { toUIAmount, toUIPercentage } from "utils/format.utils";
+import { getDaysRemaining } from "utils/deal.utils";
 
 export const DealsTable = () => {
 	const wallet = useAnchorWallet();
 	const connection = useConnection();
 	const [deals, setDeals] = useState<any>([]);
+	const [clusterTime, setClusterTime] = useState<number | null>(null);
 	const navigate = useNavigate();
 
 	const getDeals = useCallback(async () => {
-		const deals = await getDealAccounts(connection.connection, wallet as Wallet);
+		const _deals = getDealAccounts(connection.connection, wallet as Wallet);
+		const _clusterTime = getClusterTime(connection.connection);
+
+		const [deals, clusterTime] = await Promise.all([_deals, _clusterTime]);
+
 		setDeals(deals);
+		setClusterTime(clusterTime);
 	}, [connection.connection, wallet]);
 
 	useEffect(() => {
@@ -24,35 +33,42 @@ export const DealsTable = () => {
 		}
 	}, [wallet, getDeals]);
 
-	const tableRow = (deal: Deal, key: any) => (
-		<TableRow
-			key={key}
-			hover
-			onClick={() => navigate(Path.DEAL.replace(":deal", deal.dealNumber.toString()))}
-		>
-			<TableCell align="center">{deal.createdAt.toString()}</TableCell>
-			<TableCell align="center">{deal.financingFeePercentage}</TableCell>
-			<TableCell align="center">{deal.goLiveAt.toString()}</TableCell>
-			<TableCell align="center">{deal.interestAmountRepaid.toString()}</TableCell>
-			<TableCell align="center">{deal.principal.toString()}</TableCell>
-			<TableCell align="center">{deal.principalAmountRepaid.toString()}</TableCell>
-			<TableCell align="center">{deal.timeToMaturityDays}</TableCell>
-		</TableRow>
-	);
+	const tableRow = (deal: Deal, key: any) => {
+		const createdAt = new Date(deal.createdAt.mul(new BN(1000)).toNumber());
+		const goLiveAt = new Date(deal.goLiveAt.mul(new BN(1000)).toNumber());
+
+		const daysRemaining = clusterTime && getDaysRemaining(deal, clusterTime);
+
+		return (
+			<TableRow
+				key={key}
+				hover
+				onClick={() => navigate(Path.DEAL.replace(":deal", deal.dealNumber.toString()))}
+			>
+				<TableCell>{createdAt.toUTCString()}</TableCell>
+				<TableCell>{toUIPercentage(deal.financingFeePercentage)}%</TableCell>
+				<TableCell>{goLiveAt.toUTCString()}</TableCell>
+				<TableCell>{toUIAmount(deal.principal.toNumber())}</TableCell>
+				<TableCell>{toUIAmount(deal.principalAmountRepaid.toNumber())}</TableCell>
+				<TableCell>{toUIAmount(deal.interestAmountRepaid.toNumber())}</TableCell>
+				<TableCell>{`${daysRemaining} / ${deal.timeToMaturityDays}`}</TableCell>
+			</TableRow>
+		);
+	};
 
 	return (
 		<div style={{ border: "1px solid black" }}>
 			<TableContainer>
-				<Table sx={{ fontFamily: "IBM Plex Mono" }}>
+				<Table>
 					<TableHead>
-						<TableRow onClick={console.log}>
+						<TableRow>
 							<TableCell>Created at</TableCell>
-							<TableCell>Financing fee %</TableCell>
+							<TableCell>Financing fee</TableCell>
 							<TableCell>Go live at</TableCell>
-							<TableCell>Interest repaid</TableCell>
 							<TableCell>Principal</TableCell>
-							<TableCell>Principal amount repaid</TableCell>
-							<TableCell>Time to maturity (days)</TableCell>
+							<TableCell>Principal repaid</TableCell>
+							<TableCell>Interest repaid</TableCell>
+							<TableCell>Days remaining</TableCell>
 						</TableRow>
 					</TableHead>
 					<TableBody>{deals.map((deal: any) => tableRow(deal.account, deal.publicKey))}</TableBody>

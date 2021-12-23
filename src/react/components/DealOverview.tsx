@@ -20,6 +20,7 @@ import {
 } from "utils/deal.utils";
 import { toUIAmount, toUIPercentage, toProgramAmount } from "utils/format.utils";
 import "../../styles/stakeform.scss";
+import "../../styles/deals.scss";
 
 export const DealOverview = () => {
 	const wallet = useAnchorWallet();
@@ -65,7 +66,7 @@ export const DealOverview = () => {
 		const dealStatus = mapDealToStatus(deal, clusterTime);
 		setDealStatus(dealStatus);
 
-		const daysRemaining = Math.round(getDaysRemaining(deal, clusterTime) * 10) / 10;
+		const daysRemaining = getDaysRemaining(deal, clusterTime);
 		setDaysRemaining(daysRemaining);
 	}, [connection.connection, wallet]);
 
