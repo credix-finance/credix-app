@@ -1,3 +1,4 @@
+import { BN } from "@project-serum/anchor";
 import { PublicKey } from "@solana/web3.js";
 import { config } from "config";
 import { SEEDS } from "consts";
@@ -21,14 +22,20 @@ export const findSigningAuthorityPDA = multiAsync(async () => {
 	return findPDA(seeds);
 });
 
-export const findDealPDA = multiAsync(async (publicKey: PublicKey) => {
+export const findDealPDA = multiAsync(async (publicKey: PublicKey, dealNumber: number) => {
 	const globalMarketStatePDA = await findGlobalMarketStatePDA();
 
 	const globalMarketStateSeed = globalMarketStatePDA[0].toBuffer();
 	const borrowerSeed = publicKey.toBuffer();
 	const dealInfo = encodeSeedString(SEEDS.DEAL_INFO);
+	const dealNumberBN = new BN(dealNumber);
 
-	const seeds: PdaSeeds = [globalMarketStateSeed, borrowerSeed, dealInfo];
+	const seeds: PdaSeeds = [
+		globalMarketStateSeed,
+		borrowerSeed,
+		dealInfo,
+		dealNumberBN.toArrayLike(Buffer, "le", 2),
+	];
 	return findPDA(seeds);
 });
 
@@ -37,8 +44,8 @@ export const findBorrowerInfoPDA = multiAsync(async (borrowerPK: PublicKey) => {
 	const borrowerInfoSeed = encodeSeedString(SEEDS.BORROWER_INFO);
 	const seeds: PdaSeeds = [
 		borrowerInfoSeed,
-		borrowerPK.toBuffer(),
 		globalMarketStatePDA[0].toBuffer(),
+		borrowerPK.toBuffer(),
 	];
 
 	return findPDA(seeds);

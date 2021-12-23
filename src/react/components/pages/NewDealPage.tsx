@@ -5,7 +5,7 @@ import React from "react";
 export const NewDealPage = () => {
 	return (
 		<DealLayout>
-			<CreateDealForm />;
+			<CreateDealForm />
 		</DealLayout>
 	);
 };

@@ -1,11 +1,9 @@
-import { DealsForm } from "@components/forms/DealsForm";
-import { AppLayout } from "@components/layouts/AppLayout";
+import { DealOverview } from "@components/DealOverview";
+import { DealLayout } from "@components/layouts/DealLayout";
 import React from "react";
 
 export const DealPage = () => (
-	<AppLayout>
-		<div className="container-deals">
-			<DealsForm />
-		</div>
-	</AppLayout>
+	<DealLayout>
+		<DealOverview />
+	</DealLayout>
 );

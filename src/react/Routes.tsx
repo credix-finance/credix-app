@@ -14,6 +14,7 @@ export const Routes = () => (
 			<Route path={Path.NEW_DEAL} element={<NewDealPage />} />
 			<Route path={Path.DEAL} element={<DealPage />} />
 			<Route path={Path.OVERVIEW} element={<OverviewPage />} />
+			<Route path={Path.NOT_FOUND} element={<p>There is nothing here.</p>} />
 		</RouterRoutes>
 	</BrowserRouter>
 );

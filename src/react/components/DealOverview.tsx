@@ -5,8 +5,10 @@ import { useAnchorWallet, useConnection } from "@solana/wallet-adapter-react";
 import { getClusterTime, repayDeal, getDealAccountData } from "client/api";
 import { FEES } from "consts";
 import React, { useCallback, useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { useNotify } from "react/hooks/useNotify";
 import { useRefresh } from "react/hooks/useRefresh";
+import { Path } from "types/navigation.types";
 import { Deal, DealStatus } from "types/program.types";
 import {
 	createInterestRepaymentType,
@@ -29,13 +31,31 @@ export const DealOverview = () => {
 	const [repaymentAmount, setRepaymentAmount] = useState<number | undefined>();
 	const [daysRemaining, setDaysRemaining] = useState<number | string>("X");
 	const [repaymentSelectValue, setRepaymentSelectValue] = useState<string>("interest");
+	const [dealNumber, setDealNumber] = useState<number>(0);
 	const notify = useNotify();
+	const params = useParams();
+	const navigate = useNavigate();
 
 	const fetchDealData = useCallback(async () => {
+		const dealNumber = params.deal && parseInt(params.deal);
+		console.log(params, params.deal, dealNumber);
+
+		if (!dealNumber && dealNumber !== 0) {
+			console.log("wetf");
+			navigate(Path.NOT_FOUND);
+			return;
+		}
+
+		setDealNumber(dealNumber);
 		const _clusterTime = getClusterTime(connection.connection);
-		const _dealData = getDealAccountData(connection.connection, wallet as Wallet) as Promise<Deal>;
+		const _dealData = getDealAccountData(connection.connection, wallet as Wallet, dealNumber);
 
 		const [clusterTime, deal] = await Promise.all([_clusterTime, _dealData]);
+
+		if (!deal) {
+			navigate(Path.NOT_FOUND);
+			return;
+		}
 
 		setDeal(deal);
 
@@ -112,7 +132,13 @@ export const DealOverview = () => {
 				repaymentSelectValue === "interest"
 					? createInterestRepaymentType()
 					: createPrincipalRepaymentType();
-			await repayDeal(repaymentAmount, repaymentTypeObj, connection.connection, wallet as Wallet);
+			await repayDeal(
+				repaymentAmount,
+				repaymentTypeObj,
+				dealNumber,
+				connection.connection,
+				wallet as Wallet
+			);
 			const showFeeNotification = repaymentSelectValue === "interest";
 			const paymentNotification = `Successfully repaid ${toUIAmount(
 				Math.min(repaymentAmount, amountToRepay)
@@ -209,6 +235,7 @@ export const DealOverview = () => {
 						Select repayment type
 						<br />
 						<Select
+							disabled={!wallet?.publicKey}
 							onChange={onRepaymentTypeChange}
 							value={repaymentSelectValue}
 							className="repayment-select credix-button MuiButton-root"
@@ -226,6 +253,7 @@ export const DealOverview = () => {
 						USDC amount
 						<p>To repay: {amountToRepay === undefined ? "" : toUIAmount(amountToRepay)} USDC</p>
 						<input
+							disabled={!wallet?.publicKey}
 							name="repayment"
 							type="number"
 							placeholder={placeholder}

@@ -4,4 +4,5 @@ export enum Path {
 	NEW_DEAL = "/deals/new",
 	DEAL = "/deals/:deal",
 	HELP = "/help",
+	NOT_FOUND = "*",
 }

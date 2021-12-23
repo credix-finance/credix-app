@@ -1,8 +1,8 @@
-import { BN, ProgramAccount, Wallet, web3 } from "@project-serum/anchor";
+import { BN, Wallet, web3 } from "@project-serum/anchor";
 import { TOKEN_PROGRAM_ID, ASSOCIATED_TOKEN_PROGRAM_ID, Token } from "@solana/spl-token";
 import { Connection, ParsedAccountData, PublicKey, SystemProgram } from "@solana/web3.js";
 import { divide } from "lodash";
-import { Deal, DealStatus, PoolStats, RepaymentType } from "types/program.types";
+import { DealStatus, PoolStats, RepaymentType } from "types/program.types";
 import { multiAsync } from "utils/async.utils";
 import { mapDealToStatus } from "utils/deal.utils";
 import { toProgramAmount, toProgramPercentage } from "utils/format.utils";
@@ -17,6 +17,7 @@ import { newCredixProgram } from "./program";
 
 export const getDealAccounts = multiAsync(async (connection, wallet) => {
 	const program = newCredixProgram(connection, wallet);
+
 	return program.account.deal.all();
 });
 
@@ -89,7 +90,7 @@ const getRunningAPY = multiAsync(async (connection: Connection, wallet: Wallet) 
 		throw Error("Could not fetch cluster time");
 	}
 
-	const runningAPY = (deals as Array<ProgramAccount<Deal>>).reduce((result, deal) => {
+	const runningAPY = deals.reduce((result, deal) => {
 		const status = mapDealToStatus(deal.account, clusterTime);
 		if (status === DealStatus.IN_PROGRESS) {
 			const financingFeePercentage = deal.account.financingFeePercentage;
@@ -318,11 +319,22 @@ export const withdrawInvestment = multiAsync(
 	}
 );
 
-export const getDealAccountData = multiAsync(async (connection: Connection, wallet: Wallet) => {
-	const program = newCredixProgram(connection, wallet);
-	const dealPDA = await findDealPDA(wallet.publicKey);
-	return program.account.deal.fetch(dealPDA[0]);
-});
+export const getDealAccountData = multiAsync(
+	async (connection: Connection, wallet: Wallet, dealNumber: number) => {
+		const program = newCredixProgram(connection, wallet);
+		const dealPDA = await findDealPDA(wallet.publicKey, dealNumber);
+		return program.account.deal.fetchNullable(dealPDA[0]);
+	}
+);
+
+export const getBorrowerInfoAccountData = multiAsync(
+	async (connection: Connection, wallet: Wallet, borrower: PublicKey) => {
+		const borrowerInfoPDA = await findBorrowerInfoPDA(borrower);
+		const program = newCredixProgram(connection, wallet);
+
+		return program.account.borrowerInfo.fetchNullable(borrowerInfoPDA[0]);
+	}
+);
 
 export const createDeal = multiAsync(
 	async (
@@ -330,10 +342,11 @@ export const createDeal = multiAsync(
 		financingFee: number,
 		timeToMaturity: number,
 		borrower: PublicKey,
+		dealNumber: number,
 		connection: Connection,
 		wallet: Wallet
 	) => {
-		const _dealPDA = findDealPDA(borrower);
+		const _dealPDA = findDealPDA(borrower, dealNumber);
 		const _globalMarketStatePDA = findGlobalMarketStatePDA();
 		const _borrowerInfoPDA = findBorrowerInfoPDA(borrower);
 
@@ -371,7 +384,7 @@ export const createDeal = multiAsync(
 );
 
 export const activateDeal = multiAsync(
-	async (borrower: PublicKey, connection: Connection, wallet: Wallet) => {
+	async (borrower: PublicKey, dealNumber: number, connection: Connection, wallet: Wallet) => {
 		const program = newCredixProgram(connection, wallet);
 		const _userAssociatedUSDCTokenAddressPK = getAssociatedUSDCTokenAddressPK(
 			connection,
@@ -384,7 +397,7 @@ export const activateDeal = multiAsync(
 			wallet
 		);
 		const _globalMarketStatePDA = findGlobalMarketStatePDA();
-		const _dealPDA = findDealPDA(borrower);
+		const _dealPDA = findDealPDA(borrower, dealNumber);
 		const _signingAuthorityPDA = findSigningAuthorityPDA();
 
 		const [
@@ -482,7 +495,13 @@ export const getLPTokenUSDCBalance = multiAsync(async (connection: Connection, w
 });
 
 export const repayDeal = multiAsync(
-	async (amount: number, repaymentType: RepaymentType, connection: Connection, wallet: Wallet) => {
+	async (
+		amount: number,
+		repaymentType: RepaymentType,
+		dealNumber: number,
+		connection: Connection,
+		wallet: Wallet
+	) => {
 		const program = newCredixProgram(connection, wallet);
 		const repayAmount = new BN(amount);
 
@@ -492,7 +511,7 @@ export const repayDeal = multiAsync(
 			wallet,
 			wallet.publicKey
 		);
-		const _dealPDA = findDealPDA(wallet.publicKey);
+		const _dealPDA = findDealPDA(wallet.publicKey, dealNumber);
 		const _liquidityPoolAssociatedUSDCTokenAddressPK = getMarketUSDCTokenAccountPK(
 			connection,
 			wallet

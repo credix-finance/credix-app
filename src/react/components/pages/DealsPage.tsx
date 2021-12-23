@@ -5,10 +5,12 @@ import React from "react";
 
 export const DealsPage = () => (
 	<DealLayout>
-		<div>
-			<h2>Deals</h2>
-			<CreateDealButton />
+		<div style={{ display: "flex", flexDirection: "column" }}>
+			<div style={{ display: "flex", justifyContent: "space-between" }}>
+				<h2>Deals</h2>
+				<CreateDealButton />
+			</div>
+			<DealsTable />
 		</div>
-		<DealsTable />
 	</DealLayout>
 );

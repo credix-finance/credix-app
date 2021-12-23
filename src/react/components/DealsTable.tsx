@@ -4,13 +4,14 @@ import { useAnchorWallet, useConnection } from "@solana/wallet-adapter-react";
 import React, { useCallback, useEffect, useState } from "react";
 import { getDealAccounts } from "client/api";
 import { Deal } from "types/program.types";
-import { Link } from "react-router-dom";
-import { Path } from "../../types/navigation.types";
+import { useNavigate } from "react-router-dom";
+import { Path } from "types/navigation.types";
 
 export const DealsTable = () => {
 	const wallet = useAnchorWallet();
 	const connection = useConnection();
 	const [deals, setDeals] = useState<any>([]);
+	const navigate = useNavigate();
 
 	const getDeals = useCallback(async () => {
 		const deals = await getDealAccounts(connection.connection, wallet as Wallet);
@@ -27,8 +28,7 @@ export const DealsTable = () => {
 		<TableRow
 			key={key}
 			hover
-			component={Link}
-			to={Path.DEAL.replace(":deal", deal.borrower.toString())}
+			onClick={() => navigate(Path.DEAL.replace(":deal", deal.dealNumber.toString()))}
 		>
 			<TableCell align="center">{deal.createdAt.toString()}</TableCell>
 			<TableCell align="center">{deal.financingFeePercentage}</TableCell>
