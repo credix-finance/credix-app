@@ -38,8 +38,9 @@ export const DealsTable = () => {
 		const createdAt = new Date(deal.createdAt.mul(new BN(1000)).toNumber());
 		const goLiveAt = new Date(deal.goLiveAt.mul(new BN(1000)).toNumber());
 
-		const daysRemaining = clusterTime && getDaysRemaining(deal, clusterTime);
 		const dealStatus = clusterTime && mapDealToStatus(deal, clusterTime);
+		const daysRemaining =
+			dealStatus && clusterTime && getDaysRemaining(deal, clusterTime, dealStatus);
 
 		return (
 			<TableRow

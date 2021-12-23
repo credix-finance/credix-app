@@ -66,7 +66,7 @@ export const DealOverview = () => {
 		const dealStatus = mapDealToStatus(deal, clusterTime);
 		setDealStatus(dealStatus);
 
-		const daysRemaining = getDaysRemaining(deal, clusterTime);
+		const daysRemaining = getDaysRemaining(deal, clusterTime, dealStatus);
 		setDaysRemaining(daysRemaining);
 	}, [connection.connection, wallet]);
 
