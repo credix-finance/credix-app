@@ -7,8 +7,9 @@ import { Deal } from "types/program.types";
 import { useNavigate } from "react-router-dom";
 import { Path } from "types/navigation.types";
 import "../../styles/dealstable.scss";
-import { toUIAmount, toUIPercentage } from "utils/format.utils";
-import { getDaysRemaining } from "utils/deal.utils";
+import { formatDealStatus, toUIAmount, toUIPercentage } from "utils/format.utils";
+import { getDaysRemaining, mapDealToStatus } from "utils/deal.utils";
+import millify from "millify";
 
 export const DealsTable = () => {
 	const wallet = useAnchorWallet();
@@ -38,6 +39,7 @@ export const DealsTable = () => {
 		const goLiveAt = new Date(deal.goLiveAt.mul(new BN(1000)).toNumber());
 
 		const daysRemaining = clusterTime && getDaysRemaining(deal, clusterTime);
+		const dealStatus = clusterTime && mapDealToStatus(deal, clusterTime);
 
 		return (
 			<TableRow
@@ -48,10 +50,11 @@ export const DealsTable = () => {
 				<TableCell>{createdAt.toUTCString()}</TableCell>
 				<TableCell>{toUIPercentage(deal.financingFeePercentage)}%</TableCell>
 				<TableCell>{goLiveAt.toUTCString()}</TableCell>
-				<TableCell>{toUIAmount(deal.principal.toNumber())}</TableCell>
-				<TableCell>{toUIAmount(deal.principalAmountRepaid.toNumber())}</TableCell>
-				<TableCell>{toUIAmount(deal.interestAmountRepaid.toNumber())}</TableCell>
+				<TableCell>{millify(toUIAmount(deal.principal.toNumber()))}</TableCell>
+				<TableCell>{millify(toUIAmount(deal.principalAmountRepaid.toNumber()))}</TableCell>
+				<TableCell>{millify(toUIAmount(deal.interestAmountRepaid.toNumber()))}</TableCell>
 				<TableCell>{`${daysRemaining} / ${deal.timeToMaturityDays}`}</TableCell>
+				<TableCell>{`${dealStatus !== null && formatDealStatus(dealStatus)}`}</TableCell>
 			</TableRow>
 		);
 	};
@@ -69,6 +72,7 @@ export const DealsTable = () => {
 							<TableCell>Principal repaid</TableCell>
 							<TableCell>Interest repaid</TableCell>
 							<TableCell>Days remaining</TableCell>
+							<TableCell>Status</TableCell>
 						</TableRow>
 					</TableHead>
 					<TableBody>{deals.map((deal: any) => tableRow(deal.account, deal.publicKey))}</TableBody>
