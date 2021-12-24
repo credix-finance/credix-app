@@ -5,7 +5,7 @@ import React, { useState } from "react";
 import { useRefresh } from "react/hooks/useRefresh";
 import "../../../styles/depositstakeform.scss";
 import { useNotify } from "../../hooks/useNotify";
-import { depositInvestment } from "store/api";
+import { depositInvestment } from "client/api";
 
 export const DepositStakeForm = () => {
 	const wallet = useAnchorWallet();

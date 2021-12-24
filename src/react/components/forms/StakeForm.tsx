@@ -4,12 +4,12 @@ import { useIntl } from "react-intl";
 import { DepositStakeForm } from "./DepositStakeForm";
 import { WithdrawStakeForm } from "./WithdrawStakeForm";
 import "../../../styles/stakeform.scss";
-import { getLPTokenUSDCBalance } from "store/api";
 import { useAnchorWallet, useConnection } from "@solana/wallet-adapter-react";
 import { Wallet } from "@project-serum/anchor";
 import { Button } from "@material-ui/core";
 import { useRefresh } from "react/hooks/useRefresh";
 import { toUIAmount } from "utils/format.utils";
+import { getLPTokenUSDCBalance } from "client/api";
 
 export const StakeForm = () => {
 	const intl = useIntl();

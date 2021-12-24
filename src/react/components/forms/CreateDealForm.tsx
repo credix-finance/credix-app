@@ -3,11 +3,18 @@ import { useAnchorWallet, useConnection } from "@solana/wallet-adapter-react";
 import { serialAsync } from "utils/async.utils";
 import React, { useEffect, useState } from "react";
 import { useNotify } from "react/hooks/useNotify";
-import { activateDeal, createDeal, getLiquidityPoolBalance } from "store/api";
 import { toUIAmount } from "utils/format.utils";
 import "../../../styles/stakeform.scss";
 import { PublicKey } from "@solana/web3.js";
 import { useRefresh } from "react/hooks/useRefresh";
+import {
+	activateDeal,
+	createDeal,
+	getBorrowerInfoAccountData,
+	getLiquidityPoolBalance,
+} from "client/api";
+import { useNavigate } from "react-router-dom";
+import { Path } from "types/navigation.types";
 
 interface Props {
 	disabled?: boolean;
@@ -24,11 +31,12 @@ export const CreateDealForm = (props: Props) => {
 	const [placeholder, setPlaceholder] = useState<string>("CONNECT WALLET");
 	const notify = useNotify();
 	const triggerRefresh = useRefresh();
+	const navigate = useNavigate();
 
 	useEffect(() => {
 		if (wallet?.publicKey && connection.connection) {
 			setPlaceholder("0");
-			updateLiquidityPoolBalance(); 
+			updateLiquidityPoolBalance();
 		} else {
 			setPlaceholder("Connect wallet");
 		}
@@ -63,22 +71,32 @@ export const CreateDealForm = (props: Props) => {
 		}
 
 		try {
+			const borrowerPK = new PublicKey(borrower);
+
+			// TODO: move this into the createDeal function?
+			const borrowerInfoAccountData = await getBorrowerInfoAccountData(
+				connection.connection,
+				wallet as Wallet,
+				borrowerPK
+			);
+
+			const dealNumber = (borrowerInfoAccountData && borrowerInfoAccountData.numOfDeals) || 0;
+
 			await createDeal(
 				principal,
 				financingFee,
 				timeToMaturity,
-				new PublicKey(borrower),
+				borrowerPK,
+				dealNumber,
 				connection.connection,
 				wallet as Wallet
 			);
 			notify("success", "Deal created successfully");
 
-			await activateDeal(
-				new PublicKey(borrower),
-				connection.connection,
-				wallet as Wallet);
+			await activateDeal(borrowerPK, dealNumber, connection.connection, wallet as Wallet);
 			notify("success", "Deal activated successfully");
 			triggerRefresh();
+			navigate(Path.DEALS);
 		} catch (err: any) {
 			notify("error", `Transaction failed! ${err?.message}`);
 		}

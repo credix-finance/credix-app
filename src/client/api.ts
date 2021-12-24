@@ -1,64 +1,30 @@
-import { BN, Program, ProgramAccount, Provider, Wallet, web3 } from "@project-serum/anchor";
+import { BN, Wallet, web3 } from "@project-serum/anchor";
 import { TOKEN_PROGRAM_ID, ASSOCIATED_TOKEN_PROGRAM_ID, Token } from "@solana/spl-token";
 import { Connection, ParsedAccountData, PublicKey, SystemProgram } from "@solana/web3.js";
-import { config } from "config";
-import { SEEDS } from "consts";
 import { divide } from "lodash";
-import { Deal, DealStatus, PoolStats, RepaymentType } from "types/program.types";
-import { PdaSeeds } from "types/solana.types";
+import { DealStatus, PoolStats, RepaymentType } from "types/program.types";
 import { multiAsync } from "utils/async.utils";
 import { mapDealToStatus } from "utils/deal.utils";
-import { encodeSeedString, toProgramAmount, toProgramPercentage } from "utils/format.utils";
+import { toProgramAmount, toProgramPercentage } from "utils/format.utils";
 import { percentage } from "utils/math.utils";
+import {
+	findGlobalMarketStatePDA,
+	findSigningAuthorityPDA,
+	findDealPDA,
+	findBorrowerInfoPDA,
+	findCredixPassPDA,
+} from "./pda";
+import { newCredixProgram } from "./program";
 
-const constructProgram = (connection: Connection, wallet: Wallet) => {
-	const provider = new Provider(connection, wallet, config.confirmOptions);
-	return new Program(config.idl, config.clusterConfig.programId, provider);
-};
+export const getDealAccounts = multiAsync(async (connection, wallet) => {
+	const program = newCredixProgram(connection, wallet);
 
-const getDealAccounts = multiAsync(async (connection, wallet) => {
-	const program = constructProgram(connection, wallet);
 	return program.account.deal.all();
-});
-
-const findPDA = multiAsync(async (seeds: PdaSeeds) => {
-	const programId = config.clusterConfig.programId;
-	return PublicKey.findProgramAddress(seeds, programId);
-});
-
-const findGlobalMarketStatePDA = multiAsync(async () => {
-	const seed = encodeSeedString(SEEDS.GLOBAL_MARKET_STATE_PDA);
-	return findPDA([seed]);
-});
-
-const findSigningAuthorityPDA = multiAsync(async () => {
-	const globalMarketStatePDA = await findGlobalMarketStatePDA();
-	const seeds: PdaSeeds = [globalMarketStatePDA[0].toBuffer()];
-	return findPDA(seeds);
-});
-
-const findDealPDA = multiAsync(async (publicKey: PublicKey) => {
-	const globalMarketStatePDA = await findGlobalMarketStatePDA();
-
-	const globalMarketStateSeed = globalMarketStatePDA[0].toBuffer();
-	const borrowerSeed = publicKey.toBuffer();
-	const dealInfo = encodeSeedString(SEEDS.DEAL_INFO);
-
-	const seeds: PdaSeeds = [globalMarketStateSeed, borrowerSeed, dealInfo];
-	return findPDA(seeds);
-});
-
-const findCredixPassPDA = multiAsync(async (publicKey: PublicKey) => {
-	const pubkeySeed = publicKey.toBuffer();
-	const credixPass = encodeSeedString(SEEDS.CREDIX_PASS);
-
-	const seeds: PdaSeeds = [pubkeySeed, credixPass];
-	return findPDA(seeds);
 });
 
 const getGlobalMarketStateAccountData = multiAsync(
 	async (connection: Connection, wallet: Wallet) => {
-		const program = constructProgram(connection, wallet);
+		const program = newCredixProgram(connection, wallet);
 		const globalMarketStatePDA = await findGlobalMarketStatePDA();
 		return program.account.globalMarketState.fetch(globalMarketStatePDA[0]);
 	}
@@ -125,7 +91,7 @@ const getRunningAPY = multiAsync(async (connection: Connection, wallet: Wallet) 
 		throw Error("Could not fetch cluster time");
 	}
 
-	const runningAPY = (deals as Array<ProgramAccount<Deal>>).reduce((result, deal) => {
+	const runningAPY = deals.reduce((result, deal) => {
 		const status = mapDealToStatus(deal.account, clusterTime);
 		if (status === DealStatus.IN_PROGRESS) {
 			const financingFeePercentage = deal.account.financingFeePercentage;
@@ -239,7 +205,7 @@ export const getPoolStats = multiAsync(async (connection: Connection, wallet: Wa
 export const depositInvestment = multiAsync(
 	async (amount: number, connection: Connection, wallet: Wallet) => {
 		const depositAmount = new BN(toProgramAmount(amount));
-		const program = constructProgram(connection, wallet);
+		const program = newCredixProgram(connection, wallet);
 		const _globalMarketStatePDA = findGlobalMarketStatePDA();
 		const _lpTokenMintPK = getLPTokenMintPK(connection, wallet);
 		const _userAssociatedUSDCTokenAddressPK = getAssociatedUSDCTokenAddressPK(
@@ -298,7 +264,7 @@ export const depositInvestment = multiAsync(
 
 export const withdrawInvestment = multiAsync(
 	async (amount: number, connection: Connection, wallet: Wallet) => {
-		const program = constructProgram(connection, wallet);
+		const program = newCredixProgram(connection, wallet);
 		const _lpTokenPrice = getLPTokenPrice(connection, wallet);
 		const _globalMarketStatePDA = findGlobalMarketStatePDA();
 		const _userAssociatedUSDCTokenAddressPK = getAssociatedUSDCTokenAddressPK(
@@ -362,11 +328,22 @@ export const withdrawInvestment = multiAsync(
 	}
 );
 
-export const getDealAccountData = multiAsync(async (connection: Connection, wallet: Wallet) => {
-	const program = constructProgram(connection, wallet);
-	const dealPDA = await findDealPDA(wallet.publicKey);
-	return program.account.deal.fetch(dealPDA[0]);
-});
+export const getDealAccountData = multiAsync(
+	async (connection: Connection, wallet: Wallet, dealNumber: number) => {
+		const program = newCredixProgram(connection, wallet);
+		const dealPDA = await findDealPDA(wallet.publicKey, dealNumber);
+		return program.account.deal.fetchNullable(dealPDA[0]);
+	}
+);
+
+export const getBorrowerInfoAccountData = multiAsync(
+	async (connection: Connection, wallet: Wallet, borrower: PublicKey) => {
+		const borrowerInfoPDA = await findBorrowerInfoPDA(borrower);
+		const program = newCredixProgram(connection, wallet);
+
+		return program.account.borrowerInfo.fetchNullable(borrowerInfoPDA[0]);
+	}
+);
 
 export const createDeal = multiAsync(
 	async (
@@ -374,26 +351,30 @@ export const createDeal = multiAsync(
 		financingFee: number,
 		timeToMaturity: number,
 		borrower: PublicKey,
+		dealNumber: number,
 		connection: Connection,
 		wallet: Wallet
 	) => {
-		const _dealPDA = findDealPDA(borrower);
+		const _dealPDA = findDealPDA(borrower, dealNumber);
 		const _globalMarketStatePDA = findGlobalMarketStatePDA();
 		const _getCredixPass = findCredixPassPDA(borrower);
+		const _borrowerInfoPDA = findBorrowerInfoPDA(borrower);
 
-		const [dealPDA, globalMarketStatePDA, credixPass] = await Promise.all([
+		const [dealPDA, globalMarketStatePDA, borrowerInfoPDA, credixPass] = await Promise.all([
 			_dealPDA,
 			_globalMarketStatePDA,
-			_getCredixPass,
+			_borrowerInfoPDA,
+			_getCredixPass
 		]);
 
-		const program = constructProgram(connection, wallet);
+		const program = newCredixProgram(connection, wallet);
 
 		const principalAmount = new BN(toProgramAmount(principal));
 		const financingFeeAmount = new BN(toProgramPercentage(financingFee));
 
 		return program.rpc.createDeal(
 			dealPDA[1],
+			borrowerInfoPDA[1],
 			principalAmount,
 			financingFeeAmount,
 			0,
@@ -402,7 +383,8 @@ export const createDeal = multiAsync(
 			{
 				accounts: {
 					owner: wallet.publicKey,
-					borrowerAccount: borrower,
+					borrower: borrower,
+					borrowerInfo: borrowerInfoPDA[0],
 					globalMarketState: globalMarketStatePDA[0],
 					credixPass: credixPass[0],
 					deal: dealPDA[0],
@@ -414,8 +396,8 @@ export const createDeal = multiAsync(
 );
 
 export const activateDeal = multiAsync(
-	async (borrower: PublicKey, connection: Connection, wallet: Wallet) => {
-		const program = constructProgram(connection, wallet);
+	async (borrower: PublicKey, dealNumber: number, connection: Connection, wallet: Wallet) => {
+		const program = newCredixProgram(connection, wallet);
 		const _userAssociatedUSDCTokenAddressPK = getAssociatedUSDCTokenAddressPK(
 			connection,
 			wallet,
@@ -427,7 +409,7 @@ export const activateDeal = multiAsync(
 			wallet
 		);
 		const _globalMarketStatePDA = findGlobalMarketStatePDA();
-		const _dealPDA = findDealPDA(borrower);
+		const _dealPDA = findDealPDA(borrower, dealNumber);
 		const _signingAuthorityPDA = findSigningAuthorityPDA();
 		const _getCredixPass = findCredixPassPDA(borrower);
 
@@ -457,7 +439,7 @@ export const activateDeal = multiAsync(
 				signingAuthority: signingAuthorityPDA[0],
 				deal: dealPDA[0],
 				liquidityPoolTokenAccount: liquidityPoolAssociatedUSDCTokenAddressPK,
-				borrowerAccount: borrower,
+				borrower: borrower,
 				associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
 				borrowerTokenAccount: userAssociatedUSDCTokenAddressPK,
 				credixPass: credixPass[0],
@@ -530,8 +512,14 @@ export const getLPTokenUSDCBalance = multiAsync(async (connection: Connection, w
 });
 
 export const repayDeal = multiAsync(
-	async (amount: number, repaymentType: RepaymentType, connection: Connection, wallet: Wallet) => {
-		const program = constructProgram(connection, wallet);
+	async (
+		amount: number,
+		repaymentType: RepaymentType,
+		dealNumber: number,
+		connection: Connection,
+		wallet: Wallet
+	) => {
+		const program = newCredixProgram(connection, wallet);
 		const repayAmount = new BN(amount);
 
 		const _globalMarketStatePDA = findGlobalMarketStatePDA();
@@ -540,7 +528,7 @@ export const repayDeal = multiAsync(
 			wallet,
 			wallet.publicKey
 		);
-		const _dealPDA = findDealPDA(wallet.publicKey);
+		const _dealPDA = findDealPDA(wallet.publicKey, dealNumber);
 		const _liquidityPoolAssociatedUSDCTokenAddressPK = getMarketUSDCTokenAccountPK(
 			connection,
 			wallet

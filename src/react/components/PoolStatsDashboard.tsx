@@ -3,11 +3,11 @@ import millify from "millify";
 import { Wallet } from "@project-serum/anchor";
 import { useAnchorWallet, useConnection } from "@solana/wallet-adapter-react";
 import React, { useCallback, useEffect, useState } from "react";
-import { getPoolStats } from "store/api";
 import { PoolStats } from "types/program.types";
 import "../../styles/poolstats.scss";
 import { useRefresh } from "react/hooks/useRefresh";
 import { toUIAmount } from "utils/format.utils";
+import { getPoolStats } from "client/api";
 
 export const PoolStatsDashboard = () => {
 	const wallet = useAnchorWallet();

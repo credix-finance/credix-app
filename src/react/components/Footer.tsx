@@ -35,7 +35,7 @@ export const Footer = () => {
 					target="_blank"
 					rel="noreferrer"
 				>
-					live on Solana devnet
+					live on Solana {config.clusterConfig.name}
 				</a>
 				<a href="https://credix.gitbook.io/credix" target="_blank" rel="noreferrer">
 					docs

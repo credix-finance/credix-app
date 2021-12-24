@@ -3,11 +3,11 @@ import { useAnchorWallet, useConnection } from "@solana/wallet-adapter-react";
 import { serialAsync } from "utils/async.utils";
 import React, { useEffect, useState } from "react";
 import { useNotify } from "react/hooks/useNotify";
-import { activateDeal, createDeal, getLiquidityPoolBalance } from "store/api";
 import { toUIAmount } from "utils/format.utils";
 import "../../../styles/stakeform.scss";
 import { PublicKey } from "@solana/web3.js";
 import { useRefresh } from "react/hooks/useRefresh";
+import { activateDeal, createDeal, getLiquidityPoolBalance } from "client/api";
 
 export const IssueCredixPass = () => {
 	const wallet = useAnchorWallet();
@@ -64,12 +64,13 @@ export const IssueCredixPass = () => {
 				financingFee,
 				timeToMaturity,
 				new PublicKey(borrower),
+				0,
 				connection.connection,
 				wallet as Wallet
 			);
 			notify("success", "Deal created successfully");
 
-			await activateDeal(new PublicKey(borrower), connection.connection, wallet as Wallet);
+			await activateDeal(new PublicKey(borrower), 0,connection.connection, wallet as Wallet);
 			notify("success", "Deal activated successfully");
 			triggerRefresh();
 		} catch (err: any) {

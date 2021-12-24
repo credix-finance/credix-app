@@ -1,11 +1,16 @@
-import { DealsForm } from "@components/forms/DealsForm";
-import { AppLayout } from "@components/layouts/AppLayout";
+import { CreateDealButton } from "@components/buttons/CreateDealButton";
+import { DealsTable } from "@components/DealsTable";
+import { DealLayout } from "@components/layouts/DealLayout";
 import React from "react";
 
 export const DealsPage = () => (
-	<AppLayout>
-		<div className="container-deals">
-			<DealsForm />
+	<DealLayout>
+		<div style={{ display: "flex", flexDirection: "column" }}>
+			<div style={{ display: "flex", justifyContent: "space-between" }}>
+				<h2>Deals</h2>
+				<CreateDealButton />
+			</div>
+			<DealsTable />
 		</div>
-	</AppLayout>
+	</DealLayout>
 );

@@ -1,5 +1,6 @@
 import { utils } from "@project-serum/anchor";
 import { DECIMALS, PERCENTAGE_FACTOR } from "consts";
+import { DealStatus } from "types/program.types";
 import { round } from "./math.utils";
 
 export const encodeSeedString = (seedString: string) =>
@@ -12,3 +13,14 @@ export const toAppPercentage = (n: number) => round(n / PERCENTAGE_FACTOR);
 
 export const toUIAmount = (n: number) => round(Math.floor(toAppAmount(n) * 100) / 100);
 export const toUIPercentage = (n: number) => round(toAppPercentage(n));
+
+export const formatDealStatus = (dealStatus: DealStatus) => {
+	switch (dealStatus) {
+		case DealStatus.CLOSED:
+			return "closed";
+		case DealStatus.IN_PROGRESS:
+			return "in progress";
+		default:
+			return "pending";
+	}
+};

@@ -2,7 +2,7 @@ import { Idl } from "@project-serum/anchor";
 import { ConfirmOptions, PublicKey } from "@solana/web3.js";
 import { ClusterConfig, Config } from "types/config.types";
 import { RPCEndpoint, SolanaCluster } from "types/solana.types";
-import idl from "credix.json";
+import { IDL } from "credix";
 
 /// PREFILLED CONFIGS
 const localnetConfig: ClusterConfig = {
@@ -98,7 +98,7 @@ export const config: Config = ((): Config => {
 
 	return {
 		clusterConfig,
-		idl: idl as Idl,
+		idl: IDL as Idl,
 		confirmOptions,
 	};
 })();
