@@ -7,7 +7,12 @@ import { toUIAmount } from "utils/format.utils";
 import "../../../styles/stakeform.scss";
 import { PublicKey } from "@solana/web3.js";
 import { useRefresh } from "react/hooks/useRefresh";
-import { createDeal, getBorrowerInfoAccountData, getLiquidityPoolBalance } from "client/api";
+import {
+	activateDeal,
+	createDeal,
+	getBorrowerInfoAccountData,
+	getLiquidityPoolBalance,
+} from "client/api";
 import { useNavigate } from "react-router-dom";
 import { Path } from "types/navigation.types";
 
@@ -88,8 +93,8 @@ export const CreateDealForm = (props: Props) => {
 			);
 			notify("success", "Deal created successfully");
 
-			// await activateDeal(borrowerPK, dealNumber, connection.connection, wallet as Wallet);
-			// notify("success", "Deal activated successfully");
+			await activateDeal(borrowerPK, dealNumber, connection.connection, wallet as Wallet);
+			notify("success", "Deal activated successfully");
 			triggerRefresh();
 			navigate(Path.DEALS);
 		} catch (err: any) {
