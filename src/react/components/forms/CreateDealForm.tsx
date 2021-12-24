@@ -7,12 +7,7 @@ import { toUIAmount } from "utils/format.utils";
 import "../../../styles/stakeform.scss";
 import { PublicKey } from "@solana/web3.js";
 import { useRefresh } from "react/hooks/useRefresh";
-import {
-	activateDeal,
-	createDeal,
-	getBorrowerInfoAccountData,
-	getLiquidityPoolBalance,
-} from "client/api";
+import { createDeal, getBorrowerInfoAccountData, getLiquidityPoolBalance } from "client/api";
 import { useNavigate } from "react-router-dom";
 import { Path } from "types/navigation.types";
 
@@ -93,8 +88,8 @@ export const CreateDealForm = (props: Props) => {
 			);
 			notify("success", "Deal created successfully");
 
-			await activateDeal(borrowerPK, dealNumber, connection.connection, wallet as Wallet);
-			notify("success", "Deal activated successfully");
+			// await activateDeal(borrowerPK, dealNumber, connection.connection, wallet as Wallet);
+			// notify("success", "Deal activated successfully");
 			triggerRefresh();
 			navigate(Path.DEALS);
 		} catch (err: any) {
@@ -194,7 +189,7 @@ export const CreateDealForm = (props: Props) => {
 				<br />
 				<label className="stake-input-label">
 					Financing fee %
-					<p>The percentage on top of the principal that needs to be repaid as interest</p>
+					<p>The percentage on top of the principal that needs to be repaid as interest (APR)</p>
 					<input
 						name="financingFee"
 						type="number"
