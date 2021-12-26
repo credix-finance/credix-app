@@ -202,6 +202,10 @@ const getGatewayToken = multiAsync(
 			filters,
 		});
 
+		if (accountsResponse.length == 0) {
+			throw Error("No valid Civic gateway tokens found");
+		}
+
 		return dataToGatewayToken(
 			GatewayTokenData.fromAccount(<Buffer>accountsResponse[0].account.data),
 			accountsResponse[0].pubkey
