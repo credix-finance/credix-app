@@ -26,7 +26,7 @@ export const Gateway = (props: Props) => {
 						connection={connection.connection}
 					/>}
 					{!gatewayToken && <CredixButton
-						text={GatewayStatus[gatewayStatus]}
+						text={`CIVIC: ${GatewayStatus[gatewayStatus]}`}
 						onClick={requestGatewayToken}
 						className={props.className}
 					/>}

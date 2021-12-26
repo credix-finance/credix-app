@@ -33,6 +33,7 @@ export const Identity = (props: Props) => {
 		<>
 			<GatewayProvider
 				wallet={wallet}
+				stage={config.clusterConfig.name.toString().replace("net", "")}
 				gatekeeperNetwork={gatekeeperNetwork}
 				clusterUrl={config.clusterConfig.RPCEndpoint}
 			>

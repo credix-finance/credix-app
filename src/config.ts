@@ -9,12 +9,14 @@ const localnetConfig: ClusterConfig = {
 	name: SolanaCluster.LOCALNET,
 	RPCEndpoint: RPCEndpoint.LOCALNET,
 	programId: new PublicKey("B7PiFKNiBvQPMVtsJt8bM86U69a1ivev4VvnkLViMiUZ"),
+	gatewayProgramId: new PublicKey("8UHYR4tauzyX3MFcQXN2QjPUBHXDPt8yHcE3V5GkbnEC"),
 };
 
 const devnetConfig: ClusterConfig = {
 	name: SolanaCluster.DEVNET,
 	RPCEndpoint: RPCEndpoint.DEVNET,
 	programId: new PublicKey("B7PiFKNiBvQPMVtsJt8bM86U69a1ivev4VvnkLViMiUZ"),
+	gatewayProgramId: new PublicKey("8UHYR4tauzyX3MFcQXN2QjPUBHXDPt8yHcE3V5GkbnEC"),
 };
 ///
 
@@ -23,7 +25,7 @@ const getTargetClusterFromEnv = (): SolanaCluster => {
 
 	if (targetCluster) {
 		if (!Object.values(SolanaCluster).some((c) => c === targetCluster)) {
-			throw new Error(`Invalid cluster targetted ${targetCluster}`);
+			throw new Error(`Invalid cluster targeted ${targetCluster}`);
 		}
 
 		return targetCluster as SolanaCluster;
@@ -63,6 +65,14 @@ const getProgramIdFromEnv = (): PublicKey | undefined => {
 	}
 };
 
+const getGatewayProgramIdFromEnv = (): PublicKey | undefined => {
+	const key = process.env.REACT_APP_GATEWAY_PROGRAM_ID;
+
+	if (key) {
+		return new PublicKey(key);
+	}
+};
+
 const getClusterConfig = (): ClusterConfig => {
 	const baseClusterConfig = getBaseClusterConfig();
 
@@ -78,10 +88,17 @@ const getClusterConfig = (): ClusterConfig => {
 		throw new Error("No program id provided");
 	}
 
+	const gatewayProgramId = getGatewayProgramIdFromEnv() || baseClusterConfig.gatewayProgramId;
+
+	if (!gatewayProgramId) {
+		throw new Error("No gateway program id provided");
+	}
+
 	const clusterConfig: ClusterConfig = {
 		...baseClusterConfig,
 		RPCEndpoint: rpcEndpoint,
 		programId,
+		gatewayProgramId,
 	};
 
 	return clusterConfig;

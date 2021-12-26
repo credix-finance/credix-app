@@ -14,6 +14,8 @@ import {
 	findBorrowerInfoPDA,
 } from "./pda";
 import { newCredixProgram } from "./program";
+import { dataToGatewayToken, GatewayTokenData } from "@identity.com/solana-gateway-ts";
+import { config } from "../config";
 
 export const getDealAccounts = multiAsync(async (connection, wallet) => {
 	const program = newCredixProgram(connection, wallet);
@@ -178,6 +180,35 @@ const getDepositorLPAssociatedTokenAddress = multiAsync(
 	}
 );
 
+const getGatewayToken = multiAsync(
+	async (connection: Connection, wallet: Wallet) => {
+		const GATEWAY_TOKEN_ACCOUNT_OWNER_FIELD_OFFSET = 2;
+		const GATEWAY_TOKEN_ACCOUNT_GATEKEEPER_NETWORK_FIELD_OFFSET = 35;
+		const gatekeeperNetwork = await getGatekeeperNetwork(connection, wallet as Wallet);
+		const ownerFilter = {
+			memcmp: {
+				offset: GATEWAY_TOKEN_ACCOUNT_OWNER_FIELD_OFFSET,
+				bytes: wallet.publicKey.toBase58(),
+			},
+		};
+		const gatekeeperNetworkFilter = {
+			memcmp: {
+				offset: GATEWAY_TOKEN_ACCOUNT_GATEKEEPER_NETWORK_FIELD_OFFSET,
+				bytes: gatekeeperNetwork.toBase58(),
+			},
+		};
+		const filters = [ownerFilter, gatekeeperNetworkFilter];
+		const accountsResponse = await connection.getProgramAccounts(config.clusterConfig.gatewayProgramId, {
+			filters,
+		});
+
+		return dataToGatewayToken(
+			GatewayTokenData.fromAccount(<Buffer>accountsResponse[0].account.data),
+			accountsResponse[0].pubkey
+		);
+	}
+);
+
 const getLPTokenMintPK = multiAsync(async (connection: Connection, wallet: Wallet) => {
 	const globalMarketStateData = await getGlobalMarketStateAccountData(connection, wallet);
 	return globalMarketStateData.lpTokenMintAccount;
@@ -224,6 +255,7 @@ export const depositInvestment = multiAsync(
 			connection,
 			wallet
 		);
+		const _getGatewayToken = getGatewayToken(connection, wallet);
 
 		const [
 			globalMarketStatePDA,
@@ -233,6 +265,7 @@ export const depositInvestment = multiAsync(
 			marketUSDCTokenAccountPK,
 			signingAuthorityPDA,
 			depositorLPAssociatedTokenAddress,
+			gatewayToken,
 		] = await Promise.all([
 			_globalMarketStatePDA,
 			_lpTokenMintPK,
@@ -241,12 +274,13 @@ export const depositInvestment = multiAsync(
 			_marketUSDCTokenAccountPK,
 			_signingAuthorityPDA,
 			_depositorLPAssociatedTokenAddress,
+			_getGatewayToken,
 		]);
 
 		return program.rpc.depositFunds(depositAmount, {
 			accounts: {
 				depositor: wallet.publicKey,
-				gatewayToken: wallet.publicKey,
+				gatewayToken: gatewayToken.publicKey,
 				globalMarketState: globalMarketStatePDA[0],
 				signingAuthority: signingAuthorityPDA[0],
 				depositorTokenAccount: userAssociatedUSDCTokenAddressPK,

@@ -6,6 +6,7 @@ export interface ClusterConfig {
 	name: SolanaCluster;
 	RPCEndpoint: RPCEndpoint;
 	programId: PublicKey;
+	gatewayProgramId: PublicKey;
 }
 
 export interface Config {
