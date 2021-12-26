@@ -1,11 +1,11 @@
 import { useAnchorWallet, useConnection } from "@solana/wallet-adapter-react";
 import React, { useEffect, useState } from "react";
-import { Badge, GatewayProvider, useGateway } from "@civic/solana-gateway-react";
+import { GatewayProvider } from "@civic/solana-gateway-react";
 import { getGatekeeperNetwork } from "../../client/api";
 import { Wallet } from "@project-serum/anchor";
 import { PublicKey } from "@solana/web3.js";
 import { config } from "../../config";
-import { CredixButton } from "@components/buttons/CredixButton";
+import { Gateway } from "@components/Gateway";
 
 interface Props {
 	text: string;
@@ -15,7 +15,6 @@ interface Props {
 export const Identity = (props: Props) => {
 	const wallet = useAnchorWallet();
 	const connection = useConnection();
-	const { requestGatewayToken } = useGateway();
 
 	const [gatekeeperNetwork, setGatekeeperNetwork] = useState<PublicKey | undefined>(undefined);
 
@@ -37,15 +36,8 @@ export const Identity = (props: Props) => {
 				gatekeeperNetwork={gatekeeperNetwork}
 				clusterUrl={config.clusterConfig.RPCEndpoint}
 			>
-				{wallet?.publicKey &&
-					<>
-						{ gatekeeperNetwork && <Badge
-							clusterName={config.clusterConfig.name}
-							gatekeeperNetwork={gatekeeperNetwork}
-							publicKey={wallet.publicKey}
-						/> }
-						<CredixButton text={props.text} onClick={requestGatewayToken} className={props.className} />
-					</>
+				{ gatekeeperNetwork &&
+					<Gateway gatekeeperNetwork={gatekeeperNetwork} className={props.className} />
 				}
 			</GatewayProvider>
 		</>
