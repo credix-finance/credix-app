@@ -4,6 +4,7 @@ import React from "react";
 import "../../styles/navbar.scss";
 import logo from "../../assets/credix_logo_zwart.svg";
 import { FaucetButton } from "./buttons/FaucetButton";
+import { Identity } from "@components/Identity";
 
 export const Navbar = () => (
 	<div className="navbar-container">
@@ -12,6 +13,7 @@ export const Navbar = () => (
 			<span className="tag-line">Credit investing democratized</span>
 		</div>
 		<div className="balance-wallet-container">
+			<Identity text="Verify Civic" className="navbar-button credix-button"/>
 			<WalletMultiButton className="navbar-button credix-button" />
 			<FaucetButton text="Get USDC" className="navbar-button" />
 			<Balance />

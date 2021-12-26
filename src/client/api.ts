@@ -75,6 +75,11 @@ const getOutstandingCredit = multiAsync(async (connection: Connection, wallet: W
 	return globalMarketStateData.totalOutstandingCredit.toNumber();
 });
 
+export const getGatekeeperNetwork = multiAsync(async (connection: Connection, wallet: Wallet) => {
+	const globalMarketStateData = await getGlobalMarketStateAccountData(connection, wallet);
+	return globalMarketStateData.gatekeeperNetwork;
+});
+
 export const getClusterTime = multiAsync(async (connection: Connection) => {
 	const slot = await connection.getSlot();
 	return connection.getBlockTime(slot);
@@ -241,6 +246,7 @@ export const depositInvestment = multiAsync(
 		return program.rpc.depositFunds(depositAmount, {
 			accounts: {
 				depositor: wallet.publicKey,
+				gatewayToken: wallet.publicKey,
 				globalMarketState: globalMarketStatePDA[0],
 				signingAuthority: signingAuthorityPDA[0],
 				depositorTokenAccount: userAssociatedUSDCTokenAddressPK,

@@ -11,6 +11,11 @@ export type Credix = {
           "isSigner": true
         },
         {
+          "name": "gatekeeperNetwork",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
           "name": "globalMarketState",
           "isMut": true,
           "isSigner": false
@@ -96,6 +101,11 @@ export type Credix = {
           "name": "depositor",
           "isMut": true,
           "isSigner": true
+        },
+        {
+          "name": "gatewayToken",
+          "isMut": false,
+          "isSigner": false
         },
         {
           "name": "globalMarketState",
@@ -494,6 +504,18 @@ export type Credix = {
           {
             "name": "bump",
             "type": "u8"
+          },
+          {
+            "name": "lateFees",
+            "type": "u64"
+          },
+          {
+            "name": "lateFeesRepaid",
+            "type": "u64"
+          },
+          {
+            "name": "private",
+            "type": "bool"
           }
         ]
       }
@@ -503,6 +525,10 @@ export type Credix = {
       "type": {
         "kind": "struct",
         "fields": [
+          {
+            "name": "gatekeeperNetwork",
+            "type": "publicKey"
+          },
           {
             "name": "liquidityPoolTokenAccount",
             "type": "publicKey"
@@ -625,6 +651,11 @@ export const IDL: Credix = {
           "isSigner": true
         },
         {
+          "name": "gatekeeperNetwork",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
           "name": "globalMarketState",
           "isMut": true,
           "isSigner": false
@@ -710,6 +741,11 @@ export const IDL: Credix = {
           "name": "depositor",
           "isMut": true,
           "isSigner": true
+        },
+        {
+          "name": "gatewayToken",
+          "isMut": false,
+          "isSigner": false
         },
         {
           "name": "globalMarketState",
@@ -1108,6 +1144,18 @@ export const IDL: Credix = {
           {
             "name": "bump",
             "type": "u8"
+          },
+          {
+            "name": "lateFees",
+            "type": "u64"
+          },
+          {
+            "name": "lateFeesRepaid",
+            "type": "u64"
+          },
+          {
+            "name": "private",
+            "type": "bool"
           }
         ]
       }
@@ -1117,6 +1165,10 @@ export const IDL: Credix = {
       "type": {
         "kind": "struct",
         "fields": [
+          {
+            "name": "gatekeeperNetwork",
+            "type": "publicKey"
+          },
           {
             "name": "liquidityPoolTokenAccount",
             "type": "publicKey"
