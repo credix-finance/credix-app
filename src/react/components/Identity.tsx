@@ -6,6 +6,7 @@ import { Wallet } from "@project-serum/anchor";
 import { PublicKey } from "@solana/web3.js";
 import { config } from "../../config";
 import { Gateway } from "@components/Gateway";
+import { SolanaCluster } from "../../types/solana.types";
 
 interface Props {
 	text: string;
@@ -29,11 +30,28 @@ export const Identity = (props: Props) => {
 		setGatekeeperNetwork(gatekeeperNetwork);
 	};
 
+	const mapClusterNameToStage = (clusterName: SolanaCluster) => {
+		switch(clusterName) {
+			case SolanaCluster.LOCALNET: {
+				return SolanaCluster.LOCALNET.replace("net", "");
+			}
+			case SolanaCluster.DEVNET: {
+				return SolanaCluster.DEVNET.replace("net", "");
+			}
+			case SolanaCluster.MAINNET: {
+				return SolanaCluster.MAINNET;
+			}
+			default: {
+				break;
+			}
+		}
+	};
+
 	return (
 		<>
 			<GatewayProvider
 				wallet={wallet}
-				stage={config.clusterConfig.name.toString().replace("net", "")}
+				stage={mapClusterNameToStage(config.clusterConfig.name)}
 				gatekeeperNetwork={gatekeeperNetwork}
 				clusterUrl={config.clusterConfig.RPCEndpoint}
 			>

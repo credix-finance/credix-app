@@ -16,7 +16,14 @@ const devnetConfig: ClusterConfig = {
 	name: SolanaCluster.DEVNET,
 	RPCEndpoint: RPCEndpoint.DEVNET,
 	programId: new PublicKey("B7PiFKNiBvQPMVtsJt8bM86U69a1ivev4VvnkLViMiUZ"),
-	gatewayProgramId: new PublicKey("8UHYR4tauzyX3MFcQXN2QjPUBHXDPt8yHcE3V5GkbnEC"),
+	gatewayProgramId: new PublicKey("tniC2HX5yg2yDjMQEcUo1bHa44x9YdZVSqyKox21SDz"),
+};
+
+const mainnetConfig: ClusterConfig = {
+	name: SolanaCluster.MAINNET,
+	RPCEndpoint: RPCEndpoint.MAINNET,
+	programId: new PublicKey("B7PiFKNiBvQPMVtsJt8bM86U69a1ivev4VvnkLViMiUZ"),
+	gatewayProgramId: new PublicKey("ni1jXzPTq1yTqo67tUmVgnp22b1qGAAZCtPmHtskqYG"),
 };
 ///
 
@@ -40,6 +47,8 @@ const getBaseClusterConfig = (): ClusterConfig => {
 	switch (targetCluster) {
 		case SolanaCluster.DEVNET:
 			return devnetConfig;
+		case SolanaCluster.MAINNET:
+			return mainnetConfig;
 		default:
 			return localnetConfig;
 	}
