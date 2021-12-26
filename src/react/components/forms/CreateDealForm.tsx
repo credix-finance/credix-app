@@ -28,6 +28,7 @@ export const CreateDealForm = (props: Props) => {
 	const [financingFee, setFinancingFee] = useState<number | undefined>();
 	const [timeToMaturity, setTimeToMaturity] = useState<number | undefined>();
 	const [borrower, setBorrower] = useState<string>("");
+	const [dealname, setDealName] = useState<string>("");
 	const [placeholder, setPlaceholder] = useState<string>("CONNECT WALLET");
 	const notify = useNotify();
 	const triggerRefresh = useRefresh();
@@ -88,7 +89,7 @@ export const CreateDealForm = (props: Props) => {
 				timeToMaturity,
 				borrowerPK,
 				dealNumber,
-				"somename",
+				dealname,
 				connection.connection,
 				wallet as Wallet
 			);
@@ -145,6 +146,10 @@ export const CreateDealForm = (props: Props) => {
 		setBorrower(e.target.value);
 	};
 
+	const onChangeName = (e: React.ChangeEvent<HTMLInputElement>) => {
+		setDealName(e.target.value);
+	};
+
 	const onChangeTimeToMaturity = (e: React.ChangeEvent<HTMLInputElement>) => {
 		onChange(e, setTimeToMaturity);
 	};
@@ -174,6 +179,18 @@ export const CreateDealForm = (props: Props) => {
 						placeholder={placeholder}
 						onChange={onChangeBorrower}
 						disabled={!wallet?.publicKey || props.disabled}
+						className="stake-input borrower-pk credix-button MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary balance-button"
+					/>
+				</label>
+				<br />
+				<label className="stake-input-label">
+					Deal Name
+					<input
+						name="dealName"
+						type="text"
+						value={dealname}
+						placeholder="Series A"
+						onChange={onChangeName}
 						className="stake-input borrower-pk credix-button MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary balance-button"
 					/>
 				</label>
