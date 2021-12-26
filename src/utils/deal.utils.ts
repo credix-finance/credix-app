@@ -25,6 +25,10 @@ export const mapDealToStatus = (deal: Deal, clusterTime: number): DealStatus => 
 };
 
 export const getDaysRemaining = (deal: Deal, clusterTime: number, dealStatus: DealStatus) => {
+	if (deal.goLiveAt.bitLength() > 53) {
+		return deal.timeToMaturityDays;
+	}
+	
 	if (dealStatus === DealStatus.CLOSED) {
 		return 0;
 	}

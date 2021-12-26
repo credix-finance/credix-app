@@ -88,6 +88,7 @@ export const CreateDealForm = (props: Props) => {
 				timeToMaturity,
 				borrowerPK,
 				dealNumber,
+				"somename",
 				connection.connection,
 				wallet as Wallet
 			);

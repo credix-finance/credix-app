@@ -222,6 +222,10 @@ export type Credix = {
         {
           "name": "timeToMaturityDays",
           "type": "u16"
+        },
+        {
+          "name": "dealName",
+          "type": "string"
         }
       ]
     },
@@ -448,6 +452,10 @@ export type Credix = {
         "kind": "struct",
         "fields": [
           {
+            "name": "name",
+            "type": "string"
+          },
+          {
             "name": "borrower",
             "type": "publicKey"
           },
@@ -494,6 +502,18 @@ export type Credix = {
           {
             "name": "bump",
             "type": "u8"
+          },
+          {
+            "name": "lateFees",
+            "type": "u64"
+          },
+          {
+            "name": "lateFeesRepaid",
+            "type": "u64"
+          },
+          {
+            "name": "private",
+            "type": "bool"
           }
         ]
       }
@@ -609,7 +629,10 @@ export type Credix = {
       "name": "UnauthorizedSigner",
       "msg": "The Signer is not authorized to use this instruction."
     }
-  ]
+  ],
+  "metadata": {
+    "address": "B7PiFKNiBvQPMVtsJt8bM86U69a1ivev4VvnkLViMiUZ"
+  }
 };
 
 export const IDL: Credix = {
@@ -836,6 +859,10 @@ export const IDL: Credix = {
         {
           "name": "timeToMaturityDays",
           "type": "u16"
+        },
+        {
+          "name": "dealName",
+          "type": "string"
         }
       ]
     },
@@ -1062,6 +1089,10 @@ export const IDL: Credix = {
         "kind": "struct",
         "fields": [
           {
+            "name": "name",
+            "type": "string"
+          },
+          {
             "name": "borrower",
             "type": "publicKey"
           },
@@ -1108,6 +1139,18 @@ export const IDL: Credix = {
           {
             "name": "bump",
             "type": "u8"
+          },
+          {
+            "name": "lateFees",
+            "type": "u64"
+          },
+          {
+            "name": "lateFeesRepaid",
+            "type": "u64"
+          },
+          {
+            "name": "private",
+            "type": "bool"
           }
         ]
       }
@@ -1223,5 +1266,8 @@ export const IDL: Credix = {
       "name": "UnauthorizedSigner",
       "msg": "The Signer is not authorized to use this instruction."
     }
-  ]
+  ],
+  "metadata": {
+    "address": "B7PiFKNiBvQPMVtsJt8bM86U69a1ivev4VvnkLViMiUZ"
+  }
 };
