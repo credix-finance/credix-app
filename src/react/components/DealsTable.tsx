@@ -53,6 +53,7 @@ export const DealsTable = () => {
 			>
 				<TableCell>{deal.name}</TableCell>
 				<TableCell>{createdAt.toUTCString()}</TableCell>
+				<TableCell>{toUIPercentage(deal.financingFeePercentage)}%</TableCell>
 				<TableCell>{(goLiveAt && goLiveAt.toUTCString()) || "-"}</TableCell>
 				<TableCell>{millify(toUIAmount(deal.principal.toNumber()))}</TableCell>
 				<TableCell>{toUIPercentage(deal.financingFeePercentage)}%</TableCell>
