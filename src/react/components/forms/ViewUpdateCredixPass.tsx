@@ -60,7 +60,11 @@ export const ViewUpdateCredixPass = () => {
 
 	const onPassHolderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setPassHolder(e.target.value);
-		fetchAndSetPassData(passHolder);
+		if (e.target.value.length === 0) {
+			setCredixPass(undefined);
+		} else {
+			fetchAndSetPassData(passHolder);
+		}
 	};
 
 	const onActiveChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -124,6 +128,13 @@ export const ViewUpdateCredixPass = () => {
 								False
 							</option>
 						)}
+						{credixPass === undefined ? (
+							<option selected value="none">
+								None
+							</option>
+						) : (
+							<></>
+						)}
 					</select>
 				</label>
 				<br />
@@ -148,6 +159,13 @@ export const ViewUpdateCredixPass = () => {
 								False
 							</option>
 						)}
+						{credixPass === undefined ? (
+							<option selected value="none">
+								None
+							</option>
+						) : (
+							<></>
+						)}
 					</select>
 				</label>
 				<br />
@@ -171,6 +189,13 @@ export const ViewUpdateCredixPass = () => {
 							<option selected value="false">
 								False
 							</option>
+						)}
+						{credixPass === undefined ? (
+							<option selected value="none">
+								None
+							</option>
+						) : (
+							<></>
 						)}
 					</select>
 				</label>

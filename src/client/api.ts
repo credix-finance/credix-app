@@ -427,8 +427,8 @@ export const activateDeal = multiAsync(
 			_liquidityPoolAssociatedUSDCTokenAddressPK,
 			_globalMarketStatePDA,
 			_dealPDA,
-			_getCredixPass,
 			_signingAuthorityPDA,
+			_getCredixPass,
 		]);
 
 		return program.rpc.activateDeal({
