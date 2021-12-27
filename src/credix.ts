@@ -179,6 +179,11 @@ export type Credix = {
           "isSigner": true
         },
         {
+          "name": "gatewayToken",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
           "name": "borrower",
           "isMut": false,
           "isSigner": false
@@ -242,6 +247,11 @@ export type Credix = {
           "name": "owner",
           "isMut": true,
           "isSigner": true
+        },
+        {
+          "name": "gatewayToken",
+          "isMut": false,
+          "isSigner": false
         },
         {
           "name": "globalMarketState",
@@ -310,6 +320,11 @@ export type Credix = {
           "isSigner": true
         },
         {
+          "name": "gatewayToken",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
           "name": "globalMarketState",
           "isMut": true,
           "isSigner": false
@@ -375,6 +390,11 @@ export type Credix = {
           "name": "withdrawer",
           "isMut": false,
           "isSigner": true
+        },
+        {
+          "name": "gatewayToken",
+          "isMut": false,
+          "isSigner": false
         },
         {
           "name": "globalMarketState",
@@ -819,6 +839,11 @@ export const IDL: Credix = {
           "isSigner": true
         },
         {
+          "name": "gatewayToken",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
           "name": "borrower",
           "isMut": false,
           "isSigner": false
@@ -882,6 +907,11 @@ export const IDL: Credix = {
           "name": "owner",
           "isMut": true,
           "isSigner": true
+        },
+        {
+          "name": "gatewayToken",
+          "isMut": false,
+          "isSigner": false
         },
         {
           "name": "globalMarketState",
@@ -950,6 +980,11 @@ export const IDL: Credix = {
           "isSigner": true
         },
         {
+          "name": "gatewayToken",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
           "name": "globalMarketState",
           "isMut": true,
           "isSigner": false
@@ -1015,6 +1050,11 @@ export const IDL: Credix = {
           "name": "withdrawer",
           "isMut": false,
           "isSigner": true
+        },
+        {
+          "name": "gatewayToken",
+          "isMut": false,
+          "isSigner": false
         },
         {
           "name": "globalMarketState",
