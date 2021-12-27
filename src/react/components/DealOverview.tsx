@@ -180,7 +180,7 @@ export const DealOverview = () => {
 	return (
 		<div>
 			<h2>
-				Your deal, [{daysRemaining} / {deal?.timeToMaturityDays}] days remaining
+				{deal?.name}, [{daysRemaining} / {deal?.timeToMaturityDays}] days remaining
 			</h2>
 			<form onSubmit={onSubmit} className="row stake-form-column deal-info-repayment">
 				<div className="deal-info">
