@@ -191,7 +191,7 @@ export const DealOverview = () => {
 							type="text"
 							readOnly={true}
 							disabled={true}
-							value={wallet?.publicKey.toString()}
+							value={wallet?.publicKey.toString() || ""}
 							placeholder={placeholder}
 							className="deal-input stake-input credix-button MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary balance-button"
 						/>
