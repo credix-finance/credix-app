@@ -1,7 +1,7 @@
 import { CredixPassCreateForm } from "@components/forms/CredixPassCreateForm";
 import { AppLayout } from "@components/layouts/AppLayout";
 import { useAnchorWallet } from "@solana/wallet-adapter-react";
-import { MANAGEMENT_KEYS } from "config";
+import { config } from "config";
 import React, { useState } from "react";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
@@ -16,7 +16,7 @@ export const CredixPassPage = () => {
 	const [issueCredixPass, setIssueCredixPass] = useState<boolean>(true);
 	useEffect(() => {
 		if (wallet?.publicKey) {
-			if (!MANAGEMENT_KEYS.includes(wallet.publicKey.toString())) {
+			if (!config.managementKeys.includes(wallet.publicKey.toString())) {
 				navigate(Path.OVERVIEW);
 			}
 		}
