@@ -8,7 +8,7 @@ import { CredixPass } from "types/program.types";
 import { serialAsync } from "utils/async.utils";
 import "../../../styles/stakeform.scss";
 
-export const ViewUpdateCredixPass = () => {
+export const CredixPassUpdateForm = () => {
 	const wallet = useAnchorWallet();
 	const connection = useConnection();
 	const notify = useNotify();
@@ -36,7 +36,6 @@ export const ViewUpdateCredixPass = () => {
 		try {
 			const passholderKey = new PublicKey(passHolder);
 			fetchAndSetPassData(passholderKey);
-			// eslint-disable-next-line no-empty
 		} catch (e) {
 			setCredixPass(null);
 		}
@@ -116,27 +115,12 @@ export const ViewUpdateCredixPass = () => {
 						name="isActive"
 						onChange={onActiveChange}
 					>
-						{isActive ? (
-							<option selected value="true">
-								True
-							</option>
-						) : (
-							<option value="true">True</option>
-						)}
-						{isActive ? (
-							<option value="false">False</option>
-						) : (
-							<option selected value="false">
-								False
-							</option>
-						)}
-						{credixPass === undefined ? (
-							<option selected value="none">
-								None
-							</option>
-						) : (
-							<></>
-						)}
+						<option selected={isActive} value="true">
+							True
+						</option>
+						<option selected={!isActive} value="false">
+							False
+						</option>
 					</select>
 				</label>
 				<br />
@@ -147,27 +131,12 @@ export const ViewUpdateCredixPass = () => {
 						name="isBorrower"
 						onChange={onBorrowerChange}
 					>
-						{isBorrower ? (
-							<option selected value="true">
-								True
-							</option>
-						) : (
-							<option value="true">True</option>
-						)}
-						{isBorrower ? (
-							<option value="false">False</option>
-						) : (
-							<option selected value="false">
-								False
-							</option>
-						)}
-						{credixPass === undefined ? (
-							<option selected value="none">
-								None
-							</option>
-						) : (
-							<></>
-						)}
+						<option selected={isBorrower} value="true">
+							True
+						</option>
+						<option selected={!isBorrower} value="false">
+							False
+						</option>
 					</select>
 				</label>
 				<br />
@@ -178,27 +147,12 @@ export const ViewUpdateCredixPass = () => {
 						name="isUnderwriter"
 						onChange={onUnderwriterChange}
 					>
-						{isUnderwriter ? (
-							<option selected value="true">
-								True
-							</option>
-						) : (
-							<option value="true">True</option>
-						)}
-						{isUnderwriter ? (
-							<option value="false">False</option>
-						) : (
-							<option selected value="false">
-								False
-							</option>
-						)}
-						{credixPass === undefined ? (
-							<option selected value="none">
-								None
-							</option>
-						) : (
-							<></>
-						)}
+						<option selected={isUnderwriter} value="true">
+							True
+						</option>
+						<option selected={!isUnderwriter} value="false">
+							False
+						</option>
 					</select>
 				</label>
 				<br />

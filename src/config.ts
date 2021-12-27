@@ -102,3 +102,8 @@ export const config: Config = ((): Config => {
 		confirmOptions,
 	};
 })();
+
+export const MANAGEMENT_KEYS = [
+	"Ej5zJzej7rrUoDngsJ3jcpfuvfVyWpcDcK7uv9cE2LdL",
+	"Ej5zJzej7rrUoDngsJ3jcpfuvfVyWpcDcK7uv9cE2LdL"
+];

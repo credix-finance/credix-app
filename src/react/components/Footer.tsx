@@ -4,7 +4,7 @@ import { Path } from "types/navigation.types";
 import "../../styles/footer.scss";
 import { useEffect, useState } from "react";
 import { useAnchorWallet } from "@solana/wallet-adapter-react";
-import { MANAGEMENT_KEYS } from "consts";
+import { MANAGEMENT_KEYS } from "config";
 
 export const Footer = () => {
 	const [showAdminOptions, setshowAdminOptions] = useState<boolean>(false);

@@ -1,16 +1,16 @@
-import { IssueCredixPass } from "@components/forms/IssueCredixPass";
+import { CredixPassCreateForm } from "@components/forms/CredixPassCreateForm";
 import { AppLayout } from "@components/layouts/AppLayout";
 import { useAnchorWallet } from "@solana/wallet-adapter-react";
-import { MANAGEMENT_KEYS } from "consts";
+import { MANAGEMENT_KEYS } from "config";
 import React, { useState } from "react";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../../styles/credixpass.scss";
 import { Path } from "types/navigation.types";
-import { ViewUpdateCredixPass } from "@components/forms/ViewUpdateCredixPass";
+import { CredixPassUpdateForm } from "@components/forms/CredixPassUpdateForm";
 import { CredixButton } from "@components/buttons/CredixButton";
 
-export const CredixPass = () => {
+export const CredixPassPage = () => {
 	const wallet = useAnchorWallet();
 	const navigate = useNavigate();
 	const [issueCredixPass, setIssueCredixPass] = useState<boolean>(true);
@@ -29,7 +29,7 @@ export const CredixPass = () => {
 				<CredixButton text="Update CredixPass" onClick={() => setIssueCredixPass(false)} />
 			</div>
 			<div className="credix-pass-containter">
-				{issueCredixPass ? <IssueCredixPass /> : <ViewUpdateCredixPass />}
+				{issueCredixPass ? <CredixPassCreateForm /> : <CredixPassUpdateForm />}
 			</div>
 		</AppLayout>
 	);

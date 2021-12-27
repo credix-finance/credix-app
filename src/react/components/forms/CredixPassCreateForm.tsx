@@ -7,7 +7,7 @@ import { useNotify } from "react/hooks/useNotify";
 import { serialAsync } from "utils/async.utils";
 import "../../../styles/stakeform.scss";
 
-export const IssueCredixPass = () => {
+export const CredixPassCreateForm = () => {
 	const wallet = useAnchorWallet();
 	const connection = useConnection();
 	const notify = useNotify();
