@@ -630,6 +630,6 @@ export const getCredixPassInfo = multiAsync(
 	async (publicKey: PublicKey, connection: Connection, wallet: Wallet) => {
 		const program = newCredixProgram(connection, wallet);
 		const [credixPassPDA] = await findCredixPassPDA(publicKey);
-		return program.account.credixPass.fetch(credixPassPDA);
+		return program.account.credixPass.fetchNullable(credixPassPDA);
 	}
 );

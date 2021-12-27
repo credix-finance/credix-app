@@ -2,7 +2,7 @@ import { Wallet } from "@project-serum/anchor";
 import { useAnchorWallet, useConnection } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
 import { getCredixPassInfo, updateCredixPass } from "client/api";
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useNotify } from "react/hooks/useNotify";
 import { CredixPass } from "types/program.types";
 import { serialAsync } from "utils/async.utils";
@@ -18,25 +18,35 @@ export const ViewUpdateCredixPass = () => {
 	const [isActive, setIsActive] = useState<boolean>(false);
 
 	const [passHolder, setPassHolder] = useState<string>("");
-	const [credixPass, setCredixPass] = useState<CredixPass | undefined>();
+	const [credixPass, setCredixPass] = useState<CredixPass | null>();
 
-	const fetchAndSetPassData = async (publicKey: string) => {
-		try {
-			const holderPublicKey = new PublicKey(publicKey);
-
-			setCredixPass(
-				await getCredixPassInfo(holderPublicKey, connection.connection, wallet as Wallet)
+	const fetchAndSetPassData = useCallback(
+		async (publicKey: PublicKey) => {
+			const credixPass = await getCredixPassInfo(
+				publicKey,
+				connection.connection,
+				wallet as Wallet
 			);
-			if (credixPass !== undefined) {
-				console.log(credixPass);
-				setIsActive(credixPass.active);
-				setIsBorrower(credixPass.isBorrower);
-				setIsUnderwriter(credixPass.isUnderwriter);
-			}
-		} catch (err) {
-			console.log(err);
+			setCredixPass(credixPass);
+		},
+		[connection.connection, wallet]
+	);
+
+	useEffect(() => {
+		try {
+			const passholderKey = new PublicKey(passHolder);
+			fetchAndSetPassData(passholderKey);
+			// eslint-disable-next-line no-empty
+		} catch (e) {
+			setCredixPass(null);
 		}
-	};
+	}, [passHolder, fetchAndSetPassData]);
+
+	useEffect(() => {
+		setIsActive(!!credixPass?.active);
+		setIsBorrower(!!credixPass?.isBorrower);
+		setIsUnderwriter(!!credixPass?.isUnderwriter);
+	}, [credixPass]);
 
 	const onSubmit = serialAsync(async (e: React.SyntheticEvent) => {
 		e.preventDefault();
@@ -59,12 +69,9 @@ export const ViewUpdateCredixPass = () => {
 	});
 
 	const onPassHolderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		console.log("passholder", typeof passHolder);
+		console.log("on change", e.target.value, typeof e.target.value);
 		setPassHolder(e.target.value);
-		if (e.target.value.length === 0) {
-			setCredixPass(undefined);
-		} else {
-			fetchAndSetPassData(passHolder);
-		}
 	};
 
 	const onActiveChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -79,16 +86,13 @@ export const ViewUpdateCredixPass = () => {
 		e.target.value === "true" ? setIsUnderwriter(true) : setIsUnderwriter(false);
 	};
 
-	const submitButtonDisabled = () => {
-		if (credixPass !== undefined) {
-			return (
-				credixPass.active === isActive &&
-				credixPass.isBorrower === isBorrower &&
-				credixPass.isUnderwriter === isUnderwriter
-			);
-		}
-		return true;
-	};
+	const submitButtonDisabled = () =>
+		!!(
+			credixPass &&
+			credixPass.active === isActive &&
+			credixPass.isBorrower === isBorrower &&
+			credixPass.isUnderwriter === isUnderwriter
+		);
 
 	return (
 		<div>
@@ -100,7 +104,7 @@ export const ViewUpdateCredixPass = () => {
 						name="holderPublicKey"
 						type="text"
 						value={passHolder}
-						placeholder="Ej5zJzej7rrUoDngsJ3jcpfuvfVyWpcDcK7uv9cE2LdL"
+						placeholder="CONNECT WALLET"
 						onChange={onPassHolderChange}
 						disabled={!wallet?.publicKey}
 						className="stake-input borrower-pk credix-button MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary balance-button"
