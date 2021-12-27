@@ -9,7 +9,6 @@ import { Gateway } from "@components/Gateway";
 import { SolanaCluster } from "../../types/solana.types";
 
 interface Props {
-	text: string;
 	className?: string;
 }
 
