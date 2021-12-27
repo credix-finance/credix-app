@@ -13,7 +13,7 @@ export const Navbar = () => (
 			<span className="tag-line">Credit investing democratized</span>
 		</div>
 		<div className="balance-wallet-container">
-			<Identity className="navbar-button credix-button"/>
+			<Identity />
 			<WalletMultiButton className="navbar-button credix-button" />
 			<FaucetButton text="Get USDC" className="navbar-button" />
 			<Balance />

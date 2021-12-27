@@ -8,11 +8,7 @@ import { config } from "../../config";
 import { Gateway } from "@components/Gateway";
 import { SolanaCluster } from "../../types/solana.types";
 
-interface Props {
-	className?: string;
-}
-
-export const Identity = (props: Props) => {
+export const Identity = () => {
 	const wallet = useAnchorWallet();
 	const connection = useConnection();
 
@@ -55,7 +51,7 @@ export const Identity = (props: Props) => {
 				clusterUrl={config.clusterConfig.RPCEndpoint}
 			>
 				{ gatekeeperNetwork &&
-					<Gateway gatekeeperNetwork={gatekeeperNetwork} className={props.className} />
+					<Gateway gatekeeperNetwork={gatekeeperNetwork} className="navbar-button credix-button" />
 				}
 			</GatewayProvider>
 		</>

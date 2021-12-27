@@ -19,17 +19,17 @@ export const Gateway = (props: Props) => {
 		<>
 			{ wallet?.publicKey &&
 				<>
-					{props.gatekeeperNetwork && <Badge
+					{ props.gatekeeperNetwork && <Badge
 						clusterName={config.clusterConfig.name}
 						gatekeeperNetwork={props.gatekeeperNetwork}
 						publicKey={wallet.publicKey}
 						connection={connection.connection}
-					/>}
-					{!gatewayToken && <CredixButton
+					/> }
+					{ !gatewayToken && <CredixButton
 						text={`CIVIC: ${GatewayStatus[gatewayStatus]}`}
 						onClick={requestGatewayToken}
 						className={props.className}
-					/>}
+					/> }
 				</>
 			}
 		</>
