@@ -494,6 +494,18 @@ export type Credix = {
           {
             "name": "bump",
             "type": "u8"
+          },
+          {
+            "name": "lateFees",
+            "type": "u64"
+          },
+          {
+            "name": "lateFeesRepaid",
+            "type": "u64"
+          },
+          {
+            "name": "private",
+            "type": "bool"
           }
         ]
       }
@@ -1108,6 +1120,18 @@ export const IDL: Credix = {
           {
             "name": "bump",
             "type": "u8"
+          },
+          {
+            "name": "lateFees",
+            "type": "u64"
+          },
+          {
+            "name": "lateFeesRepaid",
+            "type": "u64"
+          },
+          {
+            "name": "private",
+            "type": "bool"
           }
         ]
       }
