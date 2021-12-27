@@ -69,8 +69,6 @@ export const ViewUpdateCredixPass = () => {
 	});
 
 	const onPassHolderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		console.log("passholder", typeof passHolder);
-		console.log("on change", e.target.value, typeof e.target.value);
 		setPassHolder(e.target.value);
 	};
 
