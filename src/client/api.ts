@@ -181,14 +181,14 @@ const getDepositorLPAssociatedTokenAddress = multiAsync(
 );
 
 const getGatewayToken = multiAsync(
-	async (connection: Connection, wallet: Wallet) => {
+	async (connection: Connection, wallet: Wallet, userPK: PublicKey) => {
 		const GATEWAY_TOKEN_ACCOUNT_OWNER_FIELD_OFFSET = 2;
 		const GATEWAY_TOKEN_ACCOUNT_GATEKEEPER_NETWORK_FIELD_OFFSET = 35;
 		const gatekeeperNetwork = await getGatekeeperNetwork(connection, wallet as Wallet);
 		const ownerFilter = {
 			memcmp: {
 				offset: GATEWAY_TOKEN_ACCOUNT_OWNER_FIELD_OFFSET,
-				bytes: wallet.publicKey.toBase58(),
+				bytes: userPK.toBase58(),
 			},
 		};
 		const gatekeeperNetworkFilter = {
@@ -259,7 +259,7 @@ export const depositInvestment = multiAsync(
 			connection,
 			wallet
 		);
-		const _getGatewayToken = getGatewayToken(connection, wallet);
+		const _getGatewayToken = getGatewayToken(connection, wallet, wallet.publicKey);
 
 		const [
 			globalMarketStatePDA,
@@ -320,7 +320,7 @@ export const withdrawInvestment = multiAsync(
 			connection,
 			wallet
 		);
-		const _getGatewayToken = getGatewayToken(connection, wallet);
+		const _getGatewayToken = getGatewayToken(connection, wallet, wallet.publicKey);
 
 		const [
 			lpTokenPrice,
@@ -397,7 +397,7 @@ export const createDeal = multiAsync(
 		const _dealPDA = findDealPDA(borrower, dealNumber);
 		const _globalMarketStatePDA = findGlobalMarketStatePDA();
 		const _borrowerInfoPDA = findBorrowerInfoPDA(borrower);
-		const _getGatewayToken = getGatewayToken(connection, wallet);
+		const _getGatewayToken = getGatewayToken(connection, wallet, borrower);
 
 		const [dealPDA, globalMarketStatePDA, borrowerInfoPDA, gatewayToken] = await Promise.all([
 			_dealPDA,
@@ -451,7 +451,7 @@ export const activateDeal = multiAsync(
 		const _globalMarketStatePDA = findGlobalMarketStatePDA();
 		const _dealPDA = findDealPDA(borrower, dealNumber);
 		const _signingAuthorityPDA = findSigningAuthorityPDA();
-		const _getGatewayToken = getGatewayToken(connection, wallet);
+		const _getGatewayToken = getGatewayToken(connection, wallet, borrower);
 
 		const [
 			userAssociatedUSDCTokenAddressPK,
@@ -575,7 +575,7 @@ export const repayDeal = multiAsync(
 		const _usdcMintPK = getUSDCMintPK(connection, wallet);
 		const _treasuryPoolTokenAccountPK = getTreasuryPoolTokenAccountPK(connection, wallet);
 		const _signingAuthorityPDA = findSigningAuthorityPDA();
-		const _getGatewayToken = getGatewayToken(connection, wallet);
+		const _getGatewayToken = getGatewayToken(connection, wallet, wallet.publicKey);
 
 		const [
 			globalMarketStatePDA,
