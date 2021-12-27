@@ -352,6 +352,7 @@ export const createDeal = multiAsync(
 		timeToMaturity: number,
 		borrower: PublicKey,
 		dealNumber: number,
+		dealName: string,
 		connection: Connection,
 		wallet: Wallet
 	) => {
@@ -380,6 +381,7 @@ export const createDeal = multiAsync(
 			0,
 			0,
 			timeToMaturity,
+			dealName,
 			{
 				accounts: {
 					owner: wallet.publicKey,

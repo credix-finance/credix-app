@@ -232,6 +232,10 @@ export type Credix = {
         {
           "name": "timeToMaturityDays",
           "type": "u16"
+        },
+        {
+          "name": "dealName",
+          "type": "string"
         }
       ]
     },
@@ -550,6 +554,10 @@ export type Credix = {
       "type": {
         "kind": "struct",
         "fields": [
+          {
+            "name": "name",
+            "type": "string"
+          },
           {
             "name": "borrower",
             "type": "publicKey"
@@ -998,6 +1006,10 @@ export const IDL: Credix = {
         {
           "name": "timeToMaturityDays",
           "type": "u16"
+        },
+        {
+          "name": "dealName",
+          "type": "string"
         }
       ]
     },
@@ -1317,6 +1329,10 @@ export const IDL: Credix = {
         "kind": "struct",
         "fields": [
           {
+            "name": "name",
+            "type": "string"
+          },
+          {
             "name": "borrower",
             "type": "publicKey"
           },
@@ -1528,4 +1544,4 @@ export const IDL: Credix = {
   "metadata": {
     "address": "B7PiFKNiBvQPMVtsJt8bM86U69a1ivev4VvnkLViMiUZ"
   }
-}
+};

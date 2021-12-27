@@ -36,7 +36,10 @@ export const DealsTable = () => {
 
 	const tableRow = (deal: Deal, key: any) => {
 		const createdAt = new Date(deal.createdAt.mul(new BN(1000)).toNumber());
-		const goLiveAt = new Date(deal.goLiveAt.mul(new BN(1000)).toNumber());
+		const goLiveAt =
+			deal.goLiveAt.bitLength() < 53
+				? new Date(deal.goLiveAt.mul(new BN(1000)).toNumber())
+				: undefined;
 
 		const dealStatus = clusterTime && mapDealToStatus(deal, clusterTime);
 		const daysRemaining =
@@ -48,10 +51,12 @@ export const DealsTable = () => {
 				hover
 				onClick={() => navigate(Path.DEAL.replace(":deal", deal.dealNumber.toString()))}
 			>
+				<TableCell>{deal.name}</TableCell>
 				<TableCell>{createdAt.toUTCString()}</TableCell>
 				<TableCell>{toUIPercentage(deal.financingFeePercentage)}%</TableCell>
-				<TableCell>{goLiveAt.toUTCString()}</TableCell>
+				<TableCell>{(goLiveAt && goLiveAt.toUTCString()) || "-"}</TableCell>
 				<TableCell>{millify(toUIAmount(deal.principal.toNumber()))}</TableCell>
+				<TableCell>{toUIPercentage(deal.financingFeePercentage)}%</TableCell>
 				<TableCell>{millify(toUIAmount(deal.principalAmountRepaid.toNumber()))}</TableCell>
 				<TableCell>{millify(toUIAmount(deal.interestAmountRepaid.toNumber()))}</TableCell>
 				<TableCell>{`${daysRemaining} / ${deal.timeToMaturityDays}`}</TableCell>
@@ -66,10 +71,11 @@ export const DealsTable = () => {
 				<Table>
 					<TableHead>
 						<TableRow>
+							<TableCell>Deal Name</TableCell>
 							<TableCell>Created at</TableCell>
-							<TableCell>Financing fee</TableCell>
 							<TableCell>Go live at</TableCell>
 							<TableCell>Principal</TableCell>
+							<TableCell>Financing fee</TableCell>
 							<TableCell>Principal repaid</TableCell>
 							<TableCell>Interest repaid</TableCell>
 							<TableCell>Days remaining</TableCell>
