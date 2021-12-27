@@ -588,7 +588,7 @@ export const issueCredixPass = async (
 
 	const [credixPassPDA, passBump] = await findCredixPassPDA(publicKey);
 
-	program.rpc.createCredixPass(passBump, isUnderwriter, isBorrower, {
+	return program.rpc.createCredixPass(passBump, isUnderwriter, isBorrower, {
 		accounts: {
 			owner: wallet.publicKey,
 			passHolder: publicKey,
@@ -612,7 +612,7 @@ export const updateCredixPass = async (
 
 	const [credixPassPDA] = await findCredixPassPDA(publicKey);
 
-	program.rpc.updateCredixPass(isActive, isUnderwriter, isBorrower, {
+	return program.rpc.updateCredixPass(isActive, isUnderwriter, isBorrower, {
 		accounts: {
 			owner: wallet.publicKey,
 			passHolder: publicKey,
