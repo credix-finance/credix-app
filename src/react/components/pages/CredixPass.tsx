@@ -26,7 +26,7 @@ export const CredixPass = () => {
 		<AppLayout>
 			<div className="row credixpass-view-switch">
 				<CredixButton text="Create Credix Pass" onClick={() => setIssueCredixPass(true)} />
-				<CredixButton text="Update/View CredixPass" onClick={() => setIssueCredixPass(false)} />
+				<CredixButton text="Update CredixPass" onClick={() => setIssueCredixPass(false)} />
 			</div>
 			<div className="credix-pass-containter">
 				{issueCredixPass ? <IssueCredixPass /> : <ViewUpdateCredixPass />}
