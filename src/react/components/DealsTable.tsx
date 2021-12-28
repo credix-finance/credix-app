@@ -39,6 +39,11 @@ export const DealsTable = (props: Props) => {
 		}
 	}, [wallet, getDeals]);
 
+	const formatBorrowerKey = (key: PublicKey) => {
+		const keyString = key.toString();
+		return `${keyString.slice(0, 4)}..${keyString.slice(-4)}`;
+	};
+
 	const tableRow = (deal: Deal, key: any) => {
 		const createdAt = new Date(deal.createdAt.mul(new BN(1000)).toNumber());
 		const goLiveAt =
@@ -58,6 +63,7 @@ export const DealsTable = (props: Props) => {
 		return (
 			<TableRow key={key} hover onClick={() => navigate(targetRoute)}>
 				<TableCell>{deal.name}</TableCell>
+				<TableCell>{formatBorrowerKey(deal.borrower)}</TableCell>
 				<TableCell>{createdAt.toUTCString()}</TableCell>
 				<TableCell>{(goLiveAt && goLiveAt.toUTCString()) || "-"}</TableCell>
 				<TableCell>{toUIPercentage(deal.financingFeePercentage)}%</TableCell>
@@ -77,6 +83,7 @@ export const DealsTable = (props: Props) => {
 					<TableHead>
 						<TableRow>
 							<TableCell>Deal Name</TableCell>
+							<TableCell>Borrower</TableCell>
 							<TableCell>Created at</TableCell>
 							<TableCell>Go live at</TableCell>
 							<TableCell>Financing fee</TableCell>
