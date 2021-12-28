@@ -95,10 +95,17 @@ export const config: Config = ((): Config => {
 		commitment: "processed",
 		preflightCommitment: "processed",
 	};
+	const MANAGEMENT_KEYS = [
+		"Ej5zJzej7rrUoDngsJ3jcpfuvfVyWpcDcK7uv9cE2LdL",
+		"Ej5zJzej7rrUoDngsJ3jcpfuvfVyWpcDcK7uv9cE2LdL"
+	];
+
 
 	return {
 		clusterConfig,
 		idl: IDL as Idl,
 		confirmOptions,
+		managementKeys: MANAGEMENT_KEYS,
 	};
 })();
+
