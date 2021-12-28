@@ -5,6 +5,8 @@ import "../../styles/navbar.scss";
 import logo from "../../assets/credix_logo_zwart.svg";
 import { FaucetButton } from "./buttons/FaucetButton";
 import { Identity } from "@components/Identity";
+import { config } from "../../config";
+import { SolanaCluster } from "../../types/solana.types";
 
 export const Navbar = () => (
 	<div className="navbar-container">
@@ -13,7 +15,7 @@ export const Navbar = () => (
 			<span className="tag-line">Credit investing democratized</span>
 		</div>
 		<div className="balance-wallet-container">
-			<Identity />
+			{ config.clusterConfig.name !== SolanaCluster.LOCALNET && <Identity /> }
 			<WalletMultiButton className="navbar-button credix-button" />
 			<FaucetButton text="Get USDC" className="navbar-button" />
 			<Balance />
