@@ -1,7 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&family=Poppins:wght@700&display=swap");
 
 body {
-	font-family: "IBM Plex Mono";
+	font-family: "IBM Plex Mono" !important;
 	background-color: white;
 	margin: 0;
 }
@@ -144,20 +144,15 @@ button {
 	align-items: center;
 	width: 100vw;
 	height: 100vh;
-
-	button {
-		margin-right: 20px;
-	}
 }
 
 @media only screen and (max-width: 1124px) {
 	.pool-and-stake-withdraw-container {
-		flex-direction: column; 
+		flex-direction: column;
 
 		.pool-container {
-			margin: 0; 
-			margin-bottom: 10vh; 
+			margin: 0;
+			margin-bottom: 10vh;
 		}
 	}
-
 }

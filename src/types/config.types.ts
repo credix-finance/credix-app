@@ -12,4 +12,5 @@ export interface Config {
 	clusterConfig: ClusterConfig;
 	idl: Idl;
 	confirmOptions: ConfirmOptions;
+	managementKeys: Array<String>;
 }

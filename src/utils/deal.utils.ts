@@ -16,7 +16,7 @@ export const mapDealToStatus = (deal: Deal, clusterTime: number): DealStatus => 
 		return DealStatus.CLOSED;
 	}
 
-	// We store max u64 as a hack to know it's not live yet. BN can't handle this.
+	// We store max i64 as a hack to know it's not live yet. BN can't handle this.
 	if (deal.goLiveAt.bitLength() < 53 && deal.goLiveAt.toNumber() <= clusterTime) {
 		return DealStatus.IN_PROGRESS;
 	}
@@ -24,12 +24,26 @@ export const mapDealToStatus = (deal: Deal, clusterTime: number): DealStatus => 
 	return DealStatus.PENDING;
 };
 
-export const getDaysRemaining = (deal: Deal, clusterTime: number) => {
-	return ((deal.goLiveAt.toNumber() + deal.timeToMaturityDays * SECONDS_IN_DAY - clusterTime) / SECONDS_IN_DAY);
+export const getDaysRemaining = (deal: Deal, clusterTime: number, dealStatus: DealStatus) => {
+	if (deal.goLiveAt.bitLength() > 53) {
+		return deal.timeToMaturityDays;
+	}
+
+	if (dealStatus === DealStatus.CLOSED) {
+		return 0;
+	}
+
+	const daysRemaining =
+		(deal.goLiveAt.toNumber() + deal.timeToMaturityDays * SECONDS_IN_DAY - clusterTime) /
+		SECONDS_IN_DAY;
+
+	return Math.max(Math.round(daysRemaining * 10) / 10, 0);
 };
 
 export const getTotalInterest = (deal: Deal) => {
-	return percentage(deal.principal.toNumber(), deal.financingFeePercentage);
+	return (percentage(deal.principal.toNumber(), deal.financingFeePercentage)
+		* deal.timeToMaturityDays)
+		/ 360;
 };
 
 export const getPrincipalToRepay = (deal: Deal) => {

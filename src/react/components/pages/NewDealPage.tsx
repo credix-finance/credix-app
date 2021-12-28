@@ -1,12 +1,11 @@
-import { CreateDealButton } from "@components/buttons/CreateDealButton";
-import { DealsTable } from "@components/DealsTable";
+import { CreateDealForm } from "@components/forms/CreateDealForm";
 import { DealLayout } from "@components/layouts/DealLayout";
 import { PublicKey } from "@solana/web3.js";
-import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import { Path } from "types/navigation.types";
 
-export const DealsPage = () => {
+export const NewDealPage = () => {
 	const [borrower, setBorrower] = useState<PublicKey | undefined>();
 	const params = useParams();
 	const navigate = useNavigate();
@@ -24,13 +23,7 @@ export const DealsPage = () => {
 
 	return (
 		<DealLayout>
-			<div style={{ display: "flex", flexDirection: "column" }}>
-				<div style={{ display: "flex", justifyContent: "space-between" }}>
-					<h2>Deals</h2>
-					<CreateDealButton borrower={borrower} />
-				</div>
-				<DealsTable borrower={borrower} />
-			</div>
+			<CreateDealForm borrower={borrower} />
 		</DealLayout>
 	);
 };

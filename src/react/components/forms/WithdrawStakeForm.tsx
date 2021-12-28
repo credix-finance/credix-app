@@ -2,11 +2,11 @@ import { Wallet } from "@project-serum/anchor";
 import { useAnchorWallet, useConnection } from "@solana/wallet-adapter-react";
 import React, { useState } from "react";
 import { useRefresh } from "react/hooks/useRefresh";
-import { withdrawInvestment } from "store/api";
 import "../../../styles/depositstakeform.scss";
 import { useNotify } from "../../hooks/useNotify";
 import { FEES } from "consts";
 import millify from "millify";
+import { withdrawInvestment } from "client/api";
 
 export const WithdrawStakeForm = () => {
 	const wallet = useAnchorWallet();

@@ -1,4 +1,4 @@
-import { FaucetButton } from "@components/FaucetButton";
+import { FaucetButton } from "@components/buttons/FaucetButton";
 import { AppLayout } from "@components/layouts/AppLayout";
 import { Youtube } from "@components/Youtube";
 import "../../../styles/help.scss";

@@ -1,5 +1,23 @@
-import { BN } from "@project-serum/anchor";
-import { PublicKey } from "@solana/web3.js";
+import type { AnchorTypes } from "@saberhq/anchor-contrib";
+import { Credix } from "credix";
+
+export type CredixTypes = AnchorTypes<
+	Credix,
+	{
+		deal: Deal;
+		globalMarketState: GlobalMarketState;
+		borrowerInfo: BorrowerInfo;
+		credixPass: CredixPass;
+	},
+	{ DealRepaymentType: RepaymentType }
+>;
+
+export type CredixProgram = CredixTypes["Program"];
+
+export type Deal = CredixTypes["Accounts"]["Deal"];
+export type CredixPass = CredixTypes["Accounts"]["CredixPass"];
+export type GlobalMarketState = CredixTypes["Accounts"]["GlobalMarketState"];
+export type BorrowerInfo = CredixTypes["Accounts"]["BorrowerInfo"];
 
 export interface PoolStats {
 	TVL: number;
@@ -13,19 +31,6 @@ export enum DealStatus {
 	IN_PROGRESS,
 	PENDING,
 }
-
-export type Deal = {
-	borrower: PublicKey;
-	principal: BN;
-	financingFeePercentage: number;
-	principalAmountRepaid: BN;
-	interestAmountRepaid: BN;
-	timeToMaturityDays: number;
-	goLiveAt: BN;
-	createdAt: BN;
-	leverageRatio: number;
-	underwriterPerformanceFeePercentage: number;
-};
 
 export type PrincipalRepaymentType = { principal: {} };
 export type InterestRepaymentType = { interest: {} };
