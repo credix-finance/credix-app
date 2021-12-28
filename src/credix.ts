@@ -766,10 +766,7 @@ export type Credix = {
       "name": "CredixPassInactive",
       "msg": "Credix pass is inactive at the moment."
     }
-  ],
-  "metadata": {
-    "address": "B7PiFKNiBvQPMVtsJt8bM86U69a1ivev4VvnkLViMiUZ"
-  }
+  ]
 };
 
 export const IDL: Credix = {
@@ -1540,8 +1537,5 @@ export const IDL: Credix = {
       "name": "CredixPassInactive",
       "msg": "Credix pass is inactive at the moment."
     }
-  ],
-  "metadata": {
-    "address": "B7PiFKNiBvQPMVtsJt8bM86U69a1ivev4VvnkLViMiUZ"
-  }
+  ]
 };

@@ -1,7 +1,7 @@
 import { Wallet } from "@project-serum/anchor";
 import { useAnchorWallet, useConnection } from "@solana/wallet-adapter-react";
 import { serialAsync } from "utils/async.utils";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useNotify } from "react/hooks/useNotify";
 import { toUIAmount } from "utils/format.utils";
 import "../../../styles/stakeform.scss";
@@ -17,6 +17,7 @@ import { useNavigate } from "react-router-dom";
 import { Path } from "types/navigation.types";
 
 interface Props {
+	borrower?: PublicKey;
 	disabled?: boolean;
 }
 
@@ -34,6 +35,11 @@ export const CreateDealForm = (props: Props) => {
 	const triggerRefresh = useRefresh();
 	const navigate = useNavigate();
 
+	const updateLiquidityPoolBalance = useCallback(async () => {
+		const balance = await getLiquidityPoolBalance(connection.connection, wallet as Wallet);
+		setLiquidityPoolBalance(toUIAmount(balance));
+	}, [connection.connection, wallet]);
+
 	useEffect(() => {
 		if (wallet?.publicKey && connection.connection) {
 			setPlaceholder("0");
@@ -41,12 +47,7 @@ export const CreateDealForm = (props: Props) => {
 		} else {
 			setPlaceholder("Connect wallet");
 		}
-	}, [connection.connection, wallet?.publicKey]);
-
-	const updateLiquidityPoolBalance = async () => {
-		const balance = await getLiquidityPoolBalance(connection.connection, wallet as Wallet);
-		setLiquidityPoolBalance(toUIAmount(balance));
-	};
+	}, [connection.connection, wallet?.publicKey, updateLiquidityPoolBalance]);
 
 	const onSubmit = serialAsync(async (e: React.SyntheticEvent) => {
 		e.preventDefault();
@@ -175,10 +176,10 @@ export const CreateDealForm = (props: Props) => {
 					<input
 						name="borrowerPublicKey"
 						type="text"
-						value={borrower}
+						value={props.borrower?.toString() || borrower}
 						placeholder={placeholder}
 						onChange={onChangeBorrower}
-						disabled={!wallet?.publicKey || props.disabled}
+						disabled={!wallet?.publicKey || props.disabled || !!props.borrower}
 						className="stake-input borrower-pk credix-button MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary balance-button"
 					/>
 				</label>

@@ -1,10 +1,18 @@
-import React from "react";
+import { PublicKey } from "@solana/web3.js";
 import { useNavigate } from "react-router-dom";
 import { Path } from "types/navigation.types";
 import { CredixButton } from "./CredixButton";
 
-export const CreateDealButton = () => {
+interface Props {
+	borrower?: PublicKey;
+}
+
+export const CreateDealButton = (props: Props) => {
 	const navigate = useNavigate();
 
-	return <CredixButton text="Create deal" onClick={() => navigate(Path.NEW_DEAL)} />;
+	const targetRoute = props.borrower
+		? Path.DEALS_BORROWER_NEW.replace(":borrower", props.borrower.toString())
+		: Path.DEALS_NEW;
+
+	return <CredixButton text="Create deal" onClick={() => navigate(targetRoute)} />;
 };

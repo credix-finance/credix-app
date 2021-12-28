@@ -21,6 +21,7 @@ import {
 import { toUIAmount, toUIPercentage, toProgramAmount } from "utils/format.utils";
 import "../../styles/stakeform.scss";
 import "../../styles/deals.scss";
+import { PublicKey } from "@solana/web3.js";
 
 export const DealOverview = () => {
 	const wallet = useAnchorWallet();
@@ -33,26 +34,27 @@ export const DealOverview = () => {
 	const [daysRemaining, setDaysRemaining] = useState<number | string>("X");
 	const [repaymentSelectValue, setRepaymentSelectValue] = useState<string>("interest");
 	const [dealNumber, setDealNumber] = useState<number>(0);
+	const [borrower, setBorrower] = useState<PublicKey | undefined>();
 	const notify = useNotify();
 	const params = useParams();
 	const navigate = useNavigate();
 
 	const fetchDealData = useCallback(async () => {
-		const dealNumber = params.deal && parseInt(params.deal);
-
-		if (!dealNumber && dealNumber !== 0) {
-			navigate(Path.NOT_FOUND);
+		if (!borrower) {
 			return;
 		}
 
-		setDealNumber(dealNumber);
 		const _clusterTime = getClusterTime(connection.connection);
-		const _dealData = getDealAccountData(connection.connection, wallet as Wallet, dealNumber);
+		const _dealData = getDealAccountData(
+			connection.connection,
+			wallet as Wallet,
+			borrower,
+			dealNumber
+		);
 
 		const [clusterTime, deal] = await Promise.all([_clusterTime, _dealData]);
 
 		if (!deal) {
-			navigate(Path.NOT_FOUND);
 			return;
 		}
 
@@ -68,7 +70,7 @@ export const DealOverview = () => {
 
 		const daysRemaining = getDaysRemaining(deal, clusterTime, dealStatus);
 		setDaysRemaining(daysRemaining);
-	}, [connection.connection, wallet]);
+	}, [connection.connection, wallet, borrower, dealNumber]);
 
 	const triggerRefresh = useRefresh(fetchDealData);
 
@@ -99,16 +101,46 @@ export const DealOverview = () => {
 	}, [repaymentSelectValue, deal]);
 
 	useEffect(() => {
+		const dealNumber = params.deal && parseInt(params.deal) - 1;
+
+		if ((!dealNumber && dealNumber !== 0) || dealNumber < 0) {
+			navigate(Path.NOT_FOUND);
+			return;
+		}
+
+		setDealNumber(dealNumber);
+	}, [params.deal, wallet, connection.connection, navigate]);
+
+	useEffect(() => {
+		if (!wallet) {
+			return;
+		}
+
+		try {
+			const borrowerKey = new PublicKey(params.borrower || "");
+			if (!borrowerKey.equals(wallet.publicKey)) {
+				navigate(Path.DEALS);
+				return;
+			}
+			setBorrower(borrowerKey);
+		} catch (e) {
+			navigate(Path.NOT_FOUND);
+		}
+	}, [params.borrower, navigate, wallet]);
+
+	useEffect(() => {
+		if (wallet?.publicKey && connection.connection) {
+			fetchDealData();
+		}
+	}, [wallet, connection.connection, fetchDealData]);
+
+	useEffect(() => {
 		if (wallet?.publicKey && connection.connection) {
 			setPlaceholder("0");
 		} else {
 			setPlaceholder("Connect wallet");
 		}
-
-		if (wallet?.publicKey && connection.connection) {
-			fetchDealData();
-		}
-	}, [connection.connection, wallet?.publicKey, fetchDealData]);
+	}, [connection.connection, wallet?.publicKey]);
 
 	useEffect(() => {
 		calculateAmountToRepay();

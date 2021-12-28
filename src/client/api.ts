@@ -16,10 +16,16 @@ import {
 } from "./pda";
 import { newCredixProgram } from "./program";
 
-export const getDealAccounts = multiAsync(async (connection, wallet) => {
+export const getDealAccounts = multiAsync(async (connection, wallet, borrower?: PublicKey) => {
 	const program = newCredixProgram(connection, wallet);
 
-	return program.account.deal.all();
+	const deals = await program.account.deal.all();
+
+	if (borrower) {
+		return deals.filter((deal) => deal.account.borrower.equals(borrower));
+	}
+
+	return deals;
 });
 
 const getGlobalMarketStateAccountData = multiAsync(
@@ -329,9 +335,9 @@ export const withdrawInvestment = multiAsync(
 );
 
 export const getDealAccountData = multiAsync(
-	async (connection: Connection, wallet: Wallet, dealNumber: number) => {
+	async (connection: Connection, wallet: Wallet, borrower: PublicKey, dealNumber: number) => {
 		const program = newCredixProgram(connection, wallet);
-		const dealPDA = await findDealPDA(wallet.publicKey, dealNumber);
+		const dealPDA = await findDealPDA(borrower, dealNumber);
 		return program.account.deal.fetchNullable(dealPDA[0]);
 	}
 );
