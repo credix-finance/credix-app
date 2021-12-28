@@ -200,7 +200,6 @@ export const DealOverview = () => {
 		onChange(e, setRepaymentAmount);
 	};
 
-	console.log("render");
 	return (
 		<div>
 			<h2>

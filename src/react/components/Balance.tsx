@@ -27,8 +27,6 @@ export const Balance = () => {
 		checkBalance();
 	}, [checkBalance]);
 
-	console.log("render balance");
-
 	return (
 		<>
 			<Button

@@ -60,6 +60,7 @@ export const DealsTable = (props: Props) => {
 				<TableCell>{deal.name}</TableCell>
 				<TableCell>{createdAt.toUTCString()}</TableCell>
 				<TableCell>{(goLiveAt && goLiveAt.toUTCString()) || "-"}</TableCell>
+				<TableCell>{toUIPercentage(deal.financingFeePercentage)}%</TableCell>
 				<TableCell>{millify(toUIAmount(deal.principal.toNumber()))}</TableCell>
 				<TableCell>{millify(toUIAmount(deal.principalAmountRepaid.toNumber()))}</TableCell>
 				<TableCell>{millify(toUIAmount(deal.interestAmountRepaid.toNumber()))}</TableCell>
@@ -77,8 +78,8 @@ export const DealsTable = (props: Props) => {
 						<TableRow>
 							<TableCell>Deal Name</TableCell>
 							<TableCell>Created at</TableCell>
-							<TableCell>Financing fee</TableCell>
 							<TableCell>Go live at</TableCell>
+							<TableCell>Financing fee</TableCell>
 							<TableCell>Principal</TableCell>
 							<TableCell>Principal repaid</TableCell>
 							<TableCell>Interest repaid</TableCell>
