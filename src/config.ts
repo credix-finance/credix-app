@@ -8,13 +8,13 @@ import { IDL } from "credix";
 const localnetConfig: ClusterConfig = {
 	name: SolanaCluster.LOCALNET,
 	RPCEndpoint: RPCEndpoint.LOCALNET,
-	programId: new PublicKey("B7PiFKNiBvQPMVtsJt8bM86U69a1ivev4VvnkLViMiUZ"),
+	programId: new PublicKey("23cCBfqt3QjRKSiHtW2NrvuraJ7A2HJRDqQNJU2V5S5K"),
 };
 
 const devnetConfig: ClusterConfig = {
 	name: SolanaCluster.DEVNET,
 	RPCEndpoint: RPCEndpoint.DEVNET,
-	programId: new PublicKey("B7PiFKNiBvQPMVtsJt8bM86U69a1ivev4VvnkLViMiUZ"),
+	programId: new PublicKey("23cCBfqt3QjRKSiHtW2NrvuraJ7A2HJRDqQNJU2V5S5K"),
 };
 ///
 
@@ -97,9 +97,8 @@ export const config: Config = ((): Config => {
 	};
 	const MANAGEMENT_KEYS = [
 		"Ej5zJzej7rrUoDngsJ3jcpfuvfVyWpcDcK7uv9cE2LdL",
-		"Ej5zJzej7rrUoDngsJ3jcpfuvfVyWpcDcK7uv9cE2LdL"
+		"Ej5zJzej7rrUoDngsJ3jcpfuvfVyWpcDcK7uv9cE2LdL",
 	];
-
 
 	return {
 		clusterConfig,
@@ -108,4 +107,3 @@ export const config: Config = ((): Config => {
 		managementKeys: MANAGEMENT_KEYS,
 	};
 })();
-
