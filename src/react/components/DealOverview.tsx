@@ -112,12 +112,21 @@ export const DealOverview = () => {
 	}, [params.deal, wallet, connection.connection, navigate]);
 
 	useEffect(() => {
+		if (!wallet) {
+			return;
+		}
+
 		try {
-			setBorrower(new PublicKey(params.borrower || ""));
+			const borrowerKey = new PublicKey(params.borrower || "");
+			if (!borrowerKey.equals(wallet.publicKey)) {
+				navigate(Path.NOT_FOUND);
+				return;
+			}
+			setBorrower(borrowerKey);
 		} catch (e) {
 			navigate(Path.NOT_FOUND);
 		}
-	}, [params.borrower, navigate]);
+	}, [params.borrower, navigate, wallet]);
 
 	useEffect(() => {
 		if (wallet?.publicKey && connection.connection) {
