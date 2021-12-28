@@ -6,6 +6,7 @@ export const SESSION_STORAGE = {
 export const SEEDS = {
 	GLOBAL_MARKET_STATE_PDA: "global-market-state",
 	DEAL_INFO: "deal-info",
+	CREDIX_PASS: "credix-pass",
 	BORROWER_INFO: "borrower-info",
 };
 

@@ -50,3 +50,11 @@ export const findBorrowerInfoPDA = multiAsync(async (borrowerPK: PublicKey) => {
 
 	return findPDA(seeds);
 });
+
+export const findCredixPassPDA = multiAsync(async (publicKey: PublicKey) => {
+	const credixPassSeeds = encodeSeedString(SEEDS.CREDIX_PASS);
+	const address = publicKey.toBuffer();
+	const seeds: PdaSeeds = [address, credixPassSeeds];
+
+	return findPDA(seeds);
+});

@@ -138,6 +138,11 @@ export type Credix = {
           "isSigner": false
         },
         {
+          "name": "credixPass",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
           "name": "usdcMintAccount",
           "isMut": false,
           "isSigner": false
@@ -201,6 +206,11 @@ export type Credix = {
         {
           "name": "deal",
           "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "credixPass",
+          "isMut": false,
           "isSigner": false
         },
         {
@@ -288,6 +298,11 @@ export type Credix = {
           "isSigner": false
         },
         {
+          "name": "credixPass",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
           "name": "usdcMintAccount",
           "isMut": false,
           "isSigner": false
@@ -355,6 +370,11 @@ export type Credix = {
         },
         {
           "name": "signingAuthority",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "credixPass",
           "isMut": false,
           "isSigner": false
         },
@@ -436,6 +456,11 @@ export type Credix = {
           "isSigner": false
         },
         {
+          "name": "credixPass",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
           "name": "usdcMintAccount",
           "isMut": false,
           "isSigner": false
@@ -455,6 +480,84 @@ export type Credix = {
         {
           "name": "itWithdrawalAmount",
           "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "createCredixPass",
+      "accounts": [
+        {
+          "name": "owner",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "passHolder",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "credixPass",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rent",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "passBump",
+          "type": "u8"
+        },
+        {
+          "name": "isUnderwriter",
+          "type": "bool"
+        },
+        {
+          "name": "isBorrower",
+          "type": "bool"
+        }
+      ]
+    },
+    {
+      "name": "updateCredixPass",
+      "accounts": [
+        {
+          "name": "owner",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "passHolder",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "credixPass",
+          "isMut": true,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "isActive",
+          "type": "bool"
+        },
+        {
+          "name": "isUnderwriter",
+          "type": "bool"
+        },
+        {
+          "name": "isBorrower",
+          "type": "bool"
         }
       ]
     }
@@ -599,6 +702,30 @@ export type Credix = {
           }
         ]
       }
+    },
+    {
+      "name": "CredixPass",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "isBorrower",
+            "type": "bool"
+          },
+          {
+            "name": "isUnderwriter",
+            "type": "bool"
+          },
+          {
+            "name": "active",
+            "type": "bool"
+          }
+        ]
+      }
     }
   ],
   "types": [
@@ -662,6 +789,16 @@ export type Credix = {
       "code": 6008,
       "name": "UnauthorizedSigner",
       "msg": "The Signer is not authorized to use this instruction."
+    },
+    {
+      "code": 6009,
+      "name": "CredixPassInvalid",
+      "msg": "Credix pass is invalid for this request."
+    },
+    {
+      "code": 6010,
+      "name": "CredixPassInactive",
+      "msg": "Credix pass is inactive at the moment."
     }
   ],
   "metadata": {
@@ -809,6 +946,11 @@ export const IDL: Credix = {
           "isSigner": false
         },
         {
+          "name": "credixPass",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
           "name": "usdcMintAccount",
           "isMut": false,
           "isSigner": false
@@ -872,6 +1014,11 @@ export const IDL: Credix = {
         {
           "name": "deal",
           "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "credixPass",
+          "isMut": false,
           "isSigner": false
         },
         {
@@ -959,6 +1106,11 @@ export const IDL: Credix = {
           "isSigner": false
         },
         {
+          "name": "credixPass",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
           "name": "usdcMintAccount",
           "isMut": false,
           "isSigner": false
@@ -1026,6 +1178,11 @@ export const IDL: Credix = {
         },
         {
           "name": "signingAuthority",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "credixPass",
           "isMut": false,
           "isSigner": false
         },
@@ -1107,6 +1264,11 @@ export const IDL: Credix = {
           "isSigner": false
         },
         {
+          "name": "credixPass",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
           "name": "usdcMintAccount",
           "isMut": false,
           "isSigner": false
@@ -1126,6 +1288,84 @@ export const IDL: Credix = {
         {
           "name": "itWithdrawalAmount",
           "type": "u64"
+        }
+      ]
+    },
+    {
+      "name": "createCredixPass",
+      "accounts": [
+        {
+          "name": "owner",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "passHolder",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "credixPass",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rent",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "passBump",
+          "type": "u8"
+        },
+        {
+          "name": "isUnderwriter",
+          "type": "bool"
+        },
+        {
+          "name": "isBorrower",
+          "type": "bool"
+        }
+      ]
+    },
+    {
+      "name": "updateCredixPass",
+      "accounts": [
+        {
+          "name": "owner",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "passHolder",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "credixPass",
+          "isMut": true,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "isActive",
+          "type": "bool"
+        },
+        {
+          "name": "isUnderwriter",
+          "type": "bool"
+        },
+        {
+          "name": "isBorrower",
+          "type": "bool"
         }
       ]
     }
@@ -1270,6 +1510,30 @@ export const IDL: Credix = {
           }
         ]
       }
+    },
+    {
+      "name": "CredixPass",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "isBorrower",
+            "type": "bool"
+          },
+          {
+            "name": "isUnderwriter",
+            "type": "bool"
+          },
+          {
+            "name": "active",
+            "type": "bool"
+          }
+        ]
+      }
     }
   ],
   "types": [
@@ -1333,6 +1597,16 @@ export const IDL: Credix = {
       "code": 6008,
       "name": "UnauthorizedSigner",
       "msg": "The Signer is not authorized to use this instruction."
+    },
+    {
+      "code": 6009,
+      "name": "CredixPassInvalid",
+      "msg": "Credix pass is invalid for this request."
+    },
+    {
+      "code": 6010,
+      "name": "CredixPassInactive",
+      "msg": "Credix pass is inactive at the moment."
     }
   ],
   "metadata": {
