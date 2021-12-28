@@ -350,7 +350,7 @@ export const withdrawInvestment = multiAsync(
 			_treasuryPoolTokenAccountPK,
 			_signingAuthorityPDA,
 			_depositorLPAssociatedTokenAddress,
-			_getGatewayToken
+			_getGatewayToken,
 			_getCredixPassPDA,
 		]);
 
@@ -489,7 +489,7 @@ export const activateDeal = multiAsync(
 			_globalMarketStatePDA,
 			_dealPDA,
 			_signingAuthorityPDA,
-			_getGatewayToken
+			_getGatewayToken,
 			_getCredixPassPDA,
 		]);
 
@@ -619,7 +619,7 @@ export const repayDeal = multiAsync(
 			_usdcMintPK,
 			_treasuryPoolTokenAccountPK,
 			_signingAuthorityPDA,
-			_getGatewayToken
+			_getGatewayToken,
 			_getCredixPassPDA,
 		]);
 
