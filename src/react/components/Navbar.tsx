@@ -4,6 +4,8 @@ import React from "react";
 import "../../styles/navbar.scss";
 import logo from "../../assets/credix_logo_zwart.svg";
 import { FaucetButton } from "./buttons/FaucetButton";
+import { SolanaCluster } from "../../types/solana.types";
+import { config } from "../../config";
 
 export const Navbar = () => (
 	<div className="navbar-container">
@@ -13,7 +15,9 @@ export const Navbar = () => (
 		</div>
 		<div className="balance-wallet-container">
 			<WalletMultiButton className="navbar-button credix-button" />
-			<FaucetButton text="Get USDC" className="navbar-button" />
+			{config.clusterConfig.name !== SolanaCluster.MAINNET &&
+				<FaucetButton text="Get USDC" className="navbar-button" />
+			}
 			<Balance />
 		</div>
 	</div>
