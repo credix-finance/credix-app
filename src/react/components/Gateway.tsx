@@ -3,7 +3,7 @@ import React from "react";
 import { Badge, GatewayStatus, useGateway } from "@civic/solana-gateway-react";
 import { PublicKey } from "@solana/web3.js";
 import { config } from "../../config";
-import { CredixButton } from "@components/buttons/CredixButton";
+import { CivicButton } from "@components/buttons/CivicButton";
 
 interface Props {
 	gatekeeperNetwork: PublicKey;
@@ -25,10 +25,10 @@ export const Gateway = (props: Props) => {
 						publicKey={wallet.publicKey}
 						connection={connection.connection}
 					/> }
-					{ !gatewayToken && <CredixButton
-						text={`CIVIC: ${GatewayStatus[gatewayStatus]}`}
-						onClick={requestGatewayToken}
+					{ !gatewayToken && <CivicButton
 						className={props.className}
+						onClick={requestGatewayToken}
+						text={`CIVIC: ${GatewayStatus[gatewayStatus]}`}
 					/> }
 				</>
 			}
