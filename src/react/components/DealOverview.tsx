@@ -119,7 +119,7 @@ export const DealOverview = () => {
 		try {
 			const borrowerKey = new PublicKey(params.borrower || "");
 			if (!borrowerKey.equals(wallet.publicKey)) {
-				navigate(Path.NOT_FOUND);
+				navigate(Path.DEALS);
 				return;
 			}
 			setBorrower(borrowerKey);
