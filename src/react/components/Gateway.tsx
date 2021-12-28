@@ -28,7 +28,7 @@ export const Gateway = (props: Props) => {
 					{ !gatewayToken && <CivicButton
 						className={props.className}
 						onClick={requestGatewayToken}
-						text={`CIVIC: ${GatewayStatus[gatewayStatus]}`}
+						text={GatewayStatus[gatewayStatus]}
 					/> }
 				</>
 			}
