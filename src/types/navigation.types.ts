@@ -1,8 +1,10 @@
 export enum Path {
 	OVERVIEW = "/",
 	DEALS = "/deals",
-	NEW_DEAL = "/deals/new",
-	DEAL = "/deals/:deal",
+	DEALS_NEW = "/deals/new",
+	DEALS_BORROWER = "/deals/:borrower",
+	DEALS_BORROWER_NEW = "/deals/:borrower/new",
+	DEALS_DETAIL = "/deals/:borrower/:deal",
 	HELP = "/help",
-	NOT_FOUND = "*",
+	NOT_FOUND = "/*",
 }

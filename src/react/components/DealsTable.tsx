@@ -10,8 +10,13 @@ import "../../styles/dealstable.scss";
 import { formatDealStatus, toUIAmount, toUIPercentage } from "utils/format.utils";
 import { getDaysRemaining, mapDealToStatus } from "utils/deal.utils";
 import millify from "millify";
+import { PublicKey } from "@solana/web3.js";
 
-export const DealsTable = () => {
+interface Props {
+	borrower?: PublicKey;
+}
+
+export const DealsTable = (props: Props) => {
 	const wallet = useAnchorWallet();
 	const connection = useConnection();
 	const [deals, setDeals] = useState<any>([]);
@@ -19,14 +24,14 @@ export const DealsTable = () => {
 	const navigate = useNavigate();
 
 	const getDeals = useCallback(async () => {
-		const _deals = getDealAccounts(connection.connection, wallet as Wallet);
+		const _deals = getDealAccounts(connection.connection, wallet as Wallet, props.borrower);
 		const _clusterTime = getClusterTime(connection.connection);
 
 		const [deals, clusterTime] = await Promise.all([_deals, _clusterTime]);
 
 		setDeals(deals);
 		setClusterTime(clusterTime);
-	}, [connection.connection, wallet]);
+	}, [connection.connection, wallet, props.borrower]);
 
 	useEffect(() => {
 		if (wallet) {
@@ -45,12 +50,13 @@ export const DealsTable = () => {
 		const daysRemaining =
 			dealStatus && clusterTime && getDaysRemaining(deal, clusterTime, dealStatus);
 
+		const targetRoute = Path.DEALS_DETAIL.replace(":borrower", deal.borrower.toString()).replace(
+			":deal",
+			(deal.dealNumber + 1).toString()
+		);
+
 		return (
-			<TableRow
-				key={key}
-				hover
-				onClick={() => navigate(Path.DEAL.replace(":deal", deal.dealNumber.toString()))}
-			>
+			<TableRow key={key} hover onClick={() => navigate(targetRoute)}>
 				<TableCell>{deal.name}</TableCell>
 				<TableCell>{createdAt.toUTCString()}</TableCell>
 				<TableCell>{(goLiveAt && goLiveAt.toUTCString()) || "-"}</TableCell>
@@ -65,7 +71,7 @@ export const DealsTable = () => {
 	};
 
 	return (
-		<div style={{ border: "1px solid black" }}>
+		<div style={{ border: "1px solid black", maxWidth: "90vw" }}>
 			<TableContainer>
 				<Table>
 					<TableHead>
