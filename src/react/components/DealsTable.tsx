@@ -60,8 +60,10 @@ export const DealsTable = (props: Props) => {
 			(deal.dealNumber + 1).toString()
 		);
 
+		const userDeal = wallet?.publicKey && deal.borrower.equals(wallet?.publicKey);
+
 		return (
-			<TableRow key={key} hover onClick={() => navigate(targetRoute)}>
+			<TableRow key={key} hover={userDeal} onClick={() => userDeal && navigate(targetRoute)}>
 				<TableCell>{deal.name}</TableCell>
 				<TableCell>{formatBorrowerKey(deal.borrower)}</TableCell>
 				<TableCell>{createdAt.toUTCString()}</TableCell>
@@ -72,6 +74,7 @@ export const DealsTable = (props: Props) => {
 				<TableCell>{millify(toUIAmount(deal.interestAmountRepaid.toNumber()))}</TableCell>
 				<TableCell>{`${daysRemaining} / ${deal.timeToMaturityDays}`}</TableCell>
 				<TableCell>{`${dealStatus !== null && formatDealStatus(dealStatus)}`}</TableCell>
+				<TableCell>{userDeal && "repay"}</TableCell>
 			</TableRow>
 		);
 	};
@@ -92,6 +95,7 @@ export const DealsTable = (props: Props) => {
 							<TableCell>Interest repaid</TableCell>
 							<TableCell>Days remaining</TableCell>
 							<TableCell>Status</TableCell>
+							<TableCell></TableCell>
 						</TableRow>
 					</TableHead>
 					<TableBody>{deals.map((deal: any) => tableRow(deal.account, deal.publicKey))}</TableBody>
