@@ -56,7 +56,6 @@ export const DealsTable = () => {
 				<TableCell>{toUIPercentage(deal.financingFeePercentage)}%</TableCell>
 				<TableCell>{(goLiveAt && goLiveAt.toUTCString()) || "-"}</TableCell>
 				<TableCell>{millify(toUIAmount(deal.principal.toNumber()))}</TableCell>
-				<TableCell>{toUIPercentage(deal.financingFeePercentage)}%</TableCell>
 				<TableCell>{millify(toUIAmount(deal.principalAmountRepaid.toNumber()))}</TableCell>
 				<TableCell>{millify(toUIAmount(deal.interestAmountRepaid.toNumber()))}</TableCell>
 				<TableCell>{`${daysRemaining} / ${deal.timeToMaturityDays}`}</TableCell>
@@ -73,9 +72,9 @@ export const DealsTable = () => {
 						<TableRow>
 							<TableCell>Deal Name</TableCell>
 							<TableCell>Created at</TableCell>
+							<TableCell>Financing fee</TableCell>
 							<TableCell>Go live at</TableCell>
 							<TableCell>Principal</TableCell>
-							<TableCell>Financing fee</TableCell>
 							<TableCell>Principal repaid</TableCell>
 							<TableCell>Interest repaid</TableCell>
 							<TableCell>Days remaining</TableCell>
