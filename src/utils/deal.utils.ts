@@ -41,7 +41,9 @@ export const getDaysRemaining = (deal: Deal, clusterTime: number, dealStatus: De
 };
 
 export const getTotalInterest = (deal: Deal) => {
-	return percentage(deal.principal.toNumber(), deal.financingFeePercentage);
+	return (percentage(deal.principal.toNumber(), deal.financingFeePercentage)
+		* deal.timeToMaturityDays)
+		/ 360;
 };
 
 export const getPrincipalToRepay = (deal: Deal) => {

@@ -11,6 +11,11 @@ export type Credix = {
           "isSigner": true
         },
         {
+          "name": "gatekeeperNetwork",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
           "name": "globalMarketState",
           "isMut": true,
           "isSigner": false
@@ -98,6 +103,11 @@ export type Credix = {
           "isSigner": true
         },
         {
+          "name": "gatewayToken",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
           "name": "globalMarketState",
           "isMut": true,
           "isSigner": false
@@ -174,6 +184,11 @@ export type Credix = {
           "isSigner": true
         },
         {
+          "name": "gatewayToken",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
           "name": "borrower",
           "isMut": false,
           "isSigner": false
@@ -248,6 +263,11 @@ export type Credix = {
           "isSigner": true
         },
         {
+          "name": "gatewayToken",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
           "name": "globalMarketState",
           "isMut": true,
           "isSigner": false
@@ -317,6 +337,11 @@ export type Credix = {
           "name": "borrower",
           "isMut": false,
           "isSigner": true
+        },
+        {
+          "name": "gatewayToken",
+          "isMut": false,
+          "isSigner": false
         },
         {
           "name": "globalMarketState",
@@ -389,6 +414,11 @@ export type Credix = {
           "name": "withdrawer",
           "isMut": false,
           "isSigner": true
+        },
+        {
+          "name": "gatewayToken",
+          "isMut": false,
+          "isSigner": false
         },
         {
           "name": "globalMarketState",
@@ -627,6 +657,10 @@ export type Credix = {
         "kind": "struct",
         "fields": [
           {
+            "name": "gatekeeperNetwork",
+            "type": "publicKey"
+          },
+          {
             "name": "liquidityPoolTokenAccount",
             "type": "publicKey"
           },
@@ -766,10 +800,7 @@ export type Credix = {
       "name": "CredixPassInactive",
       "msg": "Credix pass is inactive at the moment."
     }
-  ],
-  "metadata": {
-    "address": "B7PiFKNiBvQPMVtsJt8bM86U69a1ivev4VvnkLViMiUZ"
-  }
+  ]
 };
 
 export const IDL: Credix = {
@@ -785,6 +816,11 @@ export const IDL: Credix = {
           "isSigner": true
         },
         {
+          "name": "gatekeeperNetwork",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
           "name": "globalMarketState",
           "isMut": true,
           "isSigner": false
@@ -872,6 +908,11 @@ export const IDL: Credix = {
           "isSigner": true
         },
         {
+          "name": "gatewayToken",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
           "name": "globalMarketState",
           "isMut": true,
           "isSigner": false
@@ -948,6 +989,11 @@ export const IDL: Credix = {
           "isSigner": true
         },
         {
+          "name": "gatewayToken",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
           "name": "borrower",
           "isMut": false,
           "isSigner": false
@@ -1022,6 +1068,11 @@ export const IDL: Credix = {
           "isSigner": true
         },
         {
+          "name": "gatewayToken",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
           "name": "globalMarketState",
           "isMut": true,
           "isSigner": false
@@ -1091,6 +1142,11 @@ export const IDL: Credix = {
           "name": "borrower",
           "isMut": false,
           "isSigner": true
+        },
+        {
+          "name": "gatewayToken",
+          "isMut": false,
+          "isSigner": false
         },
         {
           "name": "globalMarketState",
@@ -1163,6 +1219,11 @@ export const IDL: Credix = {
           "name": "withdrawer",
           "isMut": false,
           "isSigner": true
+        },
+        {
+          "name": "gatewayToken",
+          "isMut": false,
+          "isSigner": false
         },
         {
           "name": "globalMarketState",
@@ -1401,6 +1462,10 @@ export const IDL: Credix = {
         "kind": "struct",
         "fields": [
           {
+            "name": "gatekeeperNetwork",
+            "type": "publicKey"
+          },
+          {
             "name": "liquidityPoolTokenAccount",
             "type": "publicKey"
           },
@@ -1540,8 +1605,5 @@ export const IDL: Credix = {
       "name": "CredixPassInactive",
       "msg": "Credix pass is inactive at the moment."
     }
-  ],
-  "metadata": {
-    "address": "B7PiFKNiBvQPMVtsJt8bM86U69a1ivev4VvnkLViMiUZ"
-  }
+  ]
 };
