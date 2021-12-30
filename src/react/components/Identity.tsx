@@ -28,13 +28,13 @@ export const Identity = () => {
 	const mapClusterNameToStage = (clusterName: SolanaCluster) => {
 		switch(clusterName) {
 			case SolanaCluster.LOCALNET: {
-				return SolanaCluster.LOCALNET.replace("net", "");
+				return "local";
 			}
 			case SolanaCluster.DEVNET: {
-				return SolanaCluster.DEVNET.replace("net", "");
+				return "dev";
 			}
 			case SolanaCluster.MAINNET: {
-				return SolanaCluster.MAINNET;
+				return "prod";
 			}
 			default: {
 				break;
