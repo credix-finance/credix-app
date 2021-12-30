@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "@civic/solana-gateway-react": "^0.4.6",
-    "@craco/craco": "^6.4.0",
+    "@craco/craco": "^6.4.3",
     "@emotion/react": "^11.6.0",
     "@emotion/styled": "^11.6.0",
     "@identity.com/solana-gateway-ts": "^0.4.4",
