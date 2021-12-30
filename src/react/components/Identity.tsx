@@ -5,25 +5,25 @@ import { getGatekeeperNetwork } from "../../client/api";
 import { Wallet } from "@project-serum/anchor";
 import { PublicKey } from "@solana/web3.js";
 import { config } from "../../config";
-import { Gateway } from "@components/Gateway";
+import { CivicHeader } from "@components/CivicHeader";
 import { SolanaCluster } from "../../types/solana.types";
 
 export const Identity = () => {
 	const wallet = useAnchorWallet();
 	const connection = useConnection();
 
-	const [gatekeeperNetwork, setGatekeeperNetwork] = useState<PublicKey | undefined>(undefined);
+	const [gatekeeperNetwork, setGatekeeperNetwork] = useState<PublicKey>();
 
 	useEffect(() => {
+		const updateGatekeeperNetwork = async () => {
+			const gatekeeperNetwork = await getGatekeeperNetwork(connection.connection, wallet as Wallet);
+			setGatekeeperNetwork(gatekeeperNetwork);
+		};
+
 		if (wallet?.publicKey && connection.connection) {
 			updateGatekeeperNetwork();
 		}
-	}, [wallet?.publicKey]);
-
-	const updateGatekeeperNetwork = async () => {
-		const gatekeeperNetwork = await getGatekeeperNetwork(connection.connection, wallet as Wallet);
-		setGatekeeperNetwork(gatekeeperNetwork);
-	};
+	}, [connection.connection, wallet]);
 
 	const mapClusterNameToStage = (clusterName: SolanaCluster) => {
 		switch(clusterName) {
@@ -51,7 +51,7 @@ export const Identity = () => {
 				clusterUrl={config.clusterConfig.RPCEndpoint}
 			>
 				{ gatekeeperNetwork &&
-					<Gateway gatekeeperNetwork={gatekeeperNetwork} className="navbar-button credix-button" />
+					<CivicHeader gatekeeperNetwork={gatekeeperNetwork} className="navbar-button credix-button" />
 				}
 			</GatewayProvider>
 		</>
