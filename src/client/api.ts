@@ -189,6 +189,8 @@ const getDepositorLPAssociatedTokenAddress = multiAsync(
 
 const getGatewayToken = multiAsync(
 	async (connection: Connection, wallet: Wallet, userPK: PublicKey) => {
+		// used from node_modules/@identity.com/solana-gateway-ts/src/lib `findGatewayTokens`
+		// should be able to plug in our own program id in order to make it work locally
 		const GATEWAY_TOKEN_ACCOUNT_OWNER_FIELD_OFFSET = 2;
 		const GATEWAY_TOKEN_ACCOUNT_GATEKEEPER_NETWORK_FIELD_OFFSET = 35;
 		const gatekeeperNetwork = await getGatekeeperNetwork(connection, wallet as Wallet);

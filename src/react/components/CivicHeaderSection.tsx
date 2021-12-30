@@ -10,7 +10,7 @@ interface Props {
 	className?: string;
 }
 
-export const CivicHeader = (props: Props) => {
+export const CivicHeaderSection = (props: Props) => {
 	const wallet = useAnchorWallet();
 	const connection = useConnection();
 	const { gatewayStatus, gatewayToken } = useGateway();

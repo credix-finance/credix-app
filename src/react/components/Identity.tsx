@@ -5,7 +5,7 @@ import { getGatekeeperNetwork } from "../../client/api";
 import { Wallet } from "@project-serum/anchor";
 import { PublicKey } from "@solana/web3.js";
 import { config } from "../../config";
-import { CivicHeader } from "@components/CivicHeader";
+import { CivicHeaderSection } from "@components/CivicHeaderSection";
 import { SolanaCluster } from "../../types/solana.types";
 
 export const Identity = () => {
@@ -51,7 +51,7 @@ export const Identity = () => {
 				clusterUrl={config.clusterConfig.RPCEndpoint}
 			>
 				{ gatekeeperNetwork &&
-					<CivicHeader gatekeeperNetwork={gatekeeperNetwork} className="navbar-button credix-button" />
+					<CivicHeaderSection gatekeeperNetwork={gatekeeperNetwork} className="navbar-button credix-button" />
 				}
 			</GatewayProvider>
 		</>
