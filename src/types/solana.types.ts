@@ -1,7 +1,7 @@
 export enum SolanaCluster {
 	LOCALNET = "localnet",
 	DEVNET = "devnet",
-	MAINNET = "mainnet",
+	MAINNET = "mainnet-beta",
 }
 
 export enum RPCEndpoint {
