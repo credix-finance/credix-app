@@ -15,6 +15,8 @@ import {
 	findCredixPassPDA,
 } from "./pda";
 import { newCredixProgram } from "./program";
+import { dataToGatewayToken, GatewayTokenData } from "@identity.com/solana-gateway-ts";
+import { config } from "../config";
 
 export const getDealAccounts = multiAsync(async (connection, wallet, borrower?: PublicKey) => {
 	const program = newCredixProgram(connection, wallet);
@@ -80,6 +82,11 @@ export const getLiquidityPoolBalance = multiAsync(
 const getOutstandingCredit = multiAsync(async (connection: Connection, wallet: Wallet) => {
 	const globalMarketStateData = await getGlobalMarketStateAccountData(connection, wallet);
 	return globalMarketStateData.totalOutstandingCredit.toNumber();
+});
+
+export const getGatekeeperNetwork = multiAsync(async (connection: Connection, wallet: Wallet) => {
+	const globalMarketStateData = await getGlobalMarketStateAccountData(connection, wallet);
+	return globalMarketStateData.gatekeeperNetwork;
 });
 
 export const getClusterTime = multiAsync(async (connection: Connection) => {
@@ -180,6 +187,41 @@ const getDepositorLPAssociatedTokenAddress = multiAsync(
 	}
 );
 
+const getGatewayToken = multiAsync(
+	async (connection: Connection, wallet: Wallet, userPK: PublicKey) => {
+		// used from node_modules/@identity.com/solana-gateway-ts/src/lib `findGatewayTokens`
+		// should be able to plug in our own program id in order to make it work locally
+		const GATEWAY_TOKEN_ACCOUNT_OWNER_FIELD_OFFSET = 2;
+		const GATEWAY_TOKEN_ACCOUNT_GATEKEEPER_NETWORK_FIELD_OFFSET = 35;
+		const gatekeeperNetwork = await getGatekeeperNetwork(connection, wallet as Wallet);
+		const ownerFilter = {
+			memcmp: {
+				offset: GATEWAY_TOKEN_ACCOUNT_OWNER_FIELD_OFFSET,
+				bytes: userPK.toBase58(),
+			},
+		};
+		const gatekeeperNetworkFilter = {
+			memcmp: {
+				offset: GATEWAY_TOKEN_ACCOUNT_GATEKEEPER_NETWORK_FIELD_OFFSET,
+				bytes: gatekeeperNetwork.toBase58(),
+			},
+		};
+		const filters = [ownerFilter, gatekeeperNetworkFilter];
+		const accountsResponse = await connection.getProgramAccounts(config.clusterConfig.gatewayProgramId, {
+			filters,
+		});
+
+		if (accountsResponse.length === 0) {
+			throw Error("No valid Civic gateway tokens found");
+		}
+
+		return dataToGatewayToken(
+			GatewayTokenData.fromAccount(accountsResponse[0].account.data as Buffer),
+			accountsResponse[0].pubkey
+		);
+	}
+);
+
 const getLPTokenMintPK = multiAsync(async (connection: Connection, wallet: Wallet) => {
 	const globalMarketStateData = await getGlobalMarketStateAccountData(connection, wallet);
 	return globalMarketStateData.lpTokenMintAccount;
@@ -226,6 +268,7 @@ export const depositInvestment = multiAsync(
 			connection,
 			wallet
 		);
+		const _getGatewayToken = getGatewayToken(connection, wallet, wallet.publicKey);
 		const _getCredixPassPDA = findCredixPassPDA(wallet.publicKey);
 
 		const [
@@ -236,6 +279,7 @@ export const depositInvestment = multiAsync(
 			marketUSDCTokenAccountPK,
 			signingAuthorityPDA,
 			depositorLPAssociatedTokenAddress,
+			gatewayToken,
 			credixPass,
 		] = await Promise.all([
 			_globalMarketStatePDA,
@@ -245,12 +289,14 @@ export const depositInvestment = multiAsync(
 			_marketUSDCTokenAccountPK,
 			_signingAuthorityPDA,
 			_depositorLPAssociatedTokenAddress,
+			_getGatewayToken,
 			_getCredixPassPDA,
 		]);
 
 		return program.rpc.depositFunds(depositAmount, {
 			accounts: {
 				depositor: wallet.publicKey,
+				gatewayToken: gatewayToken.publicKey,
 				globalMarketState: globalMarketStatePDA[0],
 				signingAuthority: signingAuthorityPDA[0],
 				depositorTokenAccount: userAssociatedUSDCTokenAddressPK,
@@ -287,6 +333,7 @@ export const withdrawInvestment = multiAsync(
 			connection,
 			wallet
 		);
+		const _getGatewayToken = getGatewayToken(connection, wallet, wallet.publicKey);
 		const _getCredixPassPDA = findCredixPassPDA(wallet.publicKey);
 
 		const [
@@ -299,6 +346,7 @@ export const withdrawInvestment = multiAsync(
 			treasuryPoolTokenAccountPK,
 			signingAuthorityPDA,
 			depositorLPAssociatedTokenAddress,
+			gatewayToken,
 			credixPass,
 		] = await Promise.all([
 			_lpTokenPrice,
@@ -310,6 +358,7 @@ export const withdrawInvestment = multiAsync(
 			_treasuryPoolTokenAccountPK,
 			_signingAuthorityPDA,
 			_depositorLPAssociatedTokenAddress,
+			_getGatewayToken,
 			_getCredixPassPDA,
 		]);
 
@@ -318,6 +367,7 @@ export const withdrawInvestment = multiAsync(
 		return program.rpc.withdrawFunds(withdrawAmount, {
 			accounts: {
 				withdrawer: wallet.publicKey,
+				gatewayToken: gatewayToken.publicKey,
 				globalMarketState: globalMarketStatePDA[0],
 				signingAuthority: signingAuthorityPDA[0],
 				withdrawerLpTokenAccount: depositorLPAssociatedTokenAddress,
@@ -366,11 +416,19 @@ export const createDeal = multiAsync(
 		const _globalMarketStatePDA = findGlobalMarketStatePDA();
 		const _getCredixPassPDA = findCredixPassPDA(borrower);
 		const _borrowerInfoPDA = findBorrowerInfoPDA(borrower);
+		const _getGatewayToken = getGatewayToken(connection, wallet, borrower);
 
-		const [dealPDA, globalMarketStatePDA, borrowerInfoPDA, credixPass] = await Promise.all([
+		const [
+			dealPDA,
+			globalMarketStatePDA,
+			borrowerInfoPDA,
+			gatewayToken,
+			credixPass
+		] = await Promise.all([
 			_dealPDA,
 			_globalMarketStatePDA,
 			_borrowerInfoPDA,
+			_getGatewayToken,
 			_getCredixPassPDA,
 		]);
 
@@ -391,6 +449,7 @@ export const createDeal = multiAsync(
 			{
 				accounts: {
 					owner: wallet.publicKey,
+					gatewayToken: gatewayToken.publicKey,
 					borrower: borrower,
 					borrowerInfo: borrowerInfoPDA[0],
 					globalMarketState: globalMarketStatePDA[0],
@@ -419,6 +478,7 @@ export const activateDeal = multiAsync(
 		const _globalMarketStatePDA = findGlobalMarketStatePDA();
 		const _dealPDA = findDealPDA(borrower, dealNumber);
 		const _signingAuthorityPDA = findSigningAuthorityPDA();
+		const _getGatewayToken = getGatewayToken(connection, wallet, borrower);
 		const _getCredixPassPDA = findCredixPassPDA(borrower);
 
 		const [
@@ -428,6 +488,7 @@ export const activateDeal = multiAsync(
 			globalMarketStatePDA,
 			dealPDA,
 			signingAuthorityPDA,
+			gatewayToken,
 			credixPass,
 		] = await Promise.all([
 			_userAssociatedUSDCTokenAddressPK,
@@ -436,12 +497,14 @@ export const activateDeal = multiAsync(
 			_globalMarketStatePDA,
 			_dealPDA,
 			_signingAuthorityPDA,
+			_getGatewayToken,
 			_getCredixPassPDA,
 		]);
 
 		return program.rpc.activateDeal({
 			accounts: {
 				owner: wallet.publicKey,
+				gatewayToken: gatewayToken.publicKey,
 				globalMarketState: globalMarketStatePDA[0],
 				signingAuthority: signingAuthorityPDA[0],
 				deal: dealPDA[0],
@@ -543,6 +606,7 @@ export const repayDeal = multiAsync(
 		const _usdcMintPK = getUSDCMintPK(connection, wallet);
 		const _treasuryPoolTokenAccountPK = getTreasuryPoolTokenAccountPK(connection, wallet);
 		const _signingAuthorityPDA = findSigningAuthorityPDA();
+		const _getGatewayToken = getGatewayToken(connection, wallet, wallet.publicKey);
 		const _getCredixPassPDA = findCredixPassPDA(wallet.publicKey);
 
 		const [
@@ -553,6 +617,7 @@ export const repayDeal = multiAsync(
 			usdcMintPK,
 			treasuryPoolTokenAccountPK,
 			signingAuthorityPDA,
+			gatewayToken,
 			credixPass,
 		] = await Promise.all([
 			_globalMarketStatePDA,
@@ -562,12 +627,14 @@ export const repayDeal = multiAsync(
 			_usdcMintPK,
 			_treasuryPoolTokenAccountPK,
 			_signingAuthorityPDA,
+			_getGatewayToken,
 			_getCredixPassPDA,
 		]);
 
 		await program.rpc.makeDealRepayment(repayAmount, repaymentType, {
 			accounts: {
 				borrower: wallet.publicKey,
+				gatewayToken: gatewayToken.publicKey,
 				globalMarketState: globalMarketStatePDA[0],
 				borrowerTokenAccount: userAssociatedUSDCTokenAddressPK,
 				deal: dealPDA[0],

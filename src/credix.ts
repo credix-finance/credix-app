@@ -11,6 +11,11 @@ export type Credix = {
           "isSigner": true
         },
         {
+          "name": "gatekeeperNetwork",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
           "name": "globalMarketState",
           "isMut": true,
           "isSigner": false
@@ -98,6 +103,11 @@ export type Credix = {
           "isSigner": true
         },
         {
+          "name": "gatewayToken",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
           "name": "globalMarketState",
           "isMut": true,
           "isSigner": false
@@ -174,6 +184,11 @@ export type Credix = {
           "isSigner": true
         },
         {
+          "name": "gatewayToken",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
           "name": "borrower",
           "isMut": false,
           "isSigner": false
@@ -248,6 +263,11 @@ export type Credix = {
           "isSigner": true
         },
         {
+          "name": "gatewayToken",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
           "name": "globalMarketState",
           "isMut": true,
           "isSigner": false
@@ -317,6 +337,11 @@ export type Credix = {
           "name": "borrower",
           "isMut": false,
           "isSigner": true
+        },
+        {
+          "name": "gatewayToken",
+          "isMut": false,
+          "isSigner": false
         },
         {
           "name": "globalMarketState",
@@ -389,6 +414,11 @@ export type Credix = {
           "name": "withdrawer",
           "isMut": false,
           "isSigner": true
+        },
+        {
+          "name": "gatewayToken",
+          "isMut": false,
+          "isSigner": false
         },
         {
           "name": "globalMarketState",
@@ -626,6 +656,10 @@ export type Credix = {
       "type": {
         "kind": "struct",
         "fields": [
+          {
+            "name": "gatekeeperNetwork",
+            "type": "publicKey"
+          },
           {
             "name": "liquidityPoolTokenAccount",
             "type": "publicKey"
@@ -782,6 +816,11 @@ export const IDL: Credix = {
           "isSigner": true
         },
         {
+          "name": "gatekeeperNetwork",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
           "name": "globalMarketState",
           "isMut": true,
           "isSigner": false
@@ -869,6 +908,11 @@ export const IDL: Credix = {
           "isSigner": true
         },
         {
+          "name": "gatewayToken",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
           "name": "globalMarketState",
           "isMut": true,
           "isSigner": false
@@ -945,6 +989,11 @@ export const IDL: Credix = {
           "isSigner": true
         },
         {
+          "name": "gatewayToken",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
           "name": "borrower",
           "isMut": false,
           "isSigner": false
@@ -1019,6 +1068,11 @@ export const IDL: Credix = {
           "isSigner": true
         },
         {
+          "name": "gatewayToken",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
           "name": "globalMarketState",
           "isMut": true,
           "isSigner": false
@@ -1088,6 +1142,11 @@ export const IDL: Credix = {
           "name": "borrower",
           "isMut": false,
           "isSigner": true
+        },
+        {
+          "name": "gatewayToken",
+          "isMut": false,
+          "isSigner": false
         },
         {
           "name": "globalMarketState",
@@ -1160,6 +1219,11 @@ export const IDL: Credix = {
           "name": "withdrawer",
           "isMut": false,
           "isSigner": true
+        },
+        {
+          "name": "gatewayToken",
+          "isMut": false,
+          "isSigner": false
         },
         {
           "name": "globalMarketState",
@@ -1397,6 +1461,10 @@ export const IDL: Credix = {
       "type": {
         "kind": "struct",
         "fields": [
+          {
+            "name": "gatekeeperNetwork",
+            "type": "publicKey"
+          },
           {
             "name": "liquidityPoolTokenAccount",
             "type": "publicKey"
