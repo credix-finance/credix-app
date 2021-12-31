@@ -51,7 +51,7 @@ export const Identity = () => {
 				clusterUrl={config.clusterConfig.RPCEndpoint}
 			>
 				{ gatekeeperNetwork &&
-					<CivicHeaderSection gatekeeperNetwork={gatekeeperNetwork} className="navbar-button credix-button" />
+					<CivicHeaderSection gatekeeperNetwork={gatekeeperNetwork} />
 				}
 			</GatewayProvider>
 		</>
