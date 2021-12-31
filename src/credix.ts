@@ -98,7 +98,7 @@ export type Credix = {
       "name": "depositFunds",
       "accounts": [
         {
-          "name": "depositor",
+          "name": "investor",
           "isMut": true,
           "isSigner": true
         },
@@ -118,7 +118,7 @@ export type Credix = {
           "isSigner": false
         },
         {
-          "name": "depositorTokenAccount",
+          "name": "investorTokenAccount",
           "isMut": true,
           "isSigner": false
         },
@@ -133,7 +133,7 @@ export type Credix = {
           "isSigner": false
         },
         {
-          "name": "depositorLpTokenAccount",
+          "name": "investorLpTokenAccount",
           "isMut": true,
           "isSigner": false
         },
@@ -903,7 +903,7 @@ export const IDL: Credix = {
       "name": "depositFunds",
       "accounts": [
         {
-          "name": "depositor",
+          "name": "investor",
           "isMut": true,
           "isSigner": true
         },
@@ -923,7 +923,7 @@ export const IDL: Credix = {
           "isSigner": false
         },
         {
-          "name": "depositorTokenAccount",
+          "name": "investorTokenAccount",
           "isMut": true,
           "isSigner": false
         },
@@ -938,7 +938,7 @@ export const IDL: Credix = {
           "isSigner": false
         },
         {
-          "name": "depositorLpTokenAccount",
+          "name": "investorLpTokenAccount",
           "isMut": true,
           "isSigner": false
         },

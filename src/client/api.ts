@@ -295,14 +295,14 @@ export const depositInvestment = multiAsync(
 
 		return program.rpc.depositFunds(depositAmount, {
 			accounts: {
-				depositor: wallet.publicKey,
+				investor: wallet.publicKey,
 				gatewayToken: gatewayToken.publicKey,
 				globalMarketState: globalMarketStatePDA[0],
 				signingAuthority: signingAuthorityPDA[0],
-				depositorTokenAccount: userAssociatedUSDCTokenAddressPK,
+				investorTokenAccount: userAssociatedUSDCTokenAddressPK,
 				liquidityPoolTokenAccount: marketUSDCTokenAccountPK,
 				lpTokenMintAccount: lpTokenMintPK,
-				depositorLpTokenAccount: depositorLPAssociatedTokenAddress,
+				investorLpTokenAccount: depositorLPAssociatedTokenAddress,
 				usdcMintAccount: usdcMintPK,
 				tokenProgram: TOKEN_PROGRAM_ID,
 				credixPass: credixPass[0],
