@@ -31,7 +31,7 @@ export const Identity = () => {
 				return "local";
 			}
 			case SolanaCluster.DEVNET: {
-				return "dev";
+				return "preprod";
 			}
 			case SolanaCluster.MAINNET: {
 				return "prod";
