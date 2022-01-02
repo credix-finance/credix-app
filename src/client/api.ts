@@ -207,9 +207,12 @@ const getGatewayToken = multiAsync(
 			},
 		};
 		const filters = [ownerFilter, gatekeeperNetworkFilter];
-		const accountsResponse = await connection.getProgramAccounts(config.clusterConfig.gatewayProgramId, {
-			filters,
-		});
+		const accountsResponse = await connection.getProgramAccounts(
+			config.clusterConfig.gatewayProgramId,
+			{
+				filters,
+			}
+		);
 
 		if (accountsResponse.length === 0) {
 			throw Error("No valid Civic gateway tokens found");
@@ -415,19 +418,14 @@ export const createDeal = multiAsync(
 		const _borrowerInfoPDA = findBorrowerInfoPDA(borrower);
 		const _getGatewayToken = getGatewayToken(connection, wallet, borrower);
 
-		const [
-			dealPDA,
-			globalMarketStatePDA,
-			borrowerInfoPDA,
-			gatewayToken,
-			credixPass
-		] = await Promise.all([
-			_dealPDA,
-			_globalMarketStatePDA,
-			_borrowerInfoPDA,
-			_getGatewayToken,
-			_getCredixPassPDA,
-		]);
+		const [dealPDA, globalMarketStatePDA, borrowerInfoPDA, gatewayToken, credixPass] =
+			await Promise.all([
+				_dealPDA,
+				_globalMarketStatePDA,
+				_borrowerInfoPDA,
+				_getGatewayToken,
+				_getCredixPassPDA,
+			]);
 
 		const program = newCredixProgram(connection, wallet);
 
@@ -655,16 +653,22 @@ export const issueCredixPass = async (
 	wallet: Wallet
 ) => {
 	const program = newCredixProgram(connection, wallet);
+	const _globalMarketStatePDA = findGlobalMarketStatePDA();
+	const _getCredixPassPDA = findCredixPassPDA(publicKey);
 
-	const [credixPassPDA, passBump] = await findCredixPassPDA(publicKey);
+	const [globalMarketStatePDA, credixPassPDA] = await Promise.all([
+		_globalMarketStatePDA,
+		_getCredixPassPDA,
+	]);
 
-	return program.rpc.createCredixPass(passBump, isUnderwriter, isBorrower, {
+	return program.rpc.createCredixPass(credixPassPDA[1], isUnderwriter, isBorrower, {
 		accounts: {
 			owner: wallet.publicKey,
 			passHolder: publicKey,
-			credixPass: credixPassPDA,
+			credixPass: credixPassPDA[0],
 			systemProgram: SystemProgram.programId,
 			rent: web3.SYSVAR_RENT_PUBKEY,
+			globalMarketState: globalMarketStatePDA[0],
 		},
 		signers: [],
 	});
@@ -680,13 +684,20 @@ export const updateCredixPass = async (
 ) => {
 	const program = newCredixProgram(connection, wallet);
 
-	const [credixPassPDA] = await findCredixPassPDA(publicKey);
+	const _globalMarketStatePDA = findGlobalMarketStatePDA();
+	const _getCredixPassPDA = findCredixPassPDA(publicKey);
+
+	const [globalMarketStatePDA, credixPassPDA] = await Promise.all([
+		_globalMarketStatePDA,
+		_getCredixPassPDA,
+	]);
 
 	return program.rpc.updateCredixPass(isActive, isUnderwriter, isBorrower, {
 		accounts: {
 			owner: wallet.publicKey,
 			passHolder: publicKey,
-			credixPass: credixPassPDA,
+			credixPass: credixPassPDA[0],
+			globalMarketState: globalMarketStatePDA[0],
 		},
 		signers: [],
 	});

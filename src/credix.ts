@@ -502,6 +502,11 @@ export type Credix = {
           "isSigner": false
         },
         {
+          "name": "globalMarketState",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
           "name": "systemProgram",
           "isMut": false,
           "isSigner": false
@@ -543,6 +548,11 @@ export type Credix = {
         {
           "name": "credixPass",
           "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "globalMarketState",
+          "isMut": false,
           "isSigner": false
         }
       ],
@@ -1307,6 +1317,11 @@ export const IDL: Credix = {
           "isSigner": false
         },
         {
+          "name": "globalMarketState",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
           "name": "systemProgram",
           "isMut": false,
           "isSigner": false
@@ -1348,6 +1363,11 @@ export const IDL: Credix = {
         {
           "name": "credixPass",
           "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "globalMarketState",
+          "isMut": false,
           "isSigner": false
         }
       ],
