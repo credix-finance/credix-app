@@ -1,5 +1,5 @@
 import { useAnchorWallet, useConnection } from "@solana/wallet-adapter-react";
-import React, { useEffect } from "react";
+import React from "react";
 import { Badge, GatewayStatus, IdentityButton, useGateway } from "@civic/solana-gateway-react";
 import { PublicKey } from "@solana/web3.js";
 import { config } from "../../config";
