@@ -51,12 +51,20 @@ button,
 	border: 1px solid black !important;
 	background: white !important;
 	font-weight: bold !important;
+	height: 30px !important;
+}
+
+.sc-gsDKAQ {
+	svg {
+		width: 18px !important; 
+		height: 18px !important; 
+		top: 3px !important; 
+	}
 }
 
 .credix-button {
 	font-size: 12px !important;
 	padding: 3px 16px !important;
-	height: 50px !important;
 }
 
 li > button {
@@ -123,7 +131,11 @@ button {
 }
 
 .MuiButton-root {
-	padding: 20px 20px;
+	padding: 20px 40px;
+}
+
+.MuiButtonBase-root.MuiIconButton-root {
+	width: 30px; 
 }
 
 .container-initialize {
