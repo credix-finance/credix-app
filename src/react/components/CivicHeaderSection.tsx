@@ -14,20 +14,25 @@ export const CivicHeaderSection = (props: Props) => {
 
 	return (
 		<>
-			{wallet?.publicKey &&
-			<>
-				{props.gatekeeperNetwork && <div className={"header-button"}>
-					<Badge
-						clusterName={config.clusterConfig.name}
-						gatekeeperNetwork={props.gatekeeperNetwork}
-						publicKey={wallet.publicKey}
-						connection={connection.connection}
-					/>
-				</div>}
-				{gatewayStatus !== GatewayStatus.ACTIVE && <div className={"header-button"}>
-					<IdentityButton onClick={requestGatewayToken} />
-				</div>}
-			</>}
+			{wallet?.publicKey && (
+				<>
+					{props.gatekeeperNetwork && (
+						<div className={"header-button"}>
+							<Badge
+								clusterName={config.clusterConfig.name}
+								gatekeeperNetwork={props.gatekeeperNetwork}
+								publicKey={wallet.publicKey}
+								connection={connection.connection}
+							/>
+						</div>
+					)}
+					{gatewayStatus !== GatewayStatus.ACTIVE && (
+						<div className={"header-button"}>
+							<IdentityButton onClick={requestGatewayToken} />
+						</div>
+					)}
+				</>
+			)}
 		</>
 	);
 };
