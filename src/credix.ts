@@ -411,7 +411,7 @@ export type Credix = {
       "name": "withdrawFunds",
       "accounts": [
         {
-          "name": "withdrawer",
+          "name": "investor",
           "isMut": false,
           "isSigner": true
         },
@@ -431,12 +431,12 @@ export type Credix = {
           "isSigner": false
         },
         {
-          "name": "withdrawerLpTokenAccount",
+          "name": "investorLpTokenAccount",
           "isMut": true,
           "isSigner": false
         },
         {
-          "name": "withdrawerTokenAccount",
+          "name": "investorTokenAccount",
           "isMut": true,
           "isSigner": false
         },
@@ -1216,7 +1216,7 @@ export const IDL: Credix = {
       "name": "withdrawFunds",
       "accounts": [
         {
-          "name": "withdrawer",
+          "name": "investor",
           "isMut": false,
           "isSigner": true
         },
@@ -1236,12 +1236,12 @@ export const IDL: Credix = {
           "isSigner": false
         },
         {
-          "name": "withdrawerLpTokenAccount",
+          "name": "investorLpTokenAccount",
           "isMut": true,
           "isSigner": false
         },
         {
-          "name": "withdrawerTokenAccount",
+          "name": "investorTokenAccount",
           "isMut": true,
           "isSigner": false
         },

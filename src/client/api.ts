@@ -366,12 +366,12 @@ export const withdrawInvestment = multiAsync(
 
 		return program.rpc.withdrawFunds(withdrawAmount, {
 			accounts: {
-				withdrawer: wallet.publicKey,
+				investor: wallet.publicKey,
 				gatewayToken: gatewayToken.publicKey,
 				globalMarketState: globalMarketStatePDA[0],
 				signingAuthority: signingAuthorityPDA[0],
-				withdrawerLpTokenAccount: investorLPAssociatedTokenAddress,
-				withdrawerTokenAccount: userAssociatedUSDCTokenAddressPK,
+				investorLpTokenAccount: investorLPAssociatedTokenAddress,
+				investorTokenAccount: userAssociatedUSDCTokenAddressPK,
 				liquidityPoolTokenAccount: marketUSDCTokenAccountPK,
 				treasuryPoolTokenAccount: treasuryPoolTokenAccountPK,
 				lpTokenMintAccount: lpTokenMintPK,
