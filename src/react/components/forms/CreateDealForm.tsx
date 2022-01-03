@@ -31,6 +31,7 @@ export const CreateDealForm = (props: Props) => {
 	const [borrower, setBorrower] = useState<string>("");
 	const [dealname, setDealName] = useState<string>("");
 	const [placeholder, setPlaceholder] = useState<string>("CONNECT WALLET");
+	const [dealNamePlaceholder, setDealNamePlaceholder] = useState<string>("SERIES A");
 	const notify = useNotify();
 	const triggerRefresh = useRefresh();
 	const navigate = useNavigate();
@@ -42,10 +43,12 @@ export const CreateDealForm = (props: Props) => {
 
 	useEffect(() => {
 		if (wallet?.publicKey && connection.connection) {
-			setPlaceholder("0");
+			setPlaceholder(wallet.publicKey.toString());
+			setDealNamePlaceholder("SERIES A");
 			updateLiquidityPoolBalance();
 		} else {
-			setPlaceholder("Connect wallet");
+			setPlaceholder("CONNECT WALLET");
+			setDealNamePlaceholder("CONNECT WALLET");
 		}
 	}, [connection.connection, wallet?.publicKey, updateLiquidityPoolBalance]);
 
@@ -190,8 +193,9 @@ export const CreateDealForm = (props: Props) => {
 						name="dealName"
 						type="text"
 						value={dealname}
-						placeholder="Series A"
+						placeholder={dealNamePlaceholder}
 						onChange={onChangeName}
+						disabled={!wallet?.publicKey || props.disabled || !!props.borrower}
 						className="stake-input borrower-pk credix-button MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary balance-button"
 					/>
 				</label>
