@@ -3,20 +3,20 @@ $pool-box-size: 30vw;
 .hover-text {
 	max-width: calc(#{$pool-box-size} / 2 - 2px);
 	height: calc(#{$pool-box-size} / 2 - 2px);
-	z-index: 1000;
+	z-index: 1;
 	opacity: 0;
 	background: black;
 	margin: 0 !important;
-	display: flex; 
-	flex-direction: column; 
-	align-items: center; 
-	justify-content: center; 
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
 
 	p {
 		color: white !important;
 		font-size: 12px;
 		text-align: center;
-		padding: 10% !important; 
+		padding: 10% !important;
 	}
 
 	&:hover {
@@ -57,7 +57,7 @@ $pool-box-size: 30vw;
 	font-size: 12px;
 	right: 10px;
 	bottom: 0;
-	text-align: right; 
+	text-align: right;
 }
 
 .pool-stat-number {
@@ -76,7 +76,7 @@ $pool-box-size: 30vw;
 }
 
 @media only screen and (max-width: 1124px) {
-	$pool-box-size: 400px; 
+	$pool-box-size: 400px;
 	.hover-text {
 		max-width: calc(#{$pool-box-size} / 2 - 2px);
 		height: calc(#{$pool-box-size} / 2 - 2px);
