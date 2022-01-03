@@ -317,7 +317,6 @@ export const depositInvestment = multiAsync(
 export const withdrawInvestment = multiAsync(
 	async (amount: number, connection: Connection, wallet: Wallet) => {
 		const program = newCredixProgram(connection, wallet);
-		const _lpTokenPrice = getLPTokenPrice(connection, wallet);
 		const _globalMarketStatePDA = findGlobalMarketStatePDA();
 		const _userAssociatedUSDCTokenAddressPK = getAssociatedUSDCTokenAddressPK(
 			connection,
@@ -337,7 +336,6 @@ export const withdrawInvestment = multiAsync(
 		const _getCredixPassPDA = findCredixPassPDA(wallet.publicKey);
 
 		const [
-			lpTokenPrice,
 			globalMarketStatePDA,
 			userAssociatedUSDCTokenAddressPK,
 			lpTokenMintPK,
@@ -349,7 +347,6 @@ export const withdrawInvestment = multiAsync(
 			gatewayToken,
 			credixPass,
 		] = await Promise.all([
-			_lpTokenPrice,
 			_globalMarketStatePDA,
 			_userAssociatedUSDCTokenAddressPK,
 			_lpTokenMintPK,
@@ -362,7 +359,7 @@ export const withdrawInvestment = multiAsync(
 			_getCredixPassPDA,
 		]);
 
-		const withdrawAmount = new BN(toProgramAmount(amount / lpTokenPrice));
+		const withdrawAmount = new BN(toProgramAmount(amount));
 
 		return program.rpc.withdrawFunds(withdrawAmount, {
 			accounts: {
