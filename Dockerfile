@@ -10,12 +10,12 @@ WORKDIR /app
 
 COPY . .
 
-RUN npm install --silent
-RUN npm install react-scripts@3.4.1 -g --silent
+RUN yarn install --silent
+RUN yarn install react-scripts@3.4.1 -g --silent
 
-RUN REACT_APP_CLUSTER=$ENV_ENVIRONMENT REACT_APP_PROGRAM_ID=$ENV_PROGRAM_ADDRESS npm run build --production
+RUN REACT_APP_CLUSTER=$ENV_ENVIRONMENT REACT_APP_PROGRAM_ID=$ENV_PROGRAM_ADDRESS yarn run build --production
 
-RUN npm install -g serve
+RUN yarn install -g serve
 
 CMD serve -p 8080 -s build
 
