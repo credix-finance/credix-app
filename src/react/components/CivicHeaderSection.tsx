@@ -16,7 +16,7 @@ export const CivicHeaderSection = (props: Props) => {
 		<>
 			{wallet?.publicKey &&
 			<>
-				{props.gatekeeperNetwork && <div className={"navbar-button"}>
+				{props.gatekeeperNetwork && <div className={"header-button"}>
 					<Badge
 						clusterName={config.clusterConfig.name}
 						gatekeeperNetwork={props.gatekeeperNetwork}
@@ -24,8 +24,8 @@ export const CivicHeaderSection = (props: Props) => {
 						connection={connection.connection}
 					/>
 				</div>}
-				{gatewayStatus !== GatewayStatus.ACTIVE && <div className={"navbar-button"}>
-					<IdentityButton onClick={requestGatewayToken}/>
+				{gatewayStatus !== GatewayStatus.ACTIVE && <div className={"header-button"}>
+					<IdentityButton onClick={requestGatewayToken} />
 				</div>}
 			</>}
 		</>

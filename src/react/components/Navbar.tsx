@@ -16,9 +16,9 @@ export const Navbar = () => (
 		</div>
 		<div className="balance-wallet-container">
 			{ config.clusterConfig.name !== SolanaCluster.LOCALNET && <Identity /> }
-			<WalletMultiButton className="navbar-button credix-button" />
+			<WalletMultiButton className="header-button credix-button" />
 			{config.clusterConfig.name !== SolanaCluster.MAINNET &&
-				<FaucetButton text="Get USDC" className="navbar-button" />
+				<FaucetButton text="Get USDC" className="header-button" />
 			}
 			<Balance />
 		</div>
