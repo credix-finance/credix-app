@@ -175,7 +175,7 @@ const getAssociatedUSDCTokenAddressPK = multiAsync(
 	}
 );
 
-const getDepositorLPAssociatedTokenAddress = multiAsync(
+const getInvestorLPAssociatedTokenAddress = multiAsync(
 	async (connection: Connection, wallet: Wallet) => {
 		const lpTokenMintPK = await getLPTokenMintPK(connection, wallet);
 		return Token.getAssociatedTokenAddress(
@@ -264,7 +264,7 @@ export const depositInvestment = multiAsync(
 		const _usdcMintPK = getUSDCMintPK(connection, wallet);
 		const _marketUSDCTokenAccountPK = getMarketUSDCTokenAccountPK(connection, wallet);
 		const _signingAuthorityPDA = findSigningAuthorityPDA();
-		const _depositorLPAssociatedTokenAddress = getDepositorLPAssociatedTokenAddress(
+		const _investorLPAssociatedTokenAddress = getInvestorLPAssociatedTokenAddress(
 			connection,
 			wallet
 		);
@@ -278,7 +278,7 @@ export const depositInvestment = multiAsync(
 			usdcMintPK,
 			marketUSDCTokenAccountPK,
 			signingAuthorityPDA,
-			depositorLPAssociatedTokenAddress,
+			investorLPAssociatedTokenAddress,
 			gatewayToken,
 			credixPass,
 		] = await Promise.all([
@@ -288,21 +288,21 @@ export const depositInvestment = multiAsync(
 			_usdcMintPK,
 			_marketUSDCTokenAccountPK,
 			_signingAuthorityPDA,
-			_depositorLPAssociatedTokenAddress,
+			_investorLPAssociatedTokenAddress,
 			_getGatewayToken,
 			_getCredixPassPDA,
 		]);
 
 		return program.rpc.depositFunds(depositAmount, {
 			accounts: {
-				depositor: wallet.publicKey,
+				investor: wallet.publicKey,
 				gatewayToken: gatewayToken.publicKey,
 				globalMarketState: globalMarketStatePDA[0],
 				signingAuthority: signingAuthorityPDA[0],
-				depositorTokenAccount: userAssociatedUSDCTokenAddressPK,
+				investorTokenAccount: userAssociatedUSDCTokenAddressPK,
 				liquidityPoolTokenAccount: marketUSDCTokenAccountPK,
 				lpTokenMintAccount: lpTokenMintPK,
-				depositorLpTokenAccount: depositorLPAssociatedTokenAddress,
+				investorLpTokenAccount: investorLPAssociatedTokenAddress,
 				usdcMintAccount: usdcMintPK,
 				tokenProgram: TOKEN_PROGRAM_ID,
 				credixPass: credixPass[0],
@@ -328,7 +328,7 @@ export const withdrawInvestment = multiAsync(
 		const _marketUSDCTokenAccountPK = getMarketUSDCTokenAccountPK(connection, wallet);
 		const _treasuryPoolTokenAccountPK = getTreasuryPoolTokenAccountPK(connection, wallet);
 		const _signingAuthorityPDA = findSigningAuthorityPDA();
-		const _depositorLPAssociatedTokenAddress = getDepositorLPAssociatedTokenAddress(
+		const _investorLPAssociatedTokenAddress = getInvestorLPAssociatedTokenAddress(
 			connection,
 			wallet
 		);
@@ -343,7 +343,7 @@ export const withdrawInvestment = multiAsync(
 			marketUSDCTokenAccountPK,
 			treasuryPoolTokenAccountPK,
 			signingAuthorityPDA,
-			depositorLPAssociatedTokenAddress,
+			investorLPAssociatedTokenAddress,
 			gatewayToken,
 			credixPass,
 		] = await Promise.all([
@@ -354,7 +354,7 @@ export const withdrawInvestment = multiAsync(
 			_marketUSDCTokenAccountPK,
 			_treasuryPoolTokenAccountPK,
 			_signingAuthorityPDA,
-			_depositorLPAssociatedTokenAddress,
+			_investorLPAssociatedTokenAddress,
 			_getGatewayToken,
 			_getCredixPassPDA,
 		]);
@@ -363,12 +363,12 @@ export const withdrawInvestment = multiAsync(
 
 		return program.rpc.withdrawFunds(withdrawAmount, {
 			accounts: {
-				withdrawer: wallet.publicKey,
+				investor: wallet.publicKey,
 				gatewayToken: gatewayToken.publicKey,
 				globalMarketState: globalMarketStatePDA[0],
 				signingAuthority: signingAuthorityPDA[0],
-				withdrawerLpTokenAccount: depositorLPAssociatedTokenAddress,
-				withdrawerTokenAccount: userAssociatedUSDCTokenAddressPK,
+				investorLpTokenAccount: investorLPAssociatedTokenAddress,
+				investorTokenAccount: userAssociatedUSDCTokenAddressPK,
 				liquidityPoolTokenAccount: marketUSDCTokenAccountPK,
 				treasuryPoolTokenAccount: treasuryPoolTokenAccountPK,
 				lpTokenMintAccount: lpTokenMintPK,
@@ -540,14 +540,14 @@ const getLPTokenPrice = multiAsync(async (connection: Connection, wallet: Wallet
 
 const getUserLPTokenAccount = multiAsync(async (connection: Connection, wallet: Wallet) => {
 	const _lpTokenMintPK = getLPTokenMintPK(connection, wallet);
-	const _depositorLPAssociatedTokenAddress = getDepositorLPAssociatedTokenAddress(
+	const _investorLPAssociatedTokenAddress = getInvestorLPAssociatedTokenAddress(
 		connection,
 		wallet
 	);
 
-	const [lpTokenMintPK, depositorLPAssociatedTokenAddress] = await Promise.all([
+	const [lpTokenMintPK, investorLPAssociatedTokenAddress] = await Promise.all([
 		_lpTokenMintPK,
-		_depositorLPAssociatedTokenAddress,
+		_investorLPAssociatedTokenAddress,
 	]);
 
 	const tokenAccounts = await connection.getParsedTokenAccountsByOwner(wallet.publicKey, {
@@ -555,7 +555,7 @@ const getUserLPTokenAccount = multiAsync(async (connection: Connection, wallet: 
 	});
 
 	return tokenAccounts.value.filter((tokenAccount) =>
-		tokenAccount.pubkey.equals(depositorLPAssociatedTokenAddress)
+		tokenAccount.pubkey.equals(investorLPAssociatedTokenAddress)
 	)[0];
 });
 
