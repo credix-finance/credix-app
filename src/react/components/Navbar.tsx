@@ -15,11 +15,11 @@ export const Navbar = () => (
 			<span className="tag-line">Credit investing democratized</span>
 		</div>
 		<div className="balance-wallet-container">
-			{ config.clusterConfig.name !== SolanaCluster.LOCALNET && <Identity /> }
-			<WalletMultiButton className="navbar-button credix-button" />
-			{config.clusterConfig.name !== SolanaCluster.MAINNET &&
-				<FaucetButton text="Get USDC" className="navbar-button" />
-			}
+			{config.clusterConfig.name !== SolanaCluster.LOCALNET && <Identity />}
+			<WalletMultiButton className="header-button credix-button" />
+			{config.clusterConfig.name !== SolanaCluster.MAINNET && (
+				<FaucetButton text="Get USDC" className="header-button" />
+			)}
 			<Balance />
 		</div>
 	</div>
