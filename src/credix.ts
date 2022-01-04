@@ -478,7 +478,7 @@ export type Credix = {
       ],
       "args": [
         {
-          "name": "itWithdrawalAmount",
+          "name": "usdcWithdrawalAmount",
           "type": "u64"
         }
       ]
@@ -1293,7 +1293,7 @@ export const IDL: Credix = {
       ],
       "args": [
         {
-          "name": "itWithdrawalAmount",
+          "name": "usdcWithdrawalAmount",
           "type": "u64"
         }
       ]
