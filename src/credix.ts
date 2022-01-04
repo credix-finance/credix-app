@@ -478,7 +478,7 @@ export type Credix = {
       ],
       "args": [
         {
-          "name": "itWithdrawalAmount",
+          "name": "usdcWithdrawalAmount",
           "type": "u64"
         }
       ]
@@ -499,6 +499,11 @@ export type Credix = {
         {
           "name": "credixPass",
           "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "globalMarketState",
+          "isMut": false,
           "isSigner": false
         },
         {
@@ -543,6 +548,11 @@ export type Credix = {
         {
           "name": "credixPass",
           "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "globalMarketState",
+          "isMut": false,
           "isSigner": false
         }
       ],
@@ -1283,7 +1293,7 @@ export const IDL: Credix = {
       ],
       "args": [
         {
-          "name": "itWithdrawalAmount",
+          "name": "usdcWithdrawalAmount",
           "type": "u64"
         }
       ]
@@ -1304,6 +1314,11 @@ export const IDL: Credix = {
         {
           "name": "credixPass",
           "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "globalMarketState",
+          "isMut": false,
           "isSigner": false
         },
         {
@@ -1348,6 +1363,11 @@ export const IDL: Credix = {
         {
           "name": "credixPass",
           "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "globalMarketState",
+          "isMut": false,
           "isSigner": false
         }
       ],
