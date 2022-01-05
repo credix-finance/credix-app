@@ -25,7 +25,6 @@ import { PublicKey } from "@solana/web3.js";
 
 export const DealOverview = () => {
 	const wallet = useAnchorWallet();
-	const [placeholder, setPlaceholder] = useState<string>("CONNECT WALLET");
 	const connection = useConnection();
 	const [deal, setDeal] = useState<Deal | undefined>();
 	const [dealStatus, setDealStatus] = useState<DealStatus | undefined>();
@@ -135,14 +134,6 @@ export const DealOverview = () => {
 	}, [wallet, connection.connection, fetchDealData]);
 
 	useEffect(() => {
-		if (wallet?.publicKey && connection.connection) {
-			setPlaceholder("0");
-		} else {
-			setPlaceholder("CONNECT WALLET");
-		}
-	}, [connection.connection, wallet?.publicKey]);
-
-	useEffect(() => {
 		calculateAmountToRepay();
 	}, [calculateAmountToRepay]);
 
@@ -224,7 +215,6 @@ export const DealOverview = () => {
 							readOnly={true}
 							disabled={true}
 							value={deal?.borrower.toString() || ""}
-							placeholder={placeholder}
 							className="deal-input stake-input credix-button MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary balance-button"
 						/>
 					</label>
@@ -236,7 +226,6 @@ export const DealOverview = () => {
 							name="principal"
 							type="number"
 							readOnly={true}
-							placeholder={placeholder}
 							disabled={true}
 							value={(deal?.principal && toUIAmount(deal.principal.toNumber())) || ""}
 							className="deal-input stake-input credix-button MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary balance-button"
@@ -250,7 +239,6 @@ export const DealOverview = () => {
 							name="financingFee"
 							type="number"
 							readOnly={true}
-							placeholder={placeholder}
 							disabled={true}
 							value={
 								deal?.financingFeePercentage === undefined
@@ -287,7 +275,6 @@ export const DealOverview = () => {
 							disabled={!wallet?.publicKey}
 							name="repayment"
 							type="number"
-							placeholder={placeholder}
 							onChange={onChangeRepaymentAmount}
 							value={repaymentAmount === undefined ? "" : toUIAmount(repaymentAmount)}
 							className="deal-input stake-input credix-button MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary balance-button"
