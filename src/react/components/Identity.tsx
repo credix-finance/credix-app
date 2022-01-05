@@ -31,7 +31,7 @@ export const Identity = () => {
 				return "local";
 			}
 			case SolanaCluster.DEVNET: {
-				return "dev";
+				return "preprod";
 			}
 			case SolanaCluster.MAINNET: {
 				return "prod";
@@ -51,7 +51,7 @@ export const Identity = () => {
 				clusterUrl={config.clusterConfig.RPCEndpoint}
 			>
 				{ gatekeeperNetwork &&
-					<CivicHeaderSection gatekeeperNetwork={gatekeeperNetwork} className="navbar-button credix-button" />
+					<CivicHeaderSection gatekeeperNetwork={gatekeeperNetwork} />
 				}
 			</GatewayProvider>
 		</>
