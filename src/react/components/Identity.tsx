@@ -26,12 +26,12 @@ export const Identity = () => {
 	}, [connection.connection, wallet]);
 
 	const mapClusterNameToStage = (clusterName: SolanaCluster) => {
-		switch(clusterName) {
+		switch (clusterName) {
 			case SolanaCluster.LOCALNET: {
 				return "local";
 			}
 			case SolanaCluster.DEVNET: {
-				return "preprod";
+				return "prod";
 			}
 			case SolanaCluster.MAINNET: {
 				return "prod";
@@ -50,9 +50,7 @@ export const Identity = () => {
 				gatekeeperNetwork={gatekeeperNetwork}
 				clusterUrl={config.clusterConfig.RPCEndpoint}
 			>
-				{ gatekeeperNetwork &&
-					<CivicHeaderSection gatekeeperNetwork={gatekeeperNetwork} />
-				}
+				{gatekeeperNetwork && <CivicHeaderSection gatekeeperNetwork={gatekeeperNetwork} />}
 			</GatewayProvider>
 		</>
 	);
