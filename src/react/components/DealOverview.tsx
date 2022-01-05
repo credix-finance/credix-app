@@ -136,7 +136,7 @@ export const DealOverview = () => {
 
 	useEffect(() => {
 		if (wallet?.publicKey && connection.connection) {
-			setPlaceholder(wallet.publicKey.toString());
+			setPlaceholder("0");
 		} else {
 			setPlaceholder("CONNECT WALLET");
 		}
