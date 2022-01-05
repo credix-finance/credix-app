@@ -15,6 +15,8 @@ import {
 } from "client/api";
 import { useNavigate } from "react-router-dom";
 import { Path } from "types/navigation.types";
+import { config } from "../../../config";
+import { SolanaCluster } from "../../../types/solana.types";
 
 interface Props {
 	borrower?: PublicKey;
@@ -96,8 +98,12 @@ export const CreateDealForm = (props: Props) => {
 			);
 			notify("success", "Deal created successfully");
 
-			await activateDeal(borrowerPK, dealNumber, connection.connection, wallet as Wallet);
-			notify("success", "Deal activated successfully");
+			// only automatically activate deal on localnet
+			if (config.clusterConfig.name === SolanaCluster.LOCALNET) {
+				await activateDeal(borrowerPK, dealNumber, connection.connection, wallet as Wallet);
+				notify("success", "Deal activated successfully");
+			}
+
 			triggerRefresh();
 			navigate(Path.DEALS);
 		} catch (err: any) {
