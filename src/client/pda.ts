@@ -33,8 +33,8 @@ export const findDealPDA = multiAsync(async (publicKey: PublicKey, dealNumber: n
 	const seeds: PdaSeeds = [
 		globalMarketStateSeed,
 		borrowerSeed,
-		dealInfo,
 		dealNumberBN.toArrayLike(Buffer, "le", 2),
+		dealInfo,
 	];
 	return findPDA(seeds);
 });
@@ -43,18 +43,22 @@ export const findBorrowerInfoPDA = multiAsync(async (borrowerPK: PublicKey) => {
 	const globalMarketStatePDA = await findGlobalMarketStatePDA();
 	const borrowerInfoSeed = encodeSeedString(SEEDS.BORROWER_INFO);
 	const seeds: PdaSeeds = [
-		borrowerInfoSeed,
 		globalMarketStatePDA[0].toBuffer(),
 		borrowerPK.toBuffer(),
+		borrowerInfoSeed,
 	];
 
 	return findPDA(seeds);
 });
 
 export const findCredixPassPDA = multiAsync(async (publicKey: PublicKey) => {
+	const globalMarketStatePDA = await findGlobalMarketStatePDA();
 	const credixPassSeeds = encodeSeedString(SEEDS.CREDIX_PASS);
-	const address = publicKey.toBuffer();
-	const seeds: PdaSeeds = [address, credixPassSeeds];
+	const seeds: PdaSeeds = [
+		globalMarketStatePDA[0].toBuffer(),
+		publicKey.toBuffer(),
+		credixPassSeeds,
+	];
 
 	return findPDA(seeds);
 });

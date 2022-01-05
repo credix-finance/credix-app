@@ -98,7 +98,7 @@ export type Credix = {
       "name": "depositFunds",
       "accounts": [
         {
-          "name": "depositor",
+          "name": "investor",
           "isMut": true,
           "isSigner": true
         },
@@ -118,7 +118,7 @@ export type Credix = {
           "isSigner": false
         },
         {
-          "name": "depositorTokenAccount",
+          "name": "investorTokenAccount",
           "isMut": true,
           "isSigner": false
         },
@@ -133,7 +133,7 @@ export type Credix = {
           "isSigner": false
         },
         {
-          "name": "depositorLpTokenAccount",
+          "name": "investorLpTokenAccount",
           "isMut": true,
           "isSigner": false
         },
@@ -411,7 +411,7 @@ export type Credix = {
       "name": "withdrawFunds",
       "accounts": [
         {
-          "name": "withdrawer",
+          "name": "investor",
           "isMut": false,
           "isSigner": true
         },
@@ -431,12 +431,12 @@ export type Credix = {
           "isSigner": false
         },
         {
-          "name": "withdrawerLpTokenAccount",
+          "name": "investorLpTokenAccount",
           "isMut": true,
           "isSigner": false
         },
         {
-          "name": "withdrawerTokenAccount",
+          "name": "investorTokenAccount",
           "isMut": true,
           "isSigner": false
         },
@@ -478,7 +478,7 @@ export type Credix = {
       ],
       "args": [
         {
-          "name": "itWithdrawalAmount",
+          "name": "usdcWithdrawalAmount",
           "type": "u64"
         }
       ]
@@ -499,6 +499,11 @@ export type Credix = {
         {
           "name": "credixPass",
           "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "globalMarketState",
+          "isMut": false,
           "isSigner": false
         },
         {
@@ -543,6 +548,11 @@ export type Credix = {
         {
           "name": "credixPass",
           "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "globalMarketState",
+          "isMut": false,
           "isSigner": false
         }
       ],
@@ -903,7 +913,7 @@ export const IDL: Credix = {
       "name": "depositFunds",
       "accounts": [
         {
-          "name": "depositor",
+          "name": "investor",
           "isMut": true,
           "isSigner": true
         },
@@ -923,7 +933,7 @@ export const IDL: Credix = {
           "isSigner": false
         },
         {
-          "name": "depositorTokenAccount",
+          "name": "investorTokenAccount",
           "isMut": true,
           "isSigner": false
         },
@@ -938,7 +948,7 @@ export const IDL: Credix = {
           "isSigner": false
         },
         {
-          "name": "depositorLpTokenAccount",
+          "name": "investorLpTokenAccount",
           "isMut": true,
           "isSigner": false
         },
@@ -1216,7 +1226,7 @@ export const IDL: Credix = {
       "name": "withdrawFunds",
       "accounts": [
         {
-          "name": "withdrawer",
+          "name": "investor",
           "isMut": false,
           "isSigner": true
         },
@@ -1236,12 +1246,12 @@ export const IDL: Credix = {
           "isSigner": false
         },
         {
-          "name": "withdrawerLpTokenAccount",
+          "name": "investorLpTokenAccount",
           "isMut": true,
           "isSigner": false
         },
         {
-          "name": "withdrawerTokenAccount",
+          "name": "investorTokenAccount",
           "isMut": true,
           "isSigner": false
         },
@@ -1283,7 +1293,7 @@ export const IDL: Credix = {
       ],
       "args": [
         {
-          "name": "itWithdrawalAmount",
+          "name": "usdcWithdrawalAmount",
           "type": "u64"
         }
       ]
@@ -1304,6 +1314,11 @@ export const IDL: Credix = {
         {
           "name": "credixPass",
           "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "globalMarketState",
+          "isMut": false,
           "isSigner": false
         },
         {
@@ -1348,6 +1363,11 @@ export const IDL: Credix = {
         {
           "name": "credixPass",
           "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "globalMarketState",
+          "isMut": false,
           "isSigner": false
         }
       ],
