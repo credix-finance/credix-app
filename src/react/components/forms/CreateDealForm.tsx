@@ -195,7 +195,7 @@ export const CreateDealForm = (props: Props) => {
 						value={dealname}
 						placeholder={dealNamePlaceholder}
 						onChange={onChangeName}
-						disabled={!wallet?.publicKey || props.disabled || !!props.borrower}
+						disabled={!wallet?.publicKey || props.disabled}
 						className="stake-input borrower-pk credix-button MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary balance-button"
 					/>
 				</label>

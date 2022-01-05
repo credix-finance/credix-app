@@ -25,7 +25,7 @@ import { PublicKey } from "@solana/web3.js";
 
 export const DealOverview = () => {
 	const wallet = useAnchorWallet();
-	const [placeholder, setPlaceholder] = useState<string>("CONNECT WALLET");
+	const [placeholder, setPlaceholder] = useState<string>();
 	const connection = useConnection();
 	const [deal, setDeal] = useState<Deal | undefined>();
 	const [dealStatus, setDealStatus] = useState<DealStatus | undefined>();
@@ -138,7 +138,7 @@ export const DealOverview = () => {
 		if (wallet?.publicKey && connection.connection) {
 			setPlaceholder(wallet.publicKey.toString());
 		} else {
-			setPlaceholder("CONNECT WALLET");
+			setPlaceholder(consts.);
 		}
 	}, [connection.connection, wallet?.publicKey]);
 
