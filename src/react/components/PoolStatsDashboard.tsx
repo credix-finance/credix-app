@@ -6,7 +6,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { PoolStats } from "types/program.types";
 import "../../styles/poolstats.scss";
 import { useRefresh } from "react/hooks/useRefresh";
-import { toUIAmount } from "utils/format.utils";
+import { formatRatio, toUIAmount } from "utils/format.utils";
 import { getPoolStats } from "client/api";
 import { Big } from "big.js";
 
@@ -71,7 +71,7 @@ export const PoolStatsDashboard = () => {
 							financing fees of outstanding deals.
 						</p>
 					</div>
-					<p className="pool-stat-number">{poolStats && poolStats.APY.toNumber()}%</p>
+					<p className="pool-stat-number">{poolStats && formatRatio(poolStats.APY).toNumber()}%</p>
 					<p className="pool-stat-title">Estimated APY</p>
 				</div>
 			</div>

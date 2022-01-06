@@ -119,17 +119,19 @@ const getRunningAPY = multiAsync(async (connection: Connection, wallet: Wallet) 
 	return runningAPY;
 });
 
-const getAPY = multiAsync(async (connection: Connection, wallet: Wallet) => {
+const getAPY = multiAsync(async (connection: Connection, wallet: Wallet): Promise<Ratio> => {
 	const _tvl = getTVL(connection, wallet);
 	const _runningApy = getRunningAPY(connection, wallet);
 
 	const [tvl, runningAPY] = await Promise.all([_tvl, _runningApy]);
 
 	if (tvl.eq(ZERO)) {
-		return ZERO;
+		return { numerator: 0, denominator: 1 };
 	}
 
-	return runningAPY.div(tvl);
+	const apy = runningAPY.div(tvl);
+
+	return { numerator: apy.mul(new Big(100)).toNumber(), denominator: 100 };
 });
 
 const getTVL = multiAsync(async (connection: Connection, wallet: Wallet) => {
