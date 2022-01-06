@@ -401,6 +401,22 @@ export const getBorrowerInfoAccountData = multiAsync(
 	}
 );
 
+export const getWithdrawFeePercentage = multiAsync(
+	async (connection: Connection, wallet: Wallet) => {
+		const globalMarketStateData = await getGlobalMarketStateAccountData(connection, wallet);
+
+		return globalMarketStateData.withrawalFee / (100 * 1000); // PERCENTAGE_FACTOR, will be changed later on
+	}
+);
+
+export const getInterestFeePercentage = multiAsync(
+	async (connection: Connection, wallet: Wallet) => {
+		const globalMarketStateData = await getGlobalMarketStateAccountData(connection, wallet);
+
+		return globalMarketStateData.interestFee / (100 * 1000); // PERCENTAGE_FACTOR, will be changed later on
+	}
+);
+
 export const createDeal = multiAsync(
 	async (
 		principal: number,
@@ -538,10 +554,7 @@ const getLPTokenPrice = multiAsync(async (connection: Connection, wallet: Wallet
 
 const getUserLPTokenAccount = multiAsync(async (connection: Connection, wallet: Wallet) => {
 	const _lpTokenMintPK = getLPTokenMintPK(connection, wallet);
-	const _investorLPAssociatedTokenAddress = getInvestorLPAssociatedTokenAddress(
-		connection,
-		wallet
-	);
+	const _investorLPAssociatedTokenAddress = getInvestorLPAssociatedTokenAddress(connection, wallet);
 
 	const [lpTokenMintPK, investorLPAssociatedTokenAddress] = await Promise.all([
 		_lpTokenMintPK,
