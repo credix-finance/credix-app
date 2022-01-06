@@ -25,7 +25,7 @@ export const WithdrawStakeForm = () => {
 			connection.connection,
 			wallet as Wallet
 		);
-		const withdrawAmountFee = withdrawAmount * withdrawFeePercentage; // 0.5 percent fee
+		const withdrawAmountFee = withdrawAmount * withdrawFeePercentage;
 
 		try {
 			await withdrawInvestment(withdrawAmount, connection.connection, wallet as Wallet);
