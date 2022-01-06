@@ -2,8 +2,12 @@ import { MenuItem } from "@material-ui/core";
 import { Select } from "@mui/material";
 import { Wallet } from "@project-serum/anchor";
 import { useAnchorWallet, useConnection } from "@solana/wallet-adapter-react";
-import { getClusterTime, repayDeal, getDealAccountData } from "client/api";
-import { FEES } from "consts";
+import {
+	getClusterTime,
+	repayDeal,
+	getDealAccountData,
+	getInterestFeePercentage,
+} from "client/api";
 import React, { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useNotify } from "react/hooks/useNotify";
@@ -165,8 +169,12 @@ export const DealOverview = () => {
 			const paymentNotification = `Successfully repaid ${toUIAmount(
 				Math.min(repaymentAmount, amountToRepay)
 			)} USDC`;
+			const interestFeePercentage = await getInterestFeePercentage(
+				connection.connection,
+				wallet as Wallet
+			);
 			const feeNotification = ` with a ${toUIAmount(
-				Math.min(repaymentAmount, amountToRepay) * FEES.INTEREST_PAYMENT
+				Math.min(repaymentAmount, amountToRepay) * interestFeePercentage
 			)} USDC fee`;
 			notify("success", `${paymentNotification}${showFeeNotification ? feeNotification : ""}`);
 			setRepaymentAmount(undefined);
