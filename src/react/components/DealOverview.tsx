@@ -259,7 +259,10 @@ export const DealOverview = () => {
 							value={repaymentSelectValue}
 							className="repayment-select credix-button MuiButton-root"
 						>
-							<MenuItem value="principal" disabled={!deal || !getPrincipalToRepay(deal)}>
+							<MenuItem
+								value="principal"
+								disabled={!deal || !getPrincipalToRepay(deal) || !!getInterestToRepay(deal)}
+							>
 								Principal
 							</MenuItem>
 							<MenuItem value="interest" disabled={!deal || !getInterestToRepay(deal)}>
