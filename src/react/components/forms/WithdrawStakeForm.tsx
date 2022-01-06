@@ -7,30 +7,33 @@ import { useNotify } from "../../hooks/useNotify";
 import { FEES } from "consts";
 import millify from "millify";
 import { withdrawInvestment } from "client/api";
+import Big from "big.js";
+import { toProgramAmount, toUIAmount } from "utils/format.utils";
+import { ZERO } from "utils/math.utils";
 
 export const WithdrawStakeForm = () => {
 	const wallet = useAnchorWallet();
 	const connection = useConnection();
-	const [withdrawAmount, setWithdrawAmount] = useState<number | undefined>();
+	const [withdrawAmount, setWithdrawAmount] = useState<Big | undefined>();
 	const notify = useNotify();
 	const triggerRefresh = useRefresh();
 
 	const onSubmit = async (e: React.SyntheticEvent) => {
 		e.preventDefault();
 
-		if (!withdrawAmount) {
+		if (!withdrawAmount || withdrawAmount.eq(ZERO)) {
 			return;
 		}
 
-		const withdrawAmountFee = withdrawAmount * FEES.WITHDRAW; // 0.5 percent fee
+		const withdrawAmountFee = withdrawAmount.mul(FEES.WITHDRAW);
 
 		try {
 			await withdrawInvestment(withdrawAmount, connection.connection, wallet as Wallet);
 			notify(
 				"success",
-				`Successful withdraw of ${withdrawAmount} USDC with a ${millify(
-					withdrawAmountFee
-				)} USDC fee`
+				`Successful withdraw of ${millify(
+					toUIAmount(withdrawAmount, Big.roundDown).toNumber()
+				)} USDC with a ${millify(toUIAmount(withdrawAmountFee, Big.roundDown).toNumber())} USDC fee`
 			);
 			triggerRefresh();
 		} catch (e: any) {
@@ -42,7 +45,9 @@ export const WithdrawStakeForm = () => {
 
 	const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const newValue = e.target.value === "" ? undefined : Number(e.target.value);
-		setWithdrawAmount(newValue);
+		const newWithdrawAmount =
+			newValue === undefined ? newValue : toProgramAmount(new Big(newValue));
+		setWithdrawAmount(newWithdrawAmount);
 	};
 
 	const canSubmit = () => !(wallet?.publicKey && withdrawAmount);
@@ -52,7 +57,9 @@ export const WithdrawStakeForm = () => {
 			<label className="stake-input-label">
 				<input
 					placeholder={"1000"}
-					value={withdrawAmount === undefined ? "" : withdrawAmount}
+					value={
+						withdrawAmount === undefined ? "" : toUIAmount(withdrawAmount, Big.roundDown).toNumber()
+					}
 					type="number"
 					step=".01"
 					onChange={onChange}

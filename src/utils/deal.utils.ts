@@ -1,10 +1,12 @@
+import Big from "big.js";
 import {
 	Deal,
 	DealStatus,
 	InterestRepaymentType,
 	PrincipalRepaymentType,
+	Ratio,
 } from "types/program.types";
-import { percentage } from "./math.utils";
+import { applyRatio, ZERO } from "./math.utils";
 
 const SECONDS_IN_DAY = 86400;
 
@@ -12,7 +14,7 @@ export const mapDealToStatus = (deal: Deal, clusterTime: number): DealStatus => 
 	const principalToPay = getPrincipalToRepay(deal);
 	const interestToPay = getInterestToRepay(deal);
 
-	if (!principalToPay && !interestToPay) {
+	if (principalToPay.eq(ZERO) && interestToPay.eq(ZERO)) {
 		return DealStatus.CLOSED;
 	}
 
@@ -41,18 +43,25 @@ export const getDaysRemaining = (deal: Deal, clusterTime: number, dealStatus: De
 };
 
 export const getTotalInterest = (deal: Deal) => {
-	return (percentage(deal.principal.toNumber(), deal.financingFeePercentage)
-		* deal.timeToMaturityDays)
-		/ 360;
+	const principal = new Big(deal.principal.toNumber());
+	const financingFeePercentage = deal.financingFeePercentage;
+	const timeToMaturityRatio: Ratio = { numerator: deal.timeToMaturityDays, denominator: 360 };
+
+	return applyRatio(timeToMaturityRatio, applyRatio(financingFeePercentage, principal));
 };
 
 export const getPrincipalToRepay = (deal: Deal) => {
-	return deal.principal.toNumber() - deal.principalAmountRepaid.toNumber();
+	const principal = new Big(deal.principal.toNumber());
+	const principalAmountRepaid = new Big(deal.principalAmountRepaid.toNumber());
+
+	return principal.minus(principalAmountRepaid);
 };
 
 export const getInterestToRepay = (deal: Deal) => {
+	const interestAmountRepaid = new Big(deal.interestAmountRepaid.toNumber());
 	const totalInterest = getTotalInterest(deal);
-	return totalInterest - deal.interestAmountRepaid.toNumber();
+
+	return totalInterest.minus(interestAmountRepaid);
 };
 
 export const createPrincipalRepaymentType = (): PrincipalRepaymentType => ({ principal: {} });

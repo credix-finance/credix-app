@@ -26,6 +26,7 @@
     "@types/node": "^12.20.36",
     "@types/react": "^17.0.37",
     "@types/react-dom": "^17.0.11",
+    "big.js": "^6.1.1",
     "flatted": "^3.2.4",
     "lodash": "^4.17.21",
     "millify": "^4.0.0",
@@ -59,6 +60,7 @@
     ]
   },
   "devDependencies": {
+    "@types/big.js": "^6.1.2",
     "craco-alias": "^3.0.1",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0",

@@ -10,12 +10,14 @@ import { Button } from "@material-ui/core";
 import { useRefresh } from "react/hooks/useRefresh";
 import { toUIAmount } from "utils/format.utils";
 import { getLPTokenUSDCBalance } from "client/api";
+import { Big } from "big.js";
+import { ZERO } from "utils/math.utils";
 
 export const StakeForm = () => {
 	const intl = useIntl();
 	const wallet = useAnchorWallet();
 	const connection = useConnection();
-	const [stake, setStake] = useState<number>(0);
+	const [stake, setStake] = useState<Big>(ZERO);
 
 	const checkStake = useCallback(async () => {
 		if (wallet) {
@@ -33,7 +35,11 @@ export const StakeForm = () => {
 	return (
 		<div className="stake-and-withdraw-container">
 			<div className="row">
-				<h1>{intl.formatMessage(MESSAGES.stake, { stake: toUIAmount(stake) })}</h1>
+				<h1>
+					{intl.formatMessage(MESSAGES.stake, {
+						stake: toUIAmount(stake, Big.roundDown).toNumber(),
+					})}
+				</h1>
 				<Button
 					variant="contained"
 					className="MuiButton-containedPrimary stake-button credix-button"

@@ -1,12 +1,9 @@
 import { BN, Wallet, web3 } from "@project-serum/anchor";
 import { TOKEN_PROGRAM_ID, ASSOCIATED_TOKEN_PROGRAM_ID, Token } from "@solana/spl-token";
 import { Connection, ParsedAccountData, PublicKey, SystemProgram } from "@solana/web3.js";
-import { divide } from "lodash";
-import { DealStatus, PoolStats, RepaymentType } from "types/program.types";
+import { DealStatus, PoolStats, Ratio, RepaymentType } from "types/program.types";
 import { multiAsync } from "utils/async.utils";
 import { mapDealToStatus } from "utils/deal.utils";
-import { toProgramAmount, toProgramPercentage } from "utils/format.utils";
-import { percentage } from "utils/math.utils";
 import {
 	findGlobalMarketStatePDA,
 	findSigningAuthorityPDA,
@@ -17,6 +14,8 @@ import {
 import { newCredixProgram } from "./program";
 import { dataToGatewayToken, GatewayTokenData } from "@identity.com/solana-gateway-ts";
 import { config } from "../config";
+import { applyRatio, ZERO } from "utils/math.utils";
+import Big from "big.js";
 
 export const getDealAccounts = multiAsync(async (connection, wallet, borrower?: PublicKey) => {
 	const program = newCredixProgram(connection, wallet);
@@ -66,22 +65,22 @@ export const getUserUSDCBalance = multiAsync(async (connection: Connection, wall
 	const tokenAccount = await getUserUSDCTokenAccount(connection, wallet);
 
 	if (!tokenAccount) {
-		return 0;
+		return ZERO;
 	}
 
-	return Number(tokenAccount.account.data.parsed.info.tokenAmount.amount);
+	return new Big(Number(tokenAccount.account.data.parsed.info.tokenAmount.amount));
 });
 
 export const getLiquidityPoolBalance = multiAsync(
 	async (connection: Connection, wallet: Wallet) => {
 		const globalMarketStateData = await getGlobalMarketStateAccountData(connection, wallet);
-		return globalMarketStateData.liquidityPoolUsdcAmount.toNumber();
+		return new Big(globalMarketStateData.liquidityPoolUsdcAmount.toNumber());
 	}
 );
 
 const getOutstandingCredit = multiAsync(async (connection: Connection, wallet: Wallet) => {
 	const globalMarketStateData = await getGlobalMarketStateAccountData(connection, wallet);
-	return globalMarketStateData.totalOutstandingCredit.toNumber();
+	return new Big(globalMarketStateData.totalOutstandingCredit.toNumber());
 });
 
 export const getGatekeeperNetwork = multiAsync(async (connection: Connection, wallet: Wallet) => {
@@ -108,49 +107,40 @@ const getRunningAPY = multiAsync(async (connection: Connection, wallet: Wallet) 
 		const status = mapDealToStatus(deal.account, clusterTime);
 		if (status === DealStatus.IN_PROGRESS) {
 			const financingFeePercentage = deal.account.financingFeePercentage;
-			const principal = deal.account.principal.toNumber();
+			const principal = new Big(deal.account.principal.toNumber());
+			const percentage = applyRatio(financingFeePercentage, principal);
 
-			result += percentage(principal, financingFeePercentage);
+			result = result.add(percentage);
 		}
 
 		return result;
-	}, 0);
+	}, new Big(0));
 
 	return runningAPY;
 });
 
 const getAPY = multiAsync(async (connection: Connection, wallet: Wallet) => {
-	const _outstandingCredit: Promise<number> = getOutstandingCredit(connection, wallet);
-	const _liquidityPoolBalance: Promise<number> = getLiquidityPoolBalance(connection, wallet);
+	const _tvl = getTVL(connection, wallet);
 	const _runningApy = getRunningAPY(connection, wallet);
 
-	const [liquidityPoolBalance, outstandingCredit, runningAPY] = await Promise.all([
-		_liquidityPoolBalance,
-		_outstandingCredit,
-		_runningApy,
-	]);
+	const [tvl, runningAPY] = await Promise.all([_tvl, _runningApy]);
 
-	if (liquidityPoolBalance === 0 && outstandingCredit === 0) {
-		return 0;
+	if (tvl.eq(ZERO)) {
+		return ZERO;
 	}
 
-	return divide(runningAPY, outstandingCredit + liquidityPoolBalance);
-});
-
-const getSolendBuffer = multiAsync(async (connection: Connection, wallet: Wallet) => {
-	const liquidityPoolBalance = await getLiquidityPoolBalance(connection, wallet);
-	return liquidityPoolBalance;
+	return runningAPY.div(tvl);
 });
 
 const getTVL = multiAsync(async (connection: Connection, wallet: Wallet) => {
 	const _liquidityPoolBalance = getLiquidityPoolBalance(connection, wallet);
-	const outstandingCreditCall = getOutstandingCredit(connection, wallet);
+	const _outstandingCredit = getOutstandingCredit(connection, wallet);
 	const [liquidityPoolBalance, outstandingCredit] = await Promise.all([
 		_liquidityPoolBalance,
-		outstandingCreditCall,
+		_outstandingCredit,
 	]);
 
-	return liquidityPoolBalance + outstandingCredit;
+	return liquidityPoolBalance.add(outstandingCredit);
 });
 
 const getMarketUSDCTokenAccountPK = multiAsync(async (connection: Connection, wallet: Wallet) => {
@@ -234,28 +224,21 @@ export const getPoolStats = multiAsync(async (connection: Connection, wallet: Wa
 	const _tvl = getTVL(connection, wallet);
 	const _apy = getAPY(connection, wallet);
 	const _outstandingCredit = getOutstandingCredit(connection, wallet);
-	const _solendBuffer = getSolendBuffer(connection, wallet);
 
-	const [TVL, APY, outstandingCredit, solendBuffer] = await Promise.all([
-		_tvl,
-		_apy,
-		_outstandingCredit,
-		_solendBuffer,
-	]);
+	const [TVL, APY, outstandingCredit] = await Promise.all([_tvl, _apy, _outstandingCredit]);
 
 	const poolStats: PoolStats = {
 		TVL,
 		APY,
 		outstandingCredit,
-		solendBuffer,
 	};
 
 	return poolStats;
 });
 
 export const depositInvestment = multiAsync(
-	async (amount: number, connection: Connection, wallet: Wallet) => {
-		const depositAmount = new BN(toProgramAmount(amount));
+	async (amount: Big, connection: Connection, wallet: Wallet) => {
+		const depositAmount = new BN(amount.toNumber());
 		const program = newCredixProgram(connection, wallet);
 		const _globalMarketStatePDA = findGlobalMarketStatePDA();
 		const _lpTokenMintPK = getLPTokenMintPK(connection, wallet);
@@ -318,7 +301,7 @@ export const depositInvestment = multiAsync(
 );
 
 export const withdrawInvestment = multiAsync(
-	async (amount: number, connection: Connection, wallet: Wallet) => {
+	async (amount: Big, connection: Connection, wallet: Wallet) => {
 		const program = newCredixProgram(connection, wallet);
 		const _globalMarketStatePDA = findGlobalMarketStatePDA();
 		const _userAssociatedUSDCTokenAddressPK = getAssociatedUSDCTokenAddressPK(
@@ -362,7 +345,7 @@ export const withdrawInvestment = multiAsync(
 			_getCredixPassPDA,
 		]);
 
-		const withdrawAmount = new BN(toProgramAmount(amount));
+		const withdrawAmount = new BN(amount.toNumber());
 
 		return program.rpc.withdrawFunds(withdrawAmount, {
 			accounts: {
@@ -403,7 +386,7 @@ export const getBorrowerInfoAccountData = multiAsync(
 
 export const createDeal = multiAsync(
 	async (
-		principal: number,
+		principal: Big,
 		financingFee: number,
 		timeToMaturity: number,
 		borrower: PublicKey,
@@ -429,8 +412,8 @@ export const createDeal = multiAsync(
 
 		const program = newCredixProgram(connection, wallet);
 
-		const principalAmount = new BN(toProgramAmount(principal));
-		const financingFeeAmount = new BN(toProgramPercentage(financingFee));
+		const principalAmount = new BN(principal.toNumber());
+		const financingFeeAmount: Ratio = { numerator: financingFee, denominator: 100 };
 
 		return program.rpc.createDeal(
 			dealPDA[1],
@@ -519,29 +502,27 @@ export const activateDeal = multiAsync(
 
 const getLPTokenSupply = multiAsync(async (connection: Connection, wallet: Wallet) => {
 	const lpTokenMintPK = await getLPTokenMintPK(connection, wallet);
-	return connection.getTokenSupply(lpTokenMintPK).then((response) => Number(response.value.amount));
+	return connection
+		.getTokenSupply(lpTokenMintPK)
+		.then((response) => new Big(Number(response.value.amount)));
 });
 
 const getLPTokenPrice = multiAsync(async (connection: Connection, wallet: Wallet) => {
-	const _outstandingCredit = getOutstandingCredit(connection, wallet);
-	const _liquidityPoolBalance = getLiquidityPoolBalance(connection, wallet);
+	const _tvl = getTVL(connection, wallet);
 	const _lpTokenSupply = getLPTokenSupply(connection, wallet);
 
-	const [outstandingCredit, liquidityPoolBalance, lpTokenSupply] = await Promise.all([
-		_outstandingCredit,
-		_liquidityPoolBalance,
-		_lpTokenSupply,
-	]);
+	const [tvl, lpTokenSupply] = await Promise.all([_tvl, _lpTokenSupply]);
 
-	return lpTokenSupply && divide(outstandingCredit + liquidityPoolBalance, lpTokenSupply);
+	if (lpTokenSupply.eq(ZERO)) {
+		return ZERO;
+	}
+
+	return tvl.div(lpTokenSupply);
 });
 
 const getUserLPTokenAccount = multiAsync(async (connection: Connection, wallet: Wallet) => {
 	const _lpTokenMintPK = getLPTokenMintPK(connection, wallet);
-	const _investorLPAssociatedTokenAddress = getInvestorLPAssociatedTokenAddress(
-		connection,
-		wallet
-	);
+	const _investorLPAssociatedTokenAddress = getInvestorLPAssociatedTokenAddress(connection, wallet);
 
 	const [lpTokenMintPK, investorLPAssociatedTokenAddress] = await Promise.all([
 		_lpTokenMintPK,
@@ -561,10 +542,10 @@ const getUserLPTokenAmount = multiAsync(async (connection: Connection, wallet: W
 	const userLPTokenAccount = await getUserLPTokenAccount(connection, wallet);
 
 	if (!userLPTokenAccount) {
-		return 0;
+		return ZERO;
 	}
 
-	return Number(userLPTokenAccount.account.data.parsed.info.tokenAmount.amount);
+	return new Big(Number(userLPTokenAccount.account.data.parsed.info.tokenAmount.amount));
 });
 
 export const getLPTokenUSDCBalance = multiAsync(async (connection: Connection, wallet: Wallet) => {
@@ -573,19 +554,19 @@ export const getLPTokenUSDCBalance = multiAsync(async (connection: Connection, w
 
 	const [lpTokenPrice, userLPTokenAmount] = await Promise.all([_lpTokenPrice, _userLPTokenAmount]);
 
-	return userLPTokenAmount * lpTokenPrice;
+	return userLPTokenAmount.mul(lpTokenPrice);
 });
 
 export const repayDeal = multiAsync(
 	async (
-		amount: number,
+		amount: Big,
 		repaymentType: RepaymentType,
 		dealNumber: number,
 		connection: Connection,
 		wallet: Wallet
 	) => {
 		const program = newCredixProgram(connection, wallet);
-		const repayAmount = new BN(amount);
+		const repayAmount = new BN(amount.toNumber());
 
 		const _globalMarketStatePDA = findGlobalMarketStatePDA();
 		const _userAssociatedUSDCTokenAddressPK = getAssociatedUSDCTokenAddressPK(

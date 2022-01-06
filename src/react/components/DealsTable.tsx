@@ -7,10 +7,11 @@ import { Deal } from "types/program.types";
 import { useNavigate } from "react-router-dom";
 import { Path } from "types/navigation.types";
 import "../../styles/dealstable.scss";
-import { formatDealStatus, toUIAmount, toUIPercentage } from "utils/format.utils";
+import { formatDealStatus, formatRatio, toUIAmount } from "utils/format.utils";
 import { getDaysRemaining, mapDealToStatus } from "utils/deal.utils";
 import millify from "millify";
 import { PublicKey } from "@solana/web3.js";
+import Big from "big.js";
 
 interface Props {
 	borrower?: PublicKey;
@@ -68,10 +69,20 @@ export const DealsTable = (props: Props) => {
 				<TableCell>{formatBorrowerKey(deal.borrower)}</TableCell>
 				<TableCell>{createdAt.toUTCString()}</TableCell>
 				<TableCell>{(goLiveAt && goLiveAt.toUTCString()) || "-"}</TableCell>
-				<TableCell>{toUIPercentage(deal.financingFeePercentage)}%</TableCell>
-				<TableCell>{millify(toUIAmount(deal.principal.toNumber()))}</TableCell>
-				<TableCell>{millify(toUIAmount(deal.principalAmountRepaid.toNumber()))}</TableCell>
-				<TableCell>{millify(toUIAmount(deal.interestAmountRepaid.toNumber()))}</TableCell>
+				<TableCell>{formatRatio(deal.financingFeePercentage).toNumber()}%</TableCell>
+				<TableCell>
+					{millify(toUIAmount(new Big(deal.principal.toNumber()), Big.roundUp).toNumber())}
+				</TableCell>
+				<TableCell>
+					{millify(
+						toUIAmount(new Big(deal.principalAmountRepaid.toNumber()), Big.roundUp).toNumber()
+					)}
+				</TableCell>
+				<TableCell>
+					{millify(
+						toUIAmount(new Big(deal.interestAmountRepaid.toNumber()), Big.roundUp).toNumber()
+					)}
+				</TableCell>
 				<TableCell>{`${daysRemaining} / ${deal.timeToMaturityDays}`}</TableCell>
 				<TableCell>{`${dealStatus !== null && formatDealStatus(dealStatus)}`}</TableCell>
 				<TableCell>{userDeal && "repay"}</TableCell>
