@@ -405,7 +405,7 @@ export const getWithdrawFeePercentage = multiAsync(
 	async (connection: Connection, wallet: Wallet) => {
 		const globalMarketStateData = await getGlobalMarketStateAccountData(connection, wallet);
 
-		return globalMarketStateData.withrawalFee / (100 * 1000); // PERCENTAGE_FACTOR, will be changed later on
+		return globalMarketStateData.withdrawalFee / (100 * 1000); // PERCENTAGE_FACTOR, will be changed later on
 	}
 );
 

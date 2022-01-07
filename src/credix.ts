@@ -707,7 +707,7 @@ export type Credix = {
             "type": "u32"
           },
           {
-            "name": "withrawalFee",
+            "name": "withdrawalFee",
             "type": "u32"
           }
         ]
@@ -1522,7 +1522,7 @@ export const IDL: Credix = {
             "type": "u32"
           },
           {
-            "name": "withrawalFee",
+            "name": "withdrawalFee",
             "type": "u32"
           }
         ]
