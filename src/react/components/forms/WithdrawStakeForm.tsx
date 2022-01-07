@@ -29,12 +29,6 @@ export const WithdrawStakeForm = () => {
 			wallet as Wallet
 		);
 		const withdrawFee = getFee(withdrawAmount, withdrawFeePercentage);
-		console.log(
-			"fee",
-			withdrawFeePercentage.numerator,
-			withdrawFeePercentage.denominator,
-			withdrawFee.toNumber()
-		);
 
 		try {
 			await withdrawInvestment(withdrawAmount, connection.connection, wallet as Wallet);
