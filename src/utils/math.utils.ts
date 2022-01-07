@@ -11,3 +11,8 @@ export const applyRatio = (r: Ratio, to: Big) => {
 export const ZERO = new Big(0);
 
 export const min = (lhs: Big, rhs: Big) => (rhs.gt(lhs) ? lhs : rhs);
+
+export const getFee = (amount: Big, feePercentage: Ratio) =>
+	applyRatio(feePercentage, amount).round(0, Big.roundDown);
+
+export const getWithdrawFee = (amount: Big, withdrawFeePercentage: Ratio) => {};

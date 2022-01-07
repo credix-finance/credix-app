@@ -7,7 +7,7 @@ import { useNotify } from "../../hooks/useNotify";
 import millify from "millify";
 import { Big } from "big.js";
 import { toProgramAmount, toUIAmount } from "utils/format.utils";
-import { applyRatio, ZERO } from "utils/math.utils";
+import { getFee, ZERO } from "utils/math.utils";
 import { getWithdrawFeePercentage, withdrawInvestment } from "client/api";
 
 export const WithdrawStakeForm = () => {
@@ -28,7 +28,13 @@ export const WithdrawStakeForm = () => {
 			connection.connection,
 			wallet as Wallet
 		);
-		const withdrawAmountFee = applyRatio(withdrawFeePercentage, withdrawAmount);
+		const withdrawFee = getFee(withdrawAmount, withdrawFeePercentage);
+		console.log(
+			"fee",
+			withdrawFeePercentage.numerator,
+			withdrawFeePercentage.denominator,
+			withdrawFee.toNumber()
+		);
 
 		try {
 			await withdrawInvestment(withdrawAmount, connection.connection, wallet as Wallet);
@@ -36,7 +42,7 @@ export const WithdrawStakeForm = () => {
 				"success",
 				`Successful withdraw of ${millify(
 					toUIAmount(withdrawAmount, Big.roundDown).toNumber()
-				)} USDC with a ${millify(toUIAmount(withdrawAmountFee, Big.roundDown).toNumber())} USDC fee`
+				)} USDC with a ${millify(toUIAmount(withdrawFee, Big.roundDown).toNumber())} USDC fee`
 			);
 			triggerRefresh();
 		} catch (e: any) {

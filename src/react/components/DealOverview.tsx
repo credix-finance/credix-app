@@ -21,13 +21,12 @@ import {
 	getPrincipalToRepay,
 	mapDealToStatus,
 	getDaysRemaining,
-	getCredixFee,
 } from "utils/deal.utils";
 import "../../styles/stakeform.scss";
 import "../../styles/deals.scss";
 import { PublicKey } from "@solana/web3.js";
 import { Big } from "big.js";
-import { min, ZERO } from "utils/math.utils";
+import { getFee, min, ZERO } from "utils/math.utils";
 import { formatRatio, toProgramAmount, toUIAmount } from "utils/format.utils";
 
 export const DealOverview = () => {
@@ -181,7 +180,7 @@ export const DealOverview = () => {
 				wallet as Wallet
 			);
 
-			const fee = getCredixFee(repaidAmount, interestFeePercentage);
+			const fee = getFee(repaidAmount, interestFeePercentage);
 			const feeNotification = ` with a ${toUIAmount(fee, Big.roundDown)} USDC fee`;
 
 			notify("success", `${paymentNotification}${showFeeNotification ? feeNotification : ""}`);

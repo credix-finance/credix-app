@@ -67,9 +67,5 @@ export const getInterestToRepay = (deal: Deal) => {
 	return totalInterest.minus(interestAmountRepaid);
 };
 
-export const getCredixFee = (amount: Big, interestFeePercentage: Ratio) => {
-	return applyRatio(interestFeePercentage, amount).round(0, Big.roundDown);
-};
-
 export const createPrincipalRepaymentType = (): PrincipalRepaymentType => ({ principal: {} });
 export const createInterestRepaymentType = (): InterestRepaymentType => ({ interest: {} });
