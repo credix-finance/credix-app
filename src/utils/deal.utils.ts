@@ -47,7 +47,10 @@ export const getTotalInterest = (deal: Deal) => {
 	const financingFeePercentage = deal.financingFeePercentage;
 	const timeToMaturityRatio: Ratio = { numerator: deal.timeToMaturityDays, denominator: 360 };
 
-	return applyRatio(timeToMaturityRatio, applyRatio(financingFeePercentage, principal));
+	return applyRatio(timeToMaturityRatio, applyRatio(financingFeePercentage, principal)).round(
+		0,
+		Big.roundDown
+	);
 };
 
 export const getPrincipalToRepay = (deal: Deal) => {
@@ -62,6 +65,10 @@ export const getInterestToRepay = (deal: Deal) => {
 	const totalInterest = getTotalInterest(deal);
 
 	return totalInterest.minus(interestAmountRepaid);
+};
+
+export const getCredixFee = (amount: Big, interestFeePercentage: Ratio) => {
+	return applyRatio(interestFeePercentage, amount).round(0, Big.roundDown);
 };
 
 export const createPrincipalRepaymentType = (): PrincipalRepaymentType => ({ principal: {} });
