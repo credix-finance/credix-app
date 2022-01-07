@@ -4,12 +4,11 @@ import React, { useState } from "react";
 import { useRefresh } from "react/hooks/useRefresh";
 import "../../../styles/depositstakeform.scss";
 import { useNotify } from "../../hooks/useNotify";
-import { FEES } from "consts";
 import millify from "millify";
-import { withdrawInvestment } from "client/api";
-import Big from "big.js";
+import { Big } from "big.js";
 import { toProgramAmount, toUIAmount } from "utils/format.utils";
-import { ZERO } from "utils/math.utils";
+import { applyRatio, ZERO } from "utils/math.utils";
+import { getWithdrawFeePercentage, withdrawInvestment } from "client/api";
 
 export const WithdrawStakeForm = () => {
 	const wallet = useAnchorWallet();
@@ -25,7 +24,11 @@ export const WithdrawStakeForm = () => {
 			return;
 		}
 
-		const withdrawAmountFee = withdrawAmount.mul(FEES.WITHDRAW);
+		const withdrawFeePercentage = await getWithdrawFeePercentage(
+			connection.connection,
+			wallet as Wallet
+		);
+		const withdrawAmountFee = applyRatio(withdrawFeePercentage, withdrawAmount);
 
 		try {
 			await withdrawInvestment(withdrawAmount, connection.connection, wallet as Wallet);

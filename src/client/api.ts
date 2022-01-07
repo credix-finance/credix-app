@@ -386,6 +386,22 @@ export const getBorrowerInfoAccountData = multiAsync(
 	}
 );
 
+export const getWithdrawFeePercentage = multiAsync(
+	async (connection: Connection, wallet: Wallet) => {
+		const globalMarketStateData = await getGlobalMarketStateAccountData(connection, wallet);
+
+		return globalMarketStateData.withrawalFee;
+	}
+);
+
+export const getInterestFeePercentage = multiAsync(
+	async (connection: Connection, wallet: Wallet) => {
+		const globalMarketStateData = await getGlobalMarketStateAccountData(connection, wallet);
+
+		return globalMarketStateData.interestFee;
+	}
+);
+
 export const createDeal = multiAsync(
 	async (
 		principal: Big,

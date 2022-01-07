@@ -578,6 +578,38 @@ export type Credix = {
           "type": "bool"
         }
       ]
+    },
+    {
+      "name": "freezeGlobalMarketState",
+      "accounts": [
+        {
+          "name": "owner",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "globalMarketState",
+          "isMut": true,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "thawGlobalMarketState",
+      "accounts": [
+        {
+          "name": "owner",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "globalMarketState",
+          "isMut": true,
+          "isSigner": false
+        }
+      ],
+      "args": []
     }
   ],
   "accounts": [
@@ -725,6 +757,10 @@ export type Credix = {
             "type": {
               "defined": "Ratio"
             }
+          },
+          {
+            "name": "frozen",
+            "type": "bool"
           }
         ]
       }
@@ -1450,6 +1486,38 @@ export const IDL: Credix = {
           "type": "bool"
         }
       ]
+    },
+    {
+      "name": "freezeGlobalMarketState",
+      "accounts": [
+        {
+          "name": "owner",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "globalMarketState",
+          "isMut": true,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "thawGlobalMarketState",
+      "accounts": [
+        {
+          "name": "owner",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "globalMarketState",
+          "isMut": true,
+          "isSigner": false
+        }
+      ],
+      "args": []
     }
   ],
   "accounts": [
@@ -1597,6 +1665,10 @@ export const IDL: Credix = {
             "type": {
               "defined": "Ratio"
             }
+          },
+          {
+            "name": "frozen",
+            "type": "bool"
           }
         ]
       }

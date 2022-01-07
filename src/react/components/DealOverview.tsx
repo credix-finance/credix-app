@@ -2,8 +2,12 @@ import { MenuItem } from "@material-ui/core";
 import { Select } from "@mui/material";
 import { Wallet } from "@project-serum/anchor";
 import { useAnchorWallet, useConnection } from "@solana/wallet-adapter-react";
-import { getClusterTime, repayDeal, getDealAccountData } from "client/api";
-import { FEES } from "consts";
+import {
+	getClusterTime,
+	repayDeal,
+	getDealAccountData,
+	getInterestFeePercentage,
+} from "client/api";
 import React, { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useNotify } from "react/hooks/useNotify";
@@ -22,7 +26,7 @@ import "../../styles/stakeform.scss";
 import "../../styles/deals.scss";
 import { PublicKey } from "@solana/web3.js";
 import { Big } from "big.js";
-import { ZERO } from "utils/math.utils";
+import { applyRatio, min, ZERO } from "utils/math.utils";
 import { formatRatio, toProgramAmount, toUIAmount } from "utils/format.utils";
 
 export const DealOverview = () => {
@@ -165,15 +169,19 @@ export const DealOverview = () => {
 			);
 			const showFeeNotification = repaymentSelectValue === "interest";
 
+			const repaidAmount = min(repaymentAmount, amountToRepay);
 			const paymentNotification = `Successfully repaid ${toUIAmount(
-				repaymentAmount,
+				repaidAmount,
 				Big.roundUp
 			).toNumber()} USDC`;
 
-			const feeNotification = ` with a ${toUIAmount(
-				repaymentAmount.mul(new Big(FEES.INTEREST_PAYMENT)),
-				Big.roundUp
-			)} USDC fee`;
+			const interestFeePercentage = await getInterestFeePercentage(
+				connection.connection,
+				wallet as Wallet
+			);
+
+			const fee = applyRatio(interestFeePercentage, repaidAmount);
+			const feeNotification = ` with a ${toUIAmount(fee, Big.roundUp)} USDC fee`;
 
 			notify("success", `${paymentNotification}${showFeeNotification ? feeNotification : ""}`);
 
