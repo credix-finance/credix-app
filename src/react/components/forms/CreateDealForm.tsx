@@ -227,8 +227,11 @@ export const CreateDealForm = (props: Props) => {
 				<label className="stake-input-label">
 					Principal
 					<p>
-						The total amount of USDC to borrow, borrow limit:{" "}
-						{formatUIAmount(liquidityPoolBalance, Big.roundDown, intl.formatNumber)} USDC
+						{`The total amount of USDC to borrow, borrow limit: ${formatUIAmount(
+							liquidityPoolBalance,
+							Big.roundDown,
+							intl.formatNumber
+						)} USDC`}
 					</p>
 					<input
 						name="principal"

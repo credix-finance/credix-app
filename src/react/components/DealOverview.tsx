@@ -297,11 +297,11 @@ export const DealOverview = () => {
 					<label className="stake-input-label">
 						USDC amount
 						<p>
-							To repay:{" "}
-							{amountToRepay === undefined
-								? ""
-								: formatUIAmount(amountToRepay, Big.roundUp, intl.formatNumber)}{" "}
-							USDC
+							{`To repay: ${
+								amountToRepay === undefined
+									? ""
+									: formatUIAmount(amountToRepay, Big.roundUp, intl.formatNumber)
+							} USDC`}
 						</p>
 						<input
 							disabled={!wallet?.publicKey}
