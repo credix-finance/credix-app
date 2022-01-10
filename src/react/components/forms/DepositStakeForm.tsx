@@ -7,9 +7,11 @@ import "../../../styles/depositstakeform.scss";
 import { useNotify } from "../../hooks/useNotify";
 import { depositInvestment } from "client/api";
 import { Big } from "big.js";
-import { toProgramAmount, toUIAmount } from "utils/format.utils";
+import { formatUIAmount, toProgramAmount, toUIAmount } from "utils/format.utils";
+import { useIntl } from "react-intl";
 
 export const DepositStakeForm = () => {
+	const intl = useIntl();
 	const wallet = useAnchorWallet();
 	const connection = useConnection();
 	const [stake, setStake] = useState<Big | undefined>();
@@ -25,7 +27,10 @@ export const DepositStakeForm = () => {
 
 		try {
 			await depositInvestment(stake, connection.connection, wallet as Wallet);
-			notify("success", `Successful deposit of ${toUIAmount(stake, Big.roundDown)} USDC`);
+			notify(
+				"success",
+				`Successful deposit of ${formatUIAmount(stake, Big.roundDown, intl.formatNumber)} USDC`
+			);
 			triggerRefresh();
 		} catch (e: any) {
 			notify("error", `Transaction failed! ${e?.message}`);
@@ -40,13 +45,13 @@ export const DepositStakeForm = () => {
 		setStake(newStake);
 	};
 
-	const canSubmit = () => !(wallet?.publicKey && stake);
+	const canSubmit = () => !(wallet?.publicKey && stake && !stake.eq(0));
 
 	return (
 		<form onSubmit={onSubmit} className="row">
 			<label className="stake-input-label">
 				<input
-					value={stake === undefined ? "" : toUIAmount(stake, Big.roundDown)}
+					value={stake === undefined ? "" : toUIAmount(stake).toNumber()}
 					type="number"
 					step=".01"
 					placeholder={"1000"}

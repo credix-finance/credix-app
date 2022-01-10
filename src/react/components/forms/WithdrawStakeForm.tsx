@@ -5,11 +5,13 @@ import { useRefresh } from "react/hooks/useRefresh";
 import "../../../styles/depositstakeform.scss";
 import { useNotify } from "../../hooks/useNotify";
 import { Big } from "big.js";
-import { toProgramAmount, toUIAmount } from "utils/format.utils";
+import { formatUIAmount, toProgramAmount, toUIAmount } from "utils/format.utils";
 import { getFee, ZERO } from "utils/math.utils";
 import { getWithdrawFeePercentage, withdrawInvestment } from "client/api";
+import { useIntl } from "react-intl";
 
 export const WithdrawStakeForm = () => {
+	const intl = useIntl();
 	const wallet = useAnchorWallet();
 	const connection = useConnection();
 	const [withdrawAmount, setWithdrawAmount] = useState<Big | undefined>();
@@ -33,10 +35,11 @@ export const WithdrawStakeForm = () => {
 			await withdrawInvestment(withdrawAmount, connection.connection, wallet as Wallet);
 			notify(
 				"success",
-				`Successful withdraw of ${toUIAmount(
+				`Successful withdraw of ${formatUIAmount(
 					withdrawAmount,
-					Big.roundDown
-				)} USDC with a ${toUIAmount(withdrawFee, Big.roundDown)} USDC fee`
+					Big.roundDown,
+					intl.formatNumber
+				)} USDC with a ${formatUIAmount(withdrawFee, Big.roundDown, intl.formatNumber)} USDC fee`
 			);
 			triggerRefresh();
 		} catch (e: any) {
@@ -60,7 +63,7 @@ export const WithdrawStakeForm = () => {
 			<label className="stake-input-label">
 				<input
 					placeholder={"1000"}
-					value={withdrawAmount === undefined ? "" : toUIAmount(withdrawAmount, Big.roundDown)}
+					value={withdrawAmount === undefined ? "" : toUIAmount(withdrawAmount).toNumber()}
 					type="number"
 					step=".01"
 					onChange={onChange}

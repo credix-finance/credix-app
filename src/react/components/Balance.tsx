@@ -5,10 +5,10 @@ import React, { useCallback, useEffect, useState } from "react";
 import { useIntl } from "react-intl";
 import { Button } from "@material-ui/core";
 import { useRefresh } from "react/hooks/useRefresh";
-import { toUIAmount } from "utils/format.utils";
 import { getUserUSDCBalance } from "client/api";
 import { Big } from "big.js";
 import { ZERO } from "utils/math.utils";
+import { formatUIAmount } from "utils/format.utils";
 
 export const Balance = () => {
 	const wallet = useAnchorWallet();
@@ -42,7 +42,7 @@ export const Balance = () => {
 			<div className="balance-and-pk">
 				<h1>
 					{intl.formatMessage(MESSAGES.balance, {
-						balance: toUIAmount(balance, Big.roundDown),
+						balance: formatUIAmount(balance, Big.roundDown, intl.formatNumber),
 					})}
 				</h1>
 			</div>
