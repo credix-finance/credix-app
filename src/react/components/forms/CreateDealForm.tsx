@@ -16,9 +16,10 @@ import { useNavigate } from "react-router-dom";
 import { Path } from "types/navigation.types";
 import Big from "big.js";
 import { ZERO } from "utils/math.utils";
-import { toProgramAmount, toUIAmount } from "utils/format.utils";
+import { formatUIAmount, toProgramAmount, toUIAmount } from "utils/format.utils";
 import { config } from "../../../config";
 import { SolanaCluster } from "../../../types/solana.types";
+import { useIntl } from "react-intl";
 
 interface Props {
 	borrower?: PublicKey;
@@ -26,6 +27,7 @@ interface Props {
 }
 
 export const CreateDealForm = (props: Props) => {
+	const intl = useIntl();
 	const wallet = useAnchorWallet();
 	const connection = useConnection();
 	const [principal, setPrincipal] = useState<Big | undefined>();
@@ -225,13 +227,16 @@ export const CreateDealForm = (props: Props) => {
 				<label className="stake-input-label">
 					Principal
 					<p>
-						The total amount of USDC to borrow, borrow limit:{" "}
-						{toUIAmount(liquidityPoolBalance, Big.roundDown).toNumber()} USDC
+						{`The total amount of USDC to borrow, borrow limit: ${formatUIAmount(
+							liquidityPoolBalance,
+							Big.roundDown,
+							intl.formatNumber
+						)} USDC`}
 					</p>
 					<input
 						name="principal"
 						type="number"
-						value={principal === undefined ? "" : toUIAmount(principal, Big.roundHalfUp).toNumber()}
+						value={principal === undefined ? "" : toUIAmount(principal).toNumber()}
 						placeholder={placeholder}
 						onChange={onChangePrincipal}
 						onBlur={onBlurPrincipal}

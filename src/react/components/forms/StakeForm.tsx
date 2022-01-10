@@ -1,4 +1,3 @@
-import { MESSAGES } from "messages";
 import React, { useCallback, useEffect, useState } from "react";
 import { useIntl } from "react-intl";
 import { DepositStakeForm } from "./DepositStakeForm";
@@ -8,10 +7,10 @@ import { useAnchorWallet, useConnection } from "@solana/wallet-adapter-react";
 import { Wallet } from "@project-serum/anchor";
 import { Button } from "@material-ui/core";
 import { useRefresh } from "react/hooks/useRefresh";
-import { toUIAmount } from "utils/format.utils";
 import { getLPTokenUSDCBalance } from "client/api";
 import { Big } from "big.js";
 import { ZERO } from "utils/math.utils";
+import { formatUIAmount } from "utils/format.utils";
 
 export const StakeForm = () => {
 	const intl = useIntl();
@@ -35,11 +34,7 @@ export const StakeForm = () => {
 	return (
 		<div className="stake-and-withdraw-container">
 			<div className="row">
-				<h1>
-					{intl.formatMessage(MESSAGES.stake, {
-						stake: toUIAmount(stake, Big.roundDown).toNumber(),
-					})}
-				</h1>
+				<h1>{`Your stake: ${formatUIAmount(stake, Big.roundDown, intl.formatNumber)} USDC`}</h1>
 				<Button
 					variant="contained"
 					className="MuiButton-containedPrimary stake-button credix-button"
