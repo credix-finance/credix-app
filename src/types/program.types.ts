@@ -1,4 +1,5 @@
 import type { AnchorTypes } from "@saberhq/anchor-contrib";
+import Big from "big.js";
 import { Credix } from "credix";
 
 export type CredixTypes = AnchorTypes<
@@ -9,7 +10,7 @@ export type CredixTypes = AnchorTypes<
 		borrowerInfo: BorrowerInfo;
 		credixPass: CredixPass;
 	},
-	{ DealRepaymentType: RepaymentType }
+	{ DealRepaymentType: RepaymentType; Ratio: Ratio }
 >;
 
 export type CredixProgram = CredixTypes["Program"];
@@ -19,11 +20,20 @@ export type CredixPass = CredixTypes["Accounts"]["CredixPass"];
 export type GlobalMarketState = CredixTypes["Accounts"]["GlobalMarketState"];
 export type BorrowerInfo = CredixTypes["Accounts"]["BorrowerInfo"];
 
+export type Ratio = {
+	numerator: number;
+	denominator: number;
+};
+
+export type PrincipalRepaymentType = { principal: {} };
+export type InterestRepaymentType = { interest: {} };
+
+export type RepaymentType = PrincipalRepaymentType | InterestRepaymentType;
+
 export interface PoolStats {
-	TVL: number;
-	APY: number;
-	outstandingCredit: number;
-	solendBuffer: number;
+	TVL: Big;
+	APY: Ratio;
+	outstandingCredit: Big;
 }
 
 export enum DealStatus {
@@ -31,8 +41,3 @@ export enum DealStatus {
 	IN_PROGRESS,
 	PENDING,
 }
-
-export type PrincipalRepaymentType = { principal: {} };
-export type InterestRepaymentType = { interest: {} };
-
-export type RepaymentType = PrincipalRepaymentType | InterestRepaymentType;

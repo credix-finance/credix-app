@@ -7,16 +7,18 @@ import { Deal } from "types/program.types";
 import { useNavigate } from "react-router-dom";
 import { Path } from "types/navigation.types";
 import "../../styles/dealstable.scss";
-import { formatDealStatus, toUIAmount, toUIPercentage } from "utils/format.utils";
+import { formatDealStatus, formatRatio, formatUIAmount } from "utils/format.utils";
 import { getDaysRemaining, mapDealToStatus } from "utils/deal.utils";
-import millify from "millify";
 import { PublicKey } from "@solana/web3.js";
+import Big from "big.js";
+import { useIntl } from "react-intl";
 
 interface Props {
 	borrower?: PublicKey;
 }
 
 export const DealsTable = (props: Props) => {
+	const intl = useIntl();
 	const wallet = useAnchorWallet();
 	const connection = useConnection();
 	const [deals, setDeals] = useState<any>([]);
@@ -68,10 +70,26 @@ export const DealsTable = (props: Props) => {
 				<TableCell>{formatBorrowerKey(deal.borrower)}</TableCell>
 				<TableCell>{createdAt.toUTCString()}</TableCell>
 				<TableCell>{(goLiveAt && goLiveAt.toUTCString()) || "-"}</TableCell>
-				<TableCell>{toUIPercentage(deal.financingFeePercentage)}%</TableCell>
-				<TableCell>{millify(toUIAmount(deal.principal.toNumber()))}</TableCell>
-				<TableCell>{millify(toUIAmount(deal.principalAmountRepaid.toNumber()))}</TableCell>
-				<TableCell>{millify(toUIAmount(deal.interestAmountRepaid.toNumber()))}</TableCell>
+				<TableCell>
+					{intl.formatNumber(formatRatio(deal.financingFeePercentage).toNumber())}%
+				</TableCell>
+				<TableCell>
+					{formatUIAmount(new Big(deal.principal.toNumber()), Big.roundUp, intl.formatNumber)}
+				</TableCell>
+				<TableCell>
+					{formatUIAmount(
+						new Big(deal.principalAmountRepaid.toNumber()),
+						Big.roundUp,
+						intl.formatNumber
+					)}
+				</TableCell>
+				<TableCell>
+					{formatUIAmount(
+						new Big(deal.interestAmountRepaid.toNumber()),
+						Big.roundUp,
+						intl.formatNumber
+					)}
+				</TableCell>
 				<TableCell>{`${daysRemaining} / ${deal.timeToMaturityDays}`}</TableCell>
 				<TableCell>{`${dealStatus !== null && formatDealStatus(dealStatus)}`}</TableCell>
 				<TableCell>{userDeal && "repay"}</TableCell>

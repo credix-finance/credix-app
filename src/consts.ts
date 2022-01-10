@@ -11,4 +11,3 @@ export const SEEDS = {
 };
 
 export const DECIMALS = 6;
-export const PERCENTAGE_FACTOR = 1000;
