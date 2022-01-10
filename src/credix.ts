@@ -86,11 +86,15 @@ export type Credix = {
         },
         {
           "name": "interestFee",
-          "type": "u32"
+          "type": {
+            "defined": "Ratio"
+          }
         },
         {
           "name": "withdrawalFee",
-          "type": "u32"
+          "type": {
+            "defined": "Ratio"
+          }
         }
       ]
     },
@@ -234,7 +238,9 @@ export type Credix = {
         },
         {
           "name": "financingFeePercentage",
-          "type": "u16"
+          "type": {
+            "defined": "Ratio"
+          }
         },
         {
           "name": "leverageRatio",
@@ -242,7 +248,9 @@ export type Credix = {
         },
         {
           "name": "underwriterPerformanceFeePercentage",
-          "type": "u16"
+          "type": {
+            "defined": "Ratio"
+          }
         },
         {
           "name": "timeToMaturityDays",
@@ -570,6 +578,38 @@ export type Credix = {
           "type": "bool"
         }
       ]
+    },
+    {
+      "name": "freezeGlobalMarketState",
+      "accounts": [
+        {
+          "name": "owner",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "globalMarketState",
+          "isMut": true,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "thawGlobalMarketState",
+      "accounts": [
+        {
+          "name": "owner",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "globalMarketState",
+          "isMut": true,
+          "isSigner": false
+        }
+      ],
+      "args": []
     }
   ],
   "accounts": [
@@ -608,7 +648,9 @@ export type Credix = {
           },
           {
             "name": "financingFeePercentage",
-            "type": "u16"
+            "type": {
+              "defined": "Ratio"
+            }
           },
           {
             "name": "principalAmountRepaid",
@@ -636,7 +678,9 @@ export type Credix = {
           },
           {
             "name": "underwriterPerformanceFeePercentage",
-            "type": "u16"
+            "type": {
+              "defined": "Ratio"
+            }
           },
           {
             "name": "dealNumber",
@@ -699,16 +743,24 @@ export type Credix = {
             "type": "u8"
           },
           {
-            "name": "globalMarketStateBump",
+            "name": "bump",
             "type": "u8"
           },
           {
             "name": "interestFee",
-            "type": "u32"
+            "type": {
+              "defined": "Ratio"
+            }
           },
           {
             "name": "withdrawalFee",
-            "type": "u32"
+            "type": {
+              "defined": "Ratio"
+            }
+          },
+          {
+            "name": "frozen",
+            "type": "bool"
           }
         ]
       }
@@ -739,6 +791,22 @@ export type Credix = {
     }
   ],
   "types": [
+    {
+      "name": "Ratio",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "numerator",
+            "type": "u32"
+          },
+          {
+            "name": "denominator",
+            "type": "u32"
+          }
+        ]
+      }
+    },
     {
       "name": "DealRepaymentType",
       "type": {
@@ -777,38 +845,63 @@ export type Credix = {
     },
     {
       "code": 6004,
-      "name": "MathOverflow",
-      "msg": "Math overflow."
-    },
-    {
-      "code": 6005,
       "name": "NotEnoughLiquidity",
       "msg": "Not enough liquidity."
     },
     {
-      "code": 6006,
+      "code": 6005,
       "name": "PrincipalRepaid",
       "msg": "Principal is already repaid."
     },
     {
-      "code": 6007,
+      "code": 6006,
       "name": "InterestRepaid",
       "msg": "Interest is already repaid."
     },
     {
-      "code": 6008,
+      "code": 6007,
       "name": "UnauthorizedSigner",
       "msg": "The Signer is not authorized to use this instruction."
     },
     {
-      "code": 6009,
+      "code": 6008,
       "name": "CredixPassInvalid",
       "msg": "Credix pass is invalid for this request."
     },
     {
-      "code": 6010,
+      "code": 6009,
       "name": "CredixPassInactive",
       "msg": "Credix pass is inactive at the moment."
+    },
+    {
+      "code": 6010,
+      "name": "Overflow",
+      "msg": "Overflow occured."
+    },
+    {
+      "code": 6011,
+      "name": "Underflow",
+      "msg": "Underflow occured."
+    },
+    {
+      "code": 6012,
+      "name": "ZeroDivision",
+      "msg": "Tried to divide by zero."
+    },
+    {
+      "code": 6013,
+      "name": "ZeroDenominator",
+      "msg": "Invalid Ratio: denominator can't be zero."
+    },
+    {
+      "code": 6014,
+      "name": "InvalidPreciseNumber",
+      "msg": "Invalid u64 used as value for PreciseNumber."
+    },
+    {
+      "code": 6015,
+      "name": "PreciseNumberCastFailed",
+      "msg": "Unable to cast PreciseNumber to u64"
     }
   ]
 };
@@ -901,11 +994,15 @@ export const IDL: Credix = {
         },
         {
           "name": "interestFee",
-          "type": "u32"
+          "type": {
+            "defined": "Ratio"
+          }
         },
         {
           "name": "withdrawalFee",
-          "type": "u32"
+          "type": {
+            "defined": "Ratio"
+          }
         }
       ]
     },
@@ -1049,7 +1146,9 @@ export const IDL: Credix = {
         },
         {
           "name": "financingFeePercentage",
-          "type": "u16"
+          "type": {
+            "defined": "Ratio"
+          }
         },
         {
           "name": "leverageRatio",
@@ -1057,7 +1156,9 @@ export const IDL: Credix = {
         },
         {
           "name": "underwriterPerformanceFeePercentage",
-          "type": "u16"
+          "type": {
+            "defined": "Ratio"
+          }
         },
         {
           "name": "timeToMaturityDays",
@@ -1385,6 +1486,38 @@ export const IDL: Credix = {
           "type": "bool"
         }
       ]
+    },
+    {
+      "name": "freezeGlobalMarketState",
+      "accounts": [
+        {
+          "name": "owner",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "globalMarketState",
+          "isMut": true,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "thawGlobalMarketState",
+      "accounts": [
+        {
+          "name": "owner",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "globalMarketState",
+          "isMut": true,
+          "isSigner": false
+        }
+      ],
+      "args": []
     }
   ],
   "accounts": [
@@ -1423,7 +1556,9 @@ export const IDL: Credix = {
           },
           {
             "name": "financingFeePercentage",
-            "type": "u16"
+            "type": {
+              "defined": "Ratio"
+            }
           },
           {
             "name": "principalAmountRepaid",
@@ -1451,7 +1586,9 @@ export const IDL: Credix = {
           },
           {
             "name": "underwriterPerformanceFeePercentage",
-            "type": "u16"
+            "type": {
+              "defined": "Ratio"
+            }
           },
           {
             "name": "dealNumber",
@@ -1514,16 +1651,24 @@ export const IDL: Credix = {
             "type": "u8"
           },
           {
-            "name": "globalMarketStateBump",
+            "name": "bump",
             "type": "u8"
           },
           {
             "name": "interestFee",
-            "type": "u32"
+            "type": {
+              "defined": "Ratio"
+            }
           },
           {
             "name": "withdrawalFee",
-            "type": "u32"
+            "type": {
+              "defined": "Ratio"
+            }
+          },
+          {
+            "name": "frozen",
+            "type": "bool"
           }
         ]
       }
@@ -1554,6 +1699,22 @@ export const IDL: Credix = {
     }
   ],
   "types": [
+    {
+      "name": "Ratio",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "numerator",
+            "type": "u32"
+          },
+          {
+            "name": "denominator",
+            "type": "u32"
+          }
+        ]
+      }
+    },
     {
       "name": "DealRepaymentType",
       "type": {
@@ -1592,38 +1753,63 @@ export const IDL: Credix = {
     },
     {
       "code": 6004,
-      "name": "MathOverflow",
-      "msg": "Math overflow."
-    },
-    {
-      "code": 6005,
       "name": "NotEnoughLiquidity",
       "msg": "Not enough liquidity."
     },
     {
-      "code": 6006,
+      "code": 6005,
       "name": "PrincipalRepaid",
       "msg": "Principal is already repaid."
     },
     {
-      "code": 6007,
+      "code": 6006,
       "name": "InterestRepaid",
       "msg": "Interest is already repaid."
     },
     {
-      "code": 6008,
+      "code": 6007,
       "name": "UnauthorizedSigner",
       "msg": "The Signer is not authorized to use this instruction."
     },
     {
-      "code": 6009,
+      "code": 6008,
       "name": "CredixPassInvalid",
       "msg": "Credix pass is invalid for this request."
     },
     {
-      "code": 6010,
+      "code": 6009,
       "name": "CredixPassInactive",
       "msg": "Credix pass is inactive at the moment."
+    },
+    {
+      "code": 6010,
+      "name": "Overflow",
+      "msg": "Overflow occured."
+    },
+    {
+      "code": 6011,
+      "name": "Underflow",
+      "msg": "Underflow occured."
+    },
+    {
+      "code": 6012,
+      "name": "ZeroDivision",
+      "msg": "Tried to divide by zero."
+    },
+    {
+      "code": 6013,
+      "name": "ZeroDenominator",
+      "msg": "Invalid Ratio: denominator can't be zero."
+    },
+    {
+      "code": 6014,
+      "name": "InvalidPreciseNumber",
+      "msg": "Invalid u64 used as value for PreciseNumber."
+    },
+    {
+      "code": 6015,
+      "name": "PreciseNumberCastFailed",
+      "msg": "Unable to cast PreciseNumber to u64"
     }
   ]
 };

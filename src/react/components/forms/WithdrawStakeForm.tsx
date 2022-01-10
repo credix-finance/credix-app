@@ -4,20 +4,24 @@ import React, { useState } from "react";
 import { useRefresh } from "react/hooks/useRefresh";
 import "../../../styles/depositstakeform.scss";
 import { useNotify } from "../../hooks/useNotify";
-import millify from "millify";
+import { Big } from "big.js";
+import { formatUIAmount, toProgramAmount, toUIAmount } from "utils/format.utils";
+import { getFee, ZERO } from "utils/math.utils";
 import { getWithdrawFeePercentage, withdrawInvestment } from "client/api";
+import { useIntl } from "react-intl";
 
 export const WithdrawStakeForm = () => {
+	const intl = useIntl();
 	const wallet = useAnchorWallet();
 	const connection = useConnection();
-	const [withdrawAmount, setWithdrawAmount] = useState<number | undefined>();
+	const [withdrawAmount, setWithdrawAmount] = useState<Big | undefined>();
 	const notify = useNotify();
 	const triggerRefresh = useRefresh();
 
 	const onSubmit = async (e: React.SyntheticEvent) => {
 		e.preventDefault();
 
-		if (!withdrawAmount) {
+		if (!withdrawAmount || withdrawAmount.eq(ZERO)) {
 			return;
 		}
 
@@ -25,15 +29,17 @@ export const WithdrawStakeForm = () => {
 			connection.connection,
 			wallet as Wallet
 		);
-		const withdrawAmountFee = withdrawAmount * withdrawFeePercentage;
+		const withdrawFee = getFee(withdrawAmount, withdrawFeePercentage);
 
 		try {
 			await withdrawInvestment(withdrawAmount, connection.connection, wallet as Wallet);
 			notify(
 				"success",
-				`Successful withdraw of ${withdrawAmount} USDC with a ${millify(
-					withdrawAmountFee
-				)} USDC fee`
+				`Successful withdraw of ${formatUIAmount(
+					withdrawAmount,
+					Big.roundDown,
+					intl.formatNumber
+				)} USDC with a ${formatUIAmount(withdrawFee, Big.roundDown, intl.formatNumber)} USDC fee`
 			);
 			triggerRefresh();
 		} catch (e: any) {
@@ -45,7 +51,9 @@ export const WithdrawStakeForm = () => {
 
 	const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const newValue = e.target.value === "" ? undefined : Number(e.target.value);
-		setWithdrawAmount(newValue);
+		const newWithdrawAmount =
+			newValue === undefined ? newValue : toProgramAmount(new Big(newValue));
+		setWithdrawAmount(newWithdrawAmount);
 	};
 
 	const canSubmit = () => !(wallet?.publicKey && withdrawAmount);
@@ -55,7 +63,7 @@ export const WithdrawStakeForm = () => {
 			<label className="stake-input-label">
 				<input
 					placeholder={"1000"}
-					value={withdrawAmount === undefined ? "" : withdrawAmount}
+					value={withdrawAmount === undefined ? "" : toUIAmount(withdrawAmount).toNumber()}
 					type="number"
 					step=".01"
 					onChange={onChange}

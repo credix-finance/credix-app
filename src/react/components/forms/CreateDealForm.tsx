@@ -3,7 +3,6 @@ import { useAnchorWallet, useConnection } from "@solana/wallet-adapter-react";
 import { serialAsync } from "utils/async.utils";
 import React, { useCallback, useEffect, useState } from "react";
 import { useNotify } from "react/hooks/useNotify";
-import { toUIAmount } from "utils/format.utils";
 import "../../../styles/stakeform.scss";
 import { PublicKey } from "@solana/web3.js";
 import { useRefresh } from "react/hooks/useRefresh";
@@ -15,8 +14,12 @@ import {
 } from "client/api";
 import { useNavigate } from "react-router-dom";
 import { Path } from "types/navigation.types";
+import Big from "big.js";
+import { ZERO } from "utils/math.utils";
+import { formatUIAmount, toProgramAmount, toUIAmount } from "utils/format.utils";
 import { config } from "../../../config";
 import { SolanaCluster } from "../../../types/solana.types";
+import { useIntl } from "react-intl";
 
 interface Props {
 	borrower?: PublicKey;
@@ -24,10 +27,11 @@ interface Props {
 }
 
 export const CreateDealForm = (props: Props) => {
+	const intl = useIntl();
 	const wallet = useAnchorWallet();
 	const connection = useConnection();
-	const [principal, setPrincipal] = useState<number | undefined>();
-	const [liquidityPoolBalance, setLiquidityPoolBalance] = useState<number>(0);
+	const [principal, setPrincipal] = useState<Big | undefined>();
+	const [liquidityPoolBalance, setLiquidityPoolBalance] = useState<Big>(ZERO);
 	const [financingFee, setFinancingFee] = useState<number | undefined>();
 	const [timeToMaturity, setTimeToMaturity] = useState<number | undefined>();
 	const [borrower, setBorrower] = useState<string>("");
@@ -41,7 +45,7 @@ export const CreateDealForm = (props: Props) => {
 
 	const updateLiquidityPoolBalance = useCallback(async () => {
 		const balance = await getLiquidityPoolBalance(connection.connection, wallet as Wallet);
-		setLiquidityPoolBalance(toUIAmount(balance));
+		setLiquidityPoolBalance(balance);
 	}, [connection.connection, wallet]);
 
 	useEffect(() => {
@@ -66,8 +70,13 @@ export const CreateDealForm = (props: Props) => {
 			return;
 		}
 
-		if (!principal || !financingFee) {
-			notify("error", "Need principal and financing fee to submit");
+		if (!principal || principal.eq(ZERO)) {
+			notify("error", "Need principal to submit");
+			return;
+		}
+
+		if (!financingFee) {
+			notify("error", "Need financing fee to submit");
 			return;
 		}
 
@@ -149,7 +158,10 @@ export const CreateDealForm = (props: Props) => {
 	};
 
 	const onChangePrincipal = (e: React.ChangeEvent<HTMLInputElement>) => {
-		onChange(e, setPrincipal);
+		const newValue = e.target.value === "" ? undefined : Number(e.target.value);
+		const newPrincipal = newValue === undefined ? newValue : toProgramAmount(new Big(newValue));
+
+		setPrincipal(newPrincipal);
 	};
 
 	const onChangeFinancingFee = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -169,8 +181,10 @@ export const CreateDealForm = (props: Props) => {
 	};
 
 	const onBlurPrincipal = (e: React.ChangeEvent<HTMLInputElement>) => {
-		if (principal && principal > liquidityPoolBalance) {
-			setPrincipal(liquidityPoolBalance);
+		if (principal) {
+			if (principal.gt(liquidityPoolBalance)) {
+				setPrincipal(liquidityPoolBalance);
+			}
 		}
 	};
 
@@ -212,11 +226,17 @@ export const CreateDealForm = (props: Props) => {
 				<br />
 				<label className="stake-input-label">
 					Principal
-					<p>The total amount of USDC to borrow, borrow limit: {liquidityPoolBalance} USDC</p>
+					<p>
+						{`The total amount of USDC to borrow, borrow limit: ${formatUIAmount(
+							liquidityPoolBalance,
+							Big.roundDown,
+							intl.formatNumber
+						)} USDC`}
+					</p>
 					<input
 						name="principal"
 						type="number"
-						value={principal === undefined ? "" : principal}
+						value={principal === undefined ? "" : toUIAmount(principal).toNumber()}
 						placeholder={placeholder}
 						onChange={onChangePrincipal}
 						onBlur={onBlurPrincipal}
