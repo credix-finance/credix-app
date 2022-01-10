@@ -570,11 +570,43 @@ export type Credix = {
           "type": "bool"
         }
       ]
+    },
+    {
+      "name": "freezeGlobalMarketState",
+      "accounts": [
+        {
+          "name": "owner",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "globalMarketState",
+          "isMut": true,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "thawGlobalMarketState",
+      "accounts": [
+        {
+          "name": "owner",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "globalMarketState",
+          "isMut": true,
+          "isSigner": false
+        }
+      ],
+      "args": []
     }
   ],
   "accounts": [
     {
-      "name": "BorrowerInfo",
+      "name": "borrowerInfo",
       "type": {
         "kind": "struct",
         "fields": [
@@ -590,7 +622,7 @@ export type Credix = {
       }
     },
     {
-      "name": "Deal",
+      "name": "deal",
       "type": {
         "kind": "struct",
         "fields": [
@@ -662,7 +694,7 @@ export type Credix = {
       }
     },
     {
-      "name": "GlobalMarketState",
+      "name": "globalMarketState",
       "type": {
         "kind": "struct",
         "fields": [
@@ -699,7 +731,7 @@ export type Credix = {
             "type": "u8"
           },
           {
-            "name": "globalMarketStateBump",
+            "name": "bump",
             "type": "u8"
           },
           {
@@ -709,12 +741,16 @@ export type Credix = {
           {
             "name": "withrawalFee",
             "type": "u32"
+          },
+          {
+            "name": "frozen",
+            "type": "bool"
           }
         ]
       }
     },
     {
-      "name": "CredixPass",
+      "name": "credixPass",
       "type": {
         "kind": "struct",
         "fields": [
@@ -1385,11 +1421,43 @@ export const IDL: Credix = {
           "type": "bool"
         }
       ]
+    },
+    {
+      "name": "freezeGlobalMarketState",
+      "accounts": [
+        {
+          "name": "owner",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "globalMarketState",
+          "isMut": true,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "thawGlobalMarketState",
+      "accounts": [
+        {
+          "name": "owner",
+          "isMut": false,
+          "isSigner": true
+        },
+        {
+          "name": "globalMarketState",
+          "isMut": true,
+          "isSigner": false
+        }
+      ],
+      "args": []
     }
   ],
   "accounts": [
     {
-      "name": "BorrowerInfo",
+      "name": "borrowerInfo",
       "type": {
         "kind": "struct",
         "fields": [
@@ -1405,7 +1473,7 @@ export const IDL: Credix = {
       }
     },
     {
-      "name": "Deal",
+      "name": "deal",
       "type": {
         "kind": "struct",
         "fields": [
@@ -1477,7 +1545,7 @@ export const IDL: Credix = {
       }
     },
     {
-      "name": "GlobalMarketState",
+      "name": "globalMarketState",
       "type": {
         "kind": "struct",
         "fields": [
@@ -1514,7 +1582,7 @@ export const IDL: Credix = {
             "type": "u8"
           },
           {
-            "name": "globalMarketStateBump",
+            "name": "bump",
             "type": "u8"
           },
           {
@@ -1524,12 +1592,16 @@ export const IDL: Credix = {
           {
             "name": "withrawalFee",
             "type": "u32"
+          },
+          {
+            "name": "frozen",
+            "type": "bool"
           }
         ]
       }
     },
     {
-      "name": "CredixPass",
+      "name": "credixPass",
       "type": {
         "kind": "struct",
         "fields": [
