@@ -226,12 +226,12 @@ export const CreateDealForm = (props: Props) => {
 					Principal
 					<p>
 						The total amount of USDC to borrow, borrow limit:{" "}
-						{toUIAmount(liquidityPoolBalance, Big.roundDown).toNumber()} USDC
+						{toUIAmount(liquidityPoolBalance, Big.roundDown)} USDC
 					</p>
 					<input
 						name="principal"
 						type="number"
-						value={principal === undefined ? "" : toUIAmount(principal, Big.roundHalfUp).toNumber()}
+						value={principal === undefined ? "" : toUIAmount(principal, Big.roundHalfUp)}
 						placeholder={placeholder}
 						onChange={onChangePrincipal}
 						onBlur={onBlurPrincipal}

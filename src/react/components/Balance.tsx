@@ -42,7 +42,7 @@ export const Balance = () => {
 			<div className="balance-and-pk">
 				<h1>
 					{intl.formatMessage(MESSAGES.balance, {
-						balance: toUIAmount(balance, Big.roundDown).toNumber(),
+						balance: toUIAmount(balance, Big.roundDown),
 					})}
 				</h1>
 			</div>

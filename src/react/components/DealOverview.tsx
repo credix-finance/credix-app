@@ -173,7 +173,7 @@ export const DealOverview = () => {
 			const paymentNotification = `Successfully repaid ${toUIAmount(
 				repaidAmount,
 				Big.roundUp
-			).toNumber()} USDC`;
+			)} USDC`;
 
 			const interestFeePercentage = await getInterestFeePercentage(
 				connection.connection,
@@ -239,8 +239,7 @@ export const DealOverview = () => {
 							readOnly={true}
 							disabled={true}
 							value={
-								(deal?.principal &&
-									toUIAmount(new Big(deal.principal.toNumber()), Big.roundUp).toNumber()) ||
+								(deal?.principal && toUIAmount(new Big(deal.principal.toNumber()), Big.roundUp)) ||
 								""
 							}
 							className="deal-input stake-input credix-button MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary balance-button"
@@ -286,8 +285,7 @@ export const DealOverview = () => {
 					<label className="stake-input-label">
 						USDC amount
 						<p>
-							To repay:{" "}
-							{amountToRepay === undefined ? "" : toUIAmount(amountToRepay, Big.roundUp).toNumber()}{" "}
+							To repay: {amountToRepay === undefined ? "" : toUIAmount(amountToRepay, Big.roundUp)}{" "}
 							USDC
 						</p>
 						<input
@@ -295,11 +293,7 @@ export const DealOverview = () => {
 							name="repayment"
 							type="number"
 							onChange={onChangeRepaymentAmount}
-							value={
-								repaymentAmount === undefined
-									? ""
-									: toUIAmount(repaymentAmount, Big.roundUp).toNumber()
-							}
+							value={repaymentAmount === undefined ? "" : toUIAmount(repaymentAmount, Big.roundUp)}
 							className="deal-input stake-input credix-button MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary balance-button"
 						/>
 					</label>

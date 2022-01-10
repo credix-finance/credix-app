@@ -9,7 +9,6 @@ import { Path } from "types/navigation.types";
 import "../../styles/dealstable.scss";
 import { formatDealStatus, formatRatio, toUIAmount } from "utils/format.utils";
 import { getDaysRemaining, mapDealToStatus } from "utils/deal.utils";
-import millify from "millify";
 import { PublicKey } from "@solana/web3.js";
 import Big from "big.js";
 
@@ -70,18 +69,12 @@ export const DealsTable = (props: Props) => {
 				<TableCell>{createdAt.toUTCString()}</TableCell>
 				<TableCell>{(goLiveAt && goLiveAt.toUTCString()) || "-"}</TableCell>
 				<TableCell>{formatRatio(deal.financingFeePercentage).toNumber()}%</TableCell>
+				<TableCell>{toUIAmount(new Big(deal.principal.toNumber()), Big.roundUp)}</TableCell>
 				<TableCell>
-					{millify(toUIAmount(new Big(deal.principal.toNumber()), Big.roundUp).toNumber())}
+					{toUIAmount(new Big(deal.principalAmountRepaid.toNumber()), Big.roundUp)}
 				</TableCell>
 				<TableCell>
-					{millify(
-						toUIAmount(new Big(deal.principalAmountRepaid.toNumber()), Big.roundUp).toNumber()
-					)}
-				</TableCell>
-				<TableCell>
-					{millify(
-						toUIAmount(new Big(deal.interestAmountRepaid.toNumber()), Big.roundUp).toNumber()
-					)}
+					{toUIAmount(new Big(deal.interestAmountRepaid.toNumber()), Big.roundUp)}
 				</TableCell>
 				<TableCell>{`${daysRemaining} / ${deal.timeToMaturityDays}`}</TableCell>
 				<TableCell>{`${dealStatus !== null && formatDealStatus(dealStatus)}`}</TableCell>

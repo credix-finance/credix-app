@@ -16,6 +16,7 @@ import { dataToGatewayToken, GatewayTokenData } from "@identity.com/solana-gatew
 import { config } from "../config";
 import { applyRatio, ZERO } from "utils/math.utils";
 import Big from "big.js";
+import Fraction from "fraction.js";
 
 export const getDealAccounts = multiAsync(async (connection, wallet, borrower?: PublicKey) => {
 	const program = newCredixProgram(connection, wallet);
@@ -431,7 +432,12 @@ export const createDeal = multiAsync(
 		const program = newCredixProgram(connection, wallet);
 
 		const principalAmount = new BN(principal.toNumber());
-		const financingFeeAmount: Ratio = { numerator: financingFee, denominator: 100 };
+		const financingFreeFraction = new Fraction(financingFee);
+
+		const financingFeeAmount: Ratio = {
+			numerator: financingFreeFraction.n,
+			denominator: financingFreeFraction.d * 100,
+		};
 
 		return program.rpc.createDeal(
 			dealPDA[1],

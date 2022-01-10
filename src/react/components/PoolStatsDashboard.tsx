@@ -1,5 +1,4 @@
 import { Button } from "@material-ui/core";
-import millify from "millify";
 import { Wallet } from "@project-serum/anchor";
 import { useAnchorWallet, useConnection } from "@solana/wallet-adapter-react";
 import React, { useCallback, useEffect, useState } from "react";
@@ -48,7 +47,7 @@ export const PoolStatsDashboard = () => {
 						<p>The total amount of USDC that has been provided to the credix protocol.</p>
 					</div>
 					<p className="pool-stat-number">
-						{poolStats && millify(toUIAmount(poolStats.TVL, Big.roundHalfUp).toNumber())}
+						{poolStats && toUIAmount(poolStats.TVL, Big.roundHalfUp)}
 					</p>
 					<p className="pool-stat-title">TVL [USDC]</p>
 				</div>
@@ -59,8 +58,7 @@ export const PoolStatsDashboard = () => {
 						</p>
 					</div>
 					<p className="pool-stat-number">
-						{poolStats &&
-							millify(toUIAmount(poolStats.outstandingCredit, Big.roundHalfUp).toNumber())}
+						{poolStats && toUIAmount(poolStats.outstandingCredit, Big.roundHalfUp)}
 					</p>
 					<p className="pool-stat-title">Credit outstanding [USDC]</p>
 				</div>

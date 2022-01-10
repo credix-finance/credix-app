@@ -8,7 +8,6 @@ import { useNotify } from "../../hooks/useNotify";
 import { depositInvestment } from "client/api";
 import { Big } from "big.js";
 import { toProgramAmount, toUIAmount } from "utils/format.utils";
-import millify from "millify";
 
 export const DepositStakeForm = () => {
 	const wallet = useAnchorWallet();
@@ -26,10 +25,7 @@ export const DepositStakeForm = () => {
 
 		try {
 			await depositInvestment(stake, connection.connection, wallet as Wallet);
-			notify(
-				"success",
-				`Successful deposit of ${millify(toUIAmount(stake, Big.roundDown).toNumber())} USDC`
-			);
+			notify("success", `Successful deposit of ${toUIAmount(stake, Big.roundDown)} USDC`);
 			triggerRefresh();
 		} catch (e: any) {
 			notify("error", `Transaction failed! ${e?.message}`);
@@ -50,7 +46,7 @@ export const DepositStakeForm = () => {
 		<form onSubmit={onSubmit} className="row">
 			<label className="stake-input-label">
 				<input
-					value={stake === undefined ? "" : toUIAmount(stake, Big.roundDown).toNumber()}
+					value={stake === undefined ? "" : toUIAmount(stake, Big.roundDown)}
 					type="number"
 					step=".01"
 					placeholder={"1000"}

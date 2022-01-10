@@ -37,7 +37,7 @@ export const StakeForm = () => {
 			<div className="row">
 				<h1>
 					{intl.formatMessage(MESSAGES.stake, {
-						stake: toUIAmount(stake, Big.roundDown).toNumber(),
+						stake: toUIAmount(stake, Big.roundDown),
 					})}
 				</h1>
 				<Button

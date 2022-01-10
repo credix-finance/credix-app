@@ -2,11 +2,13 @@ import { utils } from "@project-serum/anchor";
 import { DECIMALS } from "consts";
 import { DealStatus, Ratio } from "types/program.types";
 import Big, { RoundingMode } from "big.js";
+import millify from "millify";
 
 const conversionFactor = new Big(10).pow(DECIMALS);
 
-export const toUIAmount = (n: Big, roundingMode: RoundingMode) =>
-	n.div(conversionFactor).round(2, roundingMode);
+export const toUIAmount = (n: Big, _roundingMode: RoundingMode) =>
+	millify(n.div(conversionFactor).round(2).toNumber(), { precision: 2 });
+
 export const toProgramAmount = (n: Big) => n.mul(conversionFactor);
 
 export const formatRatio = (r: Ratio) => {

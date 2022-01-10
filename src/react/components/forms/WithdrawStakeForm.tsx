@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import { useRefresh } from "react/hooks/useRefresh";
 import "../../../styles/depositstakeform.scss";
 import { useNotify } from "../../hooks/useNotify";
-import millify from "millify";
 import { Big } from "big.js";
 import { toProgramAmount, toUIAmount } from "utils/format.utils";
 import { getFee, ZERO } from "utils/math.utils";
@@ -34,9 +33,10 @@ export const WithdrawStakeForm = () => {
 			await withdrawInvestment(withdrawAmount, connection.connection, wallet as Wallet);
 			notify(
 				"success",
-				`Successful withdraw of ${millify(
-					toUIAmount(withdrawAmount, Big.roundDown).toNumber()
-				)} USDC with a ${millify(toUIAmount(withdrawFee, Big.roundDown).toNumber())} USDC fee`
+				`Successful withdraw of ${toUIAmount(
+					withdrawAmount,
+					Big.roundDown
+				)} USDC with a ${toUIAmount(withdrawFee, Big.roundDown)} USDC fee`
 			);
 			triggerRefresh();
 		} catch (e: any) {
@@ -60,9 +60,7 @@ export const WithdrawStakeForm = () => {
 			<label className="stake-input-label">
 				<input
 					placeholder={"1000"}
-					value={
-						withdrawAmount === undefined ? "" : toUIAmount(withdrawAmount, Big.roundDown).toNumber()
-					}
+					value={withdrawAmount === undefined ? "" : toUIAmount(withdrawAmount, Big.roundDown)}
 					type="number"
 					step=".01"
 					onChange={onChange}
