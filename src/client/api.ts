@@ -1,6 +1,6 @@
 import { BN, Wallet, web3 } from "@project-serum/anchor";
 import { TOKEN_PROGRAM_ID, ASSOCIATED_TOKEN_PROGRAM_ID, Token } from "@solana/spl-token";
-import { Connection, ParsedAccountData, PublicKey, SystemProgram } from "@solana/web3.js";
+import { Connection, PublicKey, SystemProgram } from "@solana/web3.js";
 import { DealStatus, PoolStats, Ratio, RepaymentType } from "types/program.types";
 import { multiAsync } from "utils/async.utils";
 import { mapDealToStatus } from "utils/deal.utils";
@@ -38,16 +38,8 @@ const getGlobalMarketStateAccountData = multiAsync(
 );
 
 const getUSDCMintPK = multiAsync(async (connection: Connection, wallet: Wallet) => {
-	const marketUSDCTokenAccount = await getMarketUSDCTokenAccountPK(connection, wallet);
-	const marketUSDCTokenAccountInfo = await connection.getParsedAccountInfo(marketUSDCTokenAccount);
-
-	if (!marketUSDCTokenAccountInfo.value) {
-		throw Error("Couldn't fetch lp token account info");
-	}
-
-	return new PublicKey(
-		(marketUSDCTokenAccountInfo.value.data as ParsedAccountData).parsed.info.mint
-	);
+	const globalMarketState = await getGlobalMarketStateAccountData(connection, wallet);
+	return globalMarketState.liquidityPoolTokenMintAccount;
 });
 
 export const getUserUSDCTokenAccount = multiAsync(
@@ -73,8 +65,17 @@ export const getUserUSDCBalance = multiAsync(async (connection: Connection, wall
 
 export const getLiquidityPoolBalance = multiAsync(
 	async (connection: Connection, wallet: Wallet) => {
-		const globalMarketStateData = await getGlobalMarketStateAccountData(connection, wallet);
-		return new Big(globalMarketStateData.liquidityPoolUsdcAmount.toNumber());
+		const liquidityPoolTokenAddress = await getLiquidityPoolAssociatedUSDCTokenAddressPK(
+			connection,
+			wallet
+		);
+		const balance = await connection.getTokenAccountBalance(liquidityPoolTokenAddress);
+
+		if (!balance.value) {
+			throw Error("Couldn't fetch market balance");
+		}
+
+		return Big(balance.value.amount);
 	}
 );
 
@@ -145,10 +146,12 @@ const getTVL = multiAsync(async (connection: Connection, wallet: Wallet) => {
 	return liquidityPoolBalance.add(outstandingCredit);
 });
 
-const getMarketUSDCTokenAccountPK = multiAsync(async (connection: Connection, wallet: Wallet) => {
-	const globalMarketStateData = await getGlobalMarketStateAccountData(connection, wallet);
-	return globalMarketStateData.liquidityPoolTokenAccount;
-});
+const getLiquidityPoolAssociatedUSDCTokenAddressPK = multiAsync(
+	async (connection: Connection, wallet: Wallet) => {
+		const signingAuthorityPDA = await findSigningAuthorityPDA();
+		return getAssociatedUSDCTokenAddressPK(connection, wallet, signingAuthorityPDA[0]);
+	}
+);
 
 const getTreasuryPoolTokenAccountPK = multiAsync(async (connection: Connection, wallet: Wallet) => {
 	const globalMarketStateData = await getGlobalMarketStateAccountData(connection, wallet);
@@ -250,7 +253,10 @@ export const depositInvestment = multiAsync(
 			wallet.publicKey
 		);
 		const _usdcMintPK = getUSDCMintPK(connection, wallet);
-		const _marketUSDCTokenAccountPK = getMarketUSDCTokenAccountPK(connection, wallet);
+		const _marketUSDCTokenAccountPK = getLiquidityPoolAssociatedUSDCTokenAddressPK(
+			connection,
+			wallet
+		);
 		const _signingAuthorityPDA = findSigningAuthorityPDA();
 		const _investorLPAssociatedTokenAddress = getInvestorLPAssociatedTokenAddress(
 			connection,
@@ -313,7 +319,10 @@ export const withdrawInvestment = multiAsync(
 		);
 		const _lpTokenMintPK = getLPTokenMintPK(connection, wallet);
 		const _usdcMint = getUSDCMintPK(connection, wallet);
-		const _marketUSDCTokenAccountPK = getMarketUSDCTokenAccountPK(connection, wallet);
+		const _marketUSDCTokenAccountPK = getLiquidityPoolAssociatedUSDCTokenAddressPK(
+			connection,
+			wallet
+		);
 		const _treasuryPoolTokenAccountPK = getTreasuryPoolTokenAccountPK(connection, wallet);
 		const _signingAuthorityPDA = findSigningAuthorityPDA();
 		const _investorLPAssociatedTokenAddress = getInvestorLPAssociatedTokenAddress(
@@ -467,7 +476,7 @@ export const activateDeal = multiAsync(
 			borrower
 		);
 		const _usdcMintPK = getUSDCMintPK(connection, wallet);
-		const _liquidityPoolAssociatedUSDCTokenAddressPK = getMarketUSDCTokenAccountPK(
+		const _liquidityPoolAssociatedUSDCTokenAddressPK = getLiquidityPoolAssociatedUSDCTokenAddressPK(
 			connection,
 			wallet
 		);
@@ -593,7 +602,7 @@ export const repayDeal = multiAsync(
 			wallet.publicKey
 		);
 		const _dealPDA = findDealPDA(wallet.publicKey, dealNumber);
-		const _liquidityPoolAssociatedUSDCTokenAddressPK = getMarketUSDCTokenAccountPK(
+		const _liquidityPoolAssociatedUSDCTokenAddressPK = getLiquidityPoolAssociatedUSDCTokenAddressPK(
 			connection,
 			wallet
 		);
