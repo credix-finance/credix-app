@@ -614,7 +614,7 @@ export type Credix = {
   ],
   "accounts": [
     {
-      "name": "BorrowerInfo",
+      "name": "borrowerInfo",
       "type": {
         "kind": "struct",
         "fields": [
@@ -630,7 +630,7 @@ export type Credix = {
       }
     },
     {
-      "name": "Deal",
+      "name": "deal",
       "type": {
         "kind": "struct",
         "fields": [
@@ -706,7 +706,7 @@ export type Credix = {
       }
     },
     {
-      "name": "GlobalMarketState",
+      "name": "globalMarketState",
       "type": {
         "kind": "struct",
         "fields": [
@@ -766,7 +766,7 @@ export type Credix = {
       }
     },
     {
-      "name": "CredixPass",
+      "name": "credixPass",
       "type": {
         "kind": "struct",
         "fields": [
@@ -1522,7 +1522,7 @@ export const IDL: Credix = {
   ],
   "accounts": [
     {
-      "name": "BorrowerInfo",
+      "name": "borrowerInfo",
       "type": {
         "kind": "struct",
         "fields": [
@@ -1538,7 +1538,7 @@ export const IDL: Credix = {
       }
     },
     {
-      "name": "Deal",
+      "name": "deal",
       "type": {
         "kind": "struct",
         "fields": [
@@ -1614,7 +1614,7 @@ export const IDL: Credix = {
       }
     },
     {
-      "name": "GlobalMarketState",
+      "name": "globalMarketState",
       "type": {
         "kind": "struct",
         "fields": [
@@ -1674,7 +1674,7 @@ export const IDL: Credix = {
       }
     },
     {
-      "name": "CredixPass",
+      "name": "credixPass",
       "type": {
         "kind": "struct",
         "fields": [
