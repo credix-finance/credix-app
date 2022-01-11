@@ -753,7 +753,7 @@ export type Credix = {
             }
           },
           {
-            "name": "withrawalFee",
+            "name": "withdrawalFee",
             "type": {
               "defined": "Ratio"
             }
@@ -1661,7 +1661,7 @@ export const IDL: Credix = {
             }
           },
           {
-            "name": "withrawalFee",
+            "name": "withdrawalFee",
             "type": {
               "defined": "Ratio"
             }
