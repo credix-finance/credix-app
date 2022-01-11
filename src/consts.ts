@@ -10,10 +10,4 @@ export const SEEDS = {
 	BORROWER_INFO: "borrower-info",
 };
 
-export const FEES = {
-	WITHDRAW: 0.005,
-	INTEREST_PAYMENT: 0.1,
-};
-
 export const DECIMALS = 6;
-export const PERCENTAGE_FACTOR = 1000;

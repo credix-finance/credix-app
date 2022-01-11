@@ -20,7 +20,7 @@ export const CredixPassPage = () => {
 				navigate(Path.OVERVIEW);
 			}
 		}
-	}, [wallet?.publicKey]);
+	}, [wallet?.publicKey, navigate]);
 
 	return (
 		<AppLayout>

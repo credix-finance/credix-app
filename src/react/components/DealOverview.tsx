@@ -2,8 +2,12 @@ import { MenuItem } from "@material-ui/core";
 import { Select } from "@mui/material";
 import { Wallet } from "@project-serum/anchor";
 import { useAnchorWallet, useConnection } from "@solana/wallet-adapter-react";
-import { getClusterTime, repayDeal, getDealAccountData } from "client/api";
-import { FEES } from "consts";
+import {
+	getClusterTime,
+	repayDeal,
+	getDealAccountData,
+	getInterestFeePercentage,
+} from "client/api";
 import React, { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useNotify } from "react/hooks/useNotify";
@@ -18,18 +22,22 @@ import {
 	mapDealToStatus,
 	getDaysRemaining,
 } from "utils/deal.utils";
-import { toUIAmount, toUIPercentage, toProgramAmount } from "utils/format.utils";
 import "../../styles/stakeform.scss";
 import "../../styles/deals.scss";
 import { PublicKey } from "@solana/web3.js";
+import { Big } from "big.js";
+import { getFee, min, ZERO } from "utils/math.utils";
+import { formatRatio, formatUIAmount, toProgramAmount, toUIAmount } from "utils/format.utils";
+import { useIntl } from "react-intl";
 
 export const DealOverview = () => {
+	const intl = useIntl();
 	const wallet = useAnchorWallet();
 	const connection = useConnection();
 	const [deal, setDeal] = useState<Deal | undefined>();
 	const [dealStatus, setDealStatus] = useState<DealStatus | undefined>();
-	const [amountToRepay, setAmountToRepay] = useState<number | undefined>();
-	const [repaymentAmount, setRepaymentAmount] = useState<number | undefined>();
+	const [amountToRepay, setAmountToRepay] = useState<Big | undefined>();
+	const [repaymentAmount, setRepaymentAmount] = useState<Big | undefined>();
 	const [daysRemaining, setDaysRemaining] = useState<number | string>("X");
 	const [repaymentSelectValue, setRepaymentSelectValue] = useState<string>("interest");
 	const [dealNumber, setDealNumber] = useState<number>(0);
@@ -81,7 +89,7 @@ export const DealOverview = () => {
 		const interestToRepay = getInterestToRepay(deal);
 
 		setRepaymentSelectValue(
-			repaymentSelectValue === "interest" && interestToRepay ? "interest" : "principal"
+			repaymentSelectValue === "interest" && !interestToRepay.eq(ZERO) ? "interest" : "principal"
 		);
 	}, [deal, repaymentSelectValue]);
 
@@ -162,13 +170,28 @@ export const DealOverview = () => {
 				wallet as Wallet
 			);
 			const showFeeNotification = repaymentSelectValue === "interest";
-			const paymentNotification = `Successfully repaid ${toUIAmount(
-				Math.min(repaymentAmount, amountToRepay)
+
+			const repaidAmount = min(repaymentAmount, amountToRepay);
+			const paymentNotification = `Successfully repaid ${formatUIAmount(
+				repaidAmount,
+				Big.roundUp,
+				intl.formatNumber
 			)} USDC`;
-			const feeNotification = ` with a ${toUIAmount(
-				Math.min(repaymentAmount, amountToRepay) * FEES.INTEREST_PAYMENT
+
+			const interestFeePercentage = await getInterestFeePercentage(
+				connection.connection,
+				wallet as Wallet
+			);
+
+			const fee = getFee(repaidAmount, interestFeePercentage);
+			const feeNotification = ` with a ${formatUIAmount(
+				fee,
+				Big.roundDown,
+				intl.formatNumber
 			)} USDC fee`;
+
 			notify("success", `${paymentNotification}${showFeeNotification ? feeNotification : ""}`);
+
 			setRepaymentAmount(undefined);
 			triggerRefresh();
 		} catch (e: any) {
@@ -188,16 +211,11 @@ export const DealOverview = () => {
 		}
 	};
 
-	const onChange = (
-		e: React.ChangeEvent<HTMLInputElement>,
-		setter: (val: number | undefined) => any
-	) => {
-		const newValue = e.target.value === "" ? undefined : toProgramAmount(Number(e.target.value));
-		setter(newValue);
-	};
-
 	const onChangeRepaymentAmount = (e: React.ChangeEvent<HTMLInputElement>) => {
-		onChange(e, setRepaymentAmount);
+		const newValue = e.target.value === "" ? undefined : Number(e.target.value);
+		const newRepaymentAmount =
+			newValue === undefined ? newValue : toProgramAmount(new Big(newValue));
+		setRepaymentAmount(newRepaymentAmount);
 	};
 
 	return (
@@ -227,7 +245,15 @@ export const DealOverview = () => {
 							type="number"
 							readOnly={true}
 							disabled={true}
-							value={(deal?.principal && toUIAmount(deal.principal.toNumber())) || ""}
+							value={
+								(deal?.principal &&
+									formatUIAmount(
+										new Big(deal.principal.toNumber()),
+										Big.roundUp,
+										intl.formatNumber
+									)) ||
+								""
+							}
 							className="deal-input stake-input credix-button MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary balance-button"
 						/>
 					</label>
@@ -243,7 +269,7 @@ export const DealOverview = () => {
 							value={
 								deal?.financingFeePercentage === undefined
 									? ""
-									: toUIPercentage(deal.financingFeePercentage)
+									: formatRatio(deal.financingFeePercentage).toNumber()
 							}
 							className="deal-input stake-input credix-button MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary balance-button"
 						/>
@@ -273,13 +299,19 @@ export const DealOverview = () => {
 					<br />
 					<label className="stake-input-label">
 						USDC amount
-						<p>To repay: {amountToRepay === undefined ? "" : toUIAmount(amountToRepay)} USDC</p>
+						<p>
+							{`To repay: ${
+								amountToRepay === undefined
+									? ""
+									: formatUIAmount(amountToRepay, Big.roundUp, intl.formatNumber)
+							} USDC`}
+						</p>
 						<input
 							disabled={!wallet?.publicKey}
 							name="repayment"
 							type="number"
 							onChange={onChangeRepaymentAmount}
-							value={repaymentAmount === undefined ? "" : toUIAmount(repaymentAmount)}
+							value={repaymentAmount === undefined ? "" : toUIAmount(repaymentAmount).toNumber()}
 							className="deal-input stake-input credix-button MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary balance-button"
 						/>
 					</label>
