@@ -715,16 +715,8 @@ export type Credix = {
             "type": "publicKey"
           },
           {
-            "name": "liquidityPoolTokenAccount",
+            "name": "liquidityPoolTokenMintAccount",
             "type": "publicKey"
-          },
-          {
-            "name": "liquidityPoolUsdcAmount",
-            "type": "u64"
-          },
-          {
-            "name": "liquidityPoolDecimals",
-            "type": "u8"
           },
           {
             "name": "lpTokenMintAccount",
@@ -1623,16 +1615,8 @@ export const IDL: Credix = {
             "type": "publicKey"
           },
           {
-            "name": "liquidityPoolTokenAccount",
+            "name": "liquidityPoolTokenMintAccount",
             "type": "publicKey"
-          },
-          {
-            "name": "liquidityPoolUsdcAmount",
-            "type": "u64"
-          },
-          {
-            "name": "liquidityPoolDecimals",
-            "type": "u8"
           },
           {
             "name": "lpTokenMintAccount",
