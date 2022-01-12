@@ -1985,21 +1985,21 @@
     estree-walker "^1.0.1"
     picomatch "^2.2.2"
 
-"@saberhq/anchor-contrib@^1.11.3":
-  version "1.12.9"
-  resolved "https://registry.yarnpkg.com/@saberhq/anchor-contrib/-/anchor-contrib-1.12.9.tgz#dc990ea291321c9af23130a32e8753cb02c3a03a"
-  integrity sha512-BqA9PElh8G5z+KFCo2+lECLIO7cihgXQuRAhmy+KoQWWSY139292cAc89/uksFObqcVd/7Y2gsr97ASrdtbeRQ==
+"@saberhq/anchor-contrib@^1.12.26":
+  version "1.12.26"
+  resolved "https://registry.yarnpkg.com/@saberhq/anchor-contrib/-/anchor-contrib-1.12.26.tgz#409c9285b499a3dc16745292b3ba0941343ef678"
+  integrity sha512-8Wz5YXyJU25e8sYeanXowqa3G6Mq+L9D0WOhIIUp8px9zyl1fNk8a9SIwMJcFrN0no3jUyvs+tyxF189ZRXGdQ==
   dependencies:
-    "@saberhq/solana-contrib" "^1.12.9"
+    "@saberhq/solana-contrib" "^1.12.26"
     eventemitter3 "^4.0.7"
     lodash.camelcase "^4.3.0"
     lodash.mapvalues "^4.6.0"
     tslib "^2.3.1"
 
-"@saberhq/solana-contrib@^1.12.9":
-  version "1.12.9"
-  resolved "https://registry.yarnpkg.com/@saberhq/solana-contrib/-/solana-contrib-1.12.9.tgz#71aef45eff4099bcd60ac3b387f078c6992d2389"
-  integrity sha512-0ns0OXFI/XhbHajOf4Gfea63sjm//jSm8gG4V6RLOceZXhxEJEwrnrlIKAbEncRjRLJ0pEZ2YoyHTGspVGoKWQ==
+"@saberhq/solana-contrib@^1.12.26":
+  version "1.12.26"
+  resolved "https://registry.yarnpkg.com/@saberhq/solana-contrib/-/solana-contrib-1.12.26.tgz#935df9197aade7221a000b50ceb84a113ab54510"
+  integrity sha512-i++g9HnQ1dOUxt3p5aGAR9zfpnQm6MQkrrjqHinfmz68eLPnhJkljsDmu3pvdWqcyTqhob++5gZwla9O74cgrA==
   dependencies:
     "@types/promise-retry" "^1.1.3"
     "@types/retry" "^0.12.1"
