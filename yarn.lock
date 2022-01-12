@@ -1921,17 +1921,17 @@
   resolved "https://registry.yarnpkg.com/@popperjs/core/-/core-2.11.0.tgz#6734f8ebc106a0860dff7f92bf90df193f0935d7"
   integrity sha512-zrsUxjLOKAzdewIDRWy9nsV1GQsKBCWaGwsZQlCgr6/q+vjyZhFgqedLfFBuI9anTPEUT4APq9Mu0SZBTzIcGQ==
 
-"@project-serum/anchor@^0.18.0":
-  version "0.18.2"
-  resolved "https://registry.yarnpkg.com/@project-serum/anchor/-/anchor-0.18.2.tgz#0f13b5c2046446b7c24cf28763eec90febb28485"
-  integrity sha512-uyjiN/3Ipp+4hrZRm/hG18HzGLZyvP790LXrCsGO3IWxSl28YRhiGEpKnZycfMW94R7nxdUoE3wY67V+ZHSQBQ==
+"@project-serum/anchor@^0.20.1":
+  version "0.20.1"
+  resolved "https://registry.yarnpkg.com/@project-serum/anchor/-/anchor-0.20.1.tgz#0937807e807e8332aa708cfef4bcb6cbb88b4129"
+  integrity sha512-2TuBmGUn9qeYz6sJINJlElrBuPsaUAtYyUsJ3XplEBf1pczrANAgs5ceJUFzdiqGEWLn+84ObSdBeChT/AXYFA==
   dependencies:
     "@project-serum/borsh" "^0.2.2"
     "@solana/web3.js" "^1.17.0"
     base64-js "^1.5.1"
     bn.js "^5.1.2"
     bs58 "^4.0.1"
-    buffer-layout "^1.2.0"
+    buffer-layout "^1.2.2"
     camelcase "^5.3.1"
     crypto-hash "^1.3.0"
     eventemitter3 "^4.0.7"
@@ -1985,24 +1985,25 @@
     estree-walker "^1.0.1"
     picomatch "^2.2.2"
 
-"@saberhq/anchor-contrib@^1.11.3":
-  version "1.12.9"
-  resolved "https://registry.yarnpkg.com/@saberhq/anchor-contrib/-/anchor-contrib-1.12.9.tgz#dc990ea291321c9af23130a32e8753cb02c3a03a"
-  integrity sha512-BqA9PElh8G5z+KFCo2+lECLIO7cihgXQuRAhmy+KoQWWSY139292cAc89/uksFObqcVd/7Y2gsr97ASrdtbeRQ==
+"@saberhq/anchor-contrib@^1.12.25":
+  version "1.12.25"
+  resolved "https://registry.yarnpkg.com/@saberhq/anchor-contrib/-/anchor-contrib-1.12.25.tgz#08b92248eb89c7e7cd789451dd86e6f4b66e4b48"
+  integrity sha512-/R3P1Jt9t4g0TkqByuAW7UcET7EX9sfFZAMn2qHb8micMxdOyRj7d+qzF1XoO+R2NM7BEt/kA9l8OwAojc6AKg==
   dependencies:
-    "@saberhq/solana-contrib" "^1.12.9"
+    "@saberhq/solana-contrib" "^1.12.25"
     eventemitter3 "^4.0.7"
     lodash.camelcase "^4.3.0"
     lodash.mapvalues "^4.6.0"
     tslib "^2.3.1"
 
-"@saberhq/solana-contrib@^1.12.9":
-  version "1.12.9"
-  resolved "https://registry.yarnpkg.com/@saberhq/solana-contrib/-/solana-contrib-1.12.9.tgz#71aef45eff4099bcd60ac3b387f078c6992d2389"
-  integrity sha512-0ns0OXFI/XhbHajOf4Gfea63sjm//jSm8gG4V6RLOceZXhxEJEwrnrlIKAbEncRjRLJ0pEZ2YoyHTGspVGoKWQ==
+"@saberhq/solana-contrib@^1.12.25":
+  version "1.12.25"
+  resolved "https://registry.yarnpkg.com/@saberhq/solana-contrib/-/solana-contrib-1.12.25.tgz#84560c0cc48288b33a93cdd9b9cf87ca88c1e5ee"
+  integrity sha512-QrpGgUECTrBEETZpiiH1IOJDXwZMefS35bgC08HtsRHbHVCVhoUIzWzk6fmotykNcT5lGH4X+frlv0EdmccM4g==
   dependencies:
     "@types/promise-retry" "^1.1.3"
     "@types/retry" "^0.12.1"
+    lodash.chunk "^4.2.0"
     promise-retry "^2.0.1"
     retry "^0.13.1"
     tiny-invariant "^1.2.0"
@@ -4008,7 +4009,7 @@ buffer-indexof@^1.0.0:
   resolved "https://registry.yarnpkg.com/buffer-indexof/-/buffer-indexof-1.1.1.tgz#52fabcc6a606d1a00302802648ef68f639da268c"
   integrity sha512-4/rOEg86jivtPTeOUUT61jJO1Ya1TrR/OkqCSZDyq84WJh3LuuiphBYJN+fm5xufIk4XAFcEwte/8WzC8If/1g==
 
-buffer-layout@^1.2.0:
+buffer-layout@^1.2.0, buffer-layout@^1.2.2:
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/buffer-layout/-/buffer-layout-1.2.2.tgz#b9814e7c7235783085f9ca4966a0cfff112259d5"
   integrity sha512-kWSuLN694+KTk8SrYvCqwP2WcgQjoRCiF5b4QDvkkz8EmgD+aWAIceGFKMIAdmF/pH+vpgNV3d3kAKorcdAmWA==
@@ -8385,6 +8386,11 @@ lodash.camelcase@^4.3.0:
   version "4.3.0"
   resolved "https://registry.yarnpkg.com/lodash.camelcase/-/lodash.camelcase-4.3.0.tgz#b28aa6288a2b9fc651035c7711f65ab6190331a6"
   integrity sha1-soqmKIorn8ZRA1x3EfZathkDMaY=
+
+lodash.chunk@^4.2.0:
+  version "4.2.0"
+  resolved "https://registry.yarnpkg.com/lodash.chunk/-/lodash.chunk-4.2.0.tgz#66e5ce1f76ed27b4303d8c6512e8d1216e8106bc"
+  integrity sha1-ZuXOH3btJ7QwPYxlEujRIW6BBrw=
 
 lodash.debounce@^4.0.8:
   version "4.0.8"
