@@ -16,7 +16,7 @@ export const HelpPage = () => {
 						This demo is live on Solana Devnet. To interact with Credix:
 						<br />
 						<br />
-						<FaucetButton text="Get SOL & Base" />
+						<FaucetButton text="Get SOL & USDC" />
 						<br />
 						<br />
 						and connect your wallet.
