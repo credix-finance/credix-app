@@ -16,7 +16,7 @@ export const Identity = () => {
 
 	useEffect(() => {
 		const updateGatekeeperNetwork = async () => {
-			const gatekeeperNetwork = await getGatekeeperNetwork(connection.connection, wallet as Wallet);
+			const gatekeeperNetwork = await getGatekeeperNetwork(connection.connection, wallet as typeof Wallet);
 			setGatekeeperNetwork(gatekeeperNetwork);
 		};
 

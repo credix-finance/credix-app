@@ -18,7 +18,7 @@ export const Balance = () => {
 
 	const checkBalance = useCallback(async () => {
 		if (wallet) {
-			const balance = await getUserUSDCBalance(connection.connection, wallet as Wallet);
+			const balance = await getUserUSDCBalance(connection.connection, wallet as typeof Wallet);
 			setBalance(balance);
 		}
 	}, [connection.connection, wallet]);

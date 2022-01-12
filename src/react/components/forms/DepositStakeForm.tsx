@@ -26,7 +26,7 @@ export const DepositStakeForm = () => {
 		}
 
 		try {
-			await depositInvestment(stake, connection.connection, wallet as Wallet);
+			await depositInvestment(stake, connection.connection, wallet as typeof Wallet);
 			notify(
 				"success",
 				`Successful deposit of ${formatUIAmount(stake, Big.roundDown, intl.formatNumber)} USDC`

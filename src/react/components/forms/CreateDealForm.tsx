@@ -44,7 +44,7 @@ export const CreateDealForm = (props: Props) => {
 	const navigate = useNavigate();
 
 	const updateLiquidityPoolBalance = useCallback(async () => {
-		const balance = await getLiquidityPoolBalance(connection.connection, wallet as Wallet);
+		const balance = await getLiquidityPoolBalance(connection.connection, wallet as typeof Wallet);
 		setLiquidityPoolBalance(balance);
 	}, [connection.connection, wallet]);
 
@@ -96,7 +96,7 @@ export const CreateDealForm = (props: Props) => {
 			// TODO: move this into the createDeal function?
 			const borrowerInfoAccountData = await getBorrowerInfoAccountData(
 				connection.connection,
-				wallet as Wallet,
+				wallet as typeof Wallet,
 				borrowerPK
 			);
 
@@ -110,13 +110,13 @@ export const CreateDealForm = (props: Props) => {
 				dealNumber,
 				dealname,
 				connection.connection,
-				wallet as Wallet
+				wallet as typeof Wallet
 			);
 			notify("success", "Deal created successfully");
 
 			// only automatically activate deal on localnet
 			if (config.clusterConfig.name === SolanaCluster.LOCALNET) {
-				await activateDeal(borrowerPK, dealNumber, connection.connection, wallet as Wallet);
+				await activateDeal(borrowerPK, dealNumber, connection.connection, wallet as typeof Wallet);
 				notify("success", "Deal activated successfully");
 			}
 

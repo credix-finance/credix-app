@@ -26,7 +26,7 @@ export const DealsTable = (props: Props) => {
 	const navigate = useNavigate();
 
 	const getDeals = useCallback(async () => {
-		const _deals = getDealAccounts(connection.connection, wallet as Wallet, props.borrower);
+		const _deals = getDealAccounts(connection.connection, wallet as typeof Wallet, props.borrower);
 		const _clusterTime = getClusterTime(connection.connection);
 
 		const [deals, clusterTime] = await Promise.all([_deals, _clusterTime]);
