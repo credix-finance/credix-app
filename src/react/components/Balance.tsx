@@ -5,7 +5,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { useIntl } from "react-intl";
 import { Button } from "@material-ui/core";
 import { useRefresh } from "react/hooks/useRefresh";
-import { getUserUSDCBalance } from "client/api";
+import { getUserBaseBalance } from "client/api";
 import { Big } from "big.js";
 import { ZERO } from "utils/math.utils";
 import { formatUIAmount } from "utils/format.utils";
@@ -18,7 +18,7 @@ export const Balance = () => {
 
 	const checkBalance = useCallback(async () => {
 		if (wallet) {
-			const balance = await getUserUSDCBalance(connection.connection, wallet as typeof Wallet);
+			const balance = await getUserBaseBalance(connection.connection, wallet as typeof Wallet);
 			setBalance(balance);
 		}
 	}, [connection.connection, wallet]);

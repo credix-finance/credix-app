@@ -7,7 +7,7 @@ import { useAnchorWallet, useConnection } from "@solana/wallet-adapter-react";
 import { Wallet } from "@project-serum/anchor";
 import { Button } from "@material-ui/core";
 import { useRefresh } from "react/hooks/useRefresh";
-import { getLPTokenUSDCBalance } from "client/api";
+import { getLPTokenBaseBalance } from "client/api";
 import { Big } from "big.js";
 import { ZERO } from "utils/math.utils";
 import { formatUIAmount } from "utils/format.utils";
@@ -20,7 +20,7 @@ export const StakeForm = () => {
 
 	const checkStake = useCallback(async () => {
 		if (wallet) {
-			const stake = await getLPTokenUSDCBalance(connection.connection, wallet as typeof Wallet);
+			const stake = await getLPTokenBaseBalance(connection.connection, wallet as typeof Wallet);
 			setStake(stake);
 		}
 	}, [connection.connection, wallet]);
