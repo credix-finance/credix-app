@@ -25,7 +25,7 @@ export const CredixPassUpdateForm = () => {
 			const credixPass = await getCredixPassInfo(
 				publicKey,
 				connection.connection,
-				wallet as Wallet
+				wallet as typeof Wallet
 			);
 			setCredixPass(credixPass);
 		},
@@ -59,7 +59,7 @@ export const CredixPassUpdateForm = () => {
 				isUnderwriter,
 				isBorrower,
 				connection.connection,
-				wallet as Wallet
+				wallet as typeof Wallet
 			);
 			notify("success", "CredixPass updated successfully");
 		} catch (err: any) {
