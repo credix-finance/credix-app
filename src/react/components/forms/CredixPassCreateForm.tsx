@@ -27,7 +27,7 @@ export const CredixPassCreateForm = () => {
 				isUnderwriter,
 				isBorrower,
 				connection.connection,
-				wallet as Wallet
+				wallet as typeof Wallet
 			);
 			notify("success", "CredixPass created successfully");
 		} catch (err: any) {

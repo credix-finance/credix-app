@@ -27,12 +27,12 @@ export const WithdrawStakeForm = () => {
 
 		const withdrawFeePercentage = await getWithdrawFeePercentage(
 			connection.connection,
-			wallet as Wallet
+			wallet as typeof Wallet
 		);
 		const withdrawFee = getFee(withdrawAmount, withdrawFeePercentage);
 
 		try {
-			await withdrawInvestment(withdrawAmount, connection.connection, wallet as Wallet);
+			await withdrawInvestment(withdrawAmount, connection.connection, wallet as typeof Wallet);
 			notify(
 				"success",
 				`Successful withdraw of ${formatUIAmount(

@@ -20,7 +20,7 @@ export const StakeForm = () => {
 
 	const checkStake = useCallback(async () => {
 		if (wallet) {
-			const stake = await getLPTokenUSDCBalance(connection.connection, wallet as Wallet);
+			const stake = await getLPTokenUSDCBalance(connection.connection, wallet as typeof Wallet);
 			setStake(stake);
 		}
 	}, [connection.connection, wallet]);

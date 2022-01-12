@@ -19,7 +19,7 @@ export const PoolStatsDashboard = () => {
 	const [poolStats, setPoolstats] = useState<PoolStats | undefined>();
 
 	const updatePoolStats = useCallback(async () => {
-		const poolStats = await getPoolStats(connection.connection, wallet as Wallet);
+		const poolStats = await getPoolStats(connection.connection, wallet as typeof Wallet);
 		setPoolstats(poolStats);
 		// whether the wallet is connected or not is irrelevant for this component so not including the wallet as a dependency \
 		//  avoids unnecessary rerenders
