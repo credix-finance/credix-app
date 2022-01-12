@@ -31,20 +31,20 @@ export const getDealAccounts = multiAsync(async (connection, wallet, borrower?: 
 });
 
 const getGlobalMarketStateAccountData = multiAsync(
-	async (connection: Connection, wallet:typeof Wallet) => {
+	async (connection: Connection, wallet: typeof Wallet) => {
 		const program = newCredixProgram(connection, wallet);
 		const globalMarketStatePDA = await findGlobalMarketStatePDA();
 		return program.account.globalMarketState.fetch(globalMarketStatePDA[0]);
 	}
 );
 
-const getUSDCMintPK = multiAsync(async (connection: Connection, wallet:typeof Wallet) => {
+const getUSDCMintPK = multiAsync(async (connection: Connection, wallet: typeof Wallet) => {
 	const globalMarketState = await getGlobalMarketStateAccountData(connection, wallet);
 	return globalMarketState.liquidityPoolTokenMintAccount;
 });
 
 export const getUserUSDCTokenAccount = multiAsync(
-	async (connection: Connection, wallet:typeof Wallet) => {
+	async (connection: Connection, wallet: typeof Wallet) => {
 		const usdcMint = await getUSDCMintPK(connection, wallet);
 		const accounts = await connection.getParsedTokenAccountsByOwner(wallet.publicKey, {
 			mint: usdcMint,
@@ -54,7 +54,7 @@ export const getUserUSDCTokenAccount = multiAsync(
 	}
 );
 
-export const getUserUSDCBalance = multiAsync(async (connection: Connection, wallet:typeof Wallet) => {
+export const getUserUSDCBalance = multiAsync(async (connection: Connection, wallet: typeof Wallet) => {
 	const tokenAccount = await getUserUSDCTokenAccount(connection, wallet);
 
 	if (!tokenAccount) {
@@ -65,7 +65,7 @@ export const getUserUSDCBalance = multiAsync(async (connection: Connection, wall
 });
 
 export const getLiquidityPoolBalance = multiAsync(
-	async (connection: Connection, wallet:typeof Wallet) => {
+	async (connection: Connection, wallet: typeof Wallet) => {
 		const liquidityPoolTokenAddress = await getLiquidityPoolAssociatedUSDCTokenAddressPK(
 			connection,
 			wallet
@@ -80,12 +80,12 @@ export const getLiquidityPoolBalance = multiAsync(
 	}
 );
 
-const getOutstandingCredit = multiAsync(async (connection: Connection, wallet:typeof Wallet) => {
+const getOutstandingCredit = multiAsync(async (connection: Connection, wallet: typeof Wallet) => {
 	const globalMarketStateData = await getGlobalMarketStateAccountData(connection, wallet);
 	return new Big(globalMarketStateData.totalOutstandingCredit.toNumber());
 });
 
-export const getGatekeeperNetwork = multiAsync(async (connection: Connection, wallet:typeof Wallet) => {
+export const getGatekeeperNetwork = multiAsync(async (connection: Connection, wallet: typeof Wallet) => {
 	const globalMarketStateData = await getGlobalMarketStateAccountData(connection, wallet);
 	return globalMarketStateData.gatekeeperNetwork;
 });
@@ -95,7 +95,7 @@ export const getClusterTime = multiAsync(async (connection: Connection) => {
 	return connection.getBlockTime(slot);
 });
 
-const getRunningAPY = multiAsync(async (connection: Connection, wallet:typeof Wallet) => {
+const getRunningAPY = multiAsync(async (connection: Connection, wallet: typeof Wallet) => {
 	const _deals = await getDealAccounts(connection, wallet);
 	const _clusterTime = getClusterTime(connection);
 
@@ -121,7 +121,7 @@ const getRunningAPY = multiAsync(async (connection: Connection, wallet:typeof Wa
 	return runningAPY;
 });
 
-const getAPY = multiAsync(async (connection: Connection, wallet:typeof Wallet): Promise<Ratio> => {
+const getAPY = multiAsync(async (connection: Connection, wallet: typeof Wallet): Promise<Ratio> => {
 	const _tvl = getTVL(connection, wallet);
 	const _runningApy = getRunningAPY(connection, wallet);
 
@@ -136,7 +136,7 @@ const getAPY = multiAsync(async (connection: Connection, wallet:typeof Wallet): 
 	return { numerator: apy.mul(new Big(100)).toNumber(), denominator: 100 };
 });
 
-const getTVL = multiAsync(async (connection: Connection, wallet:typeof Wallet) => {
+const getTVL = multiAsync(async (connection: Connection, wallet: typeof Wallet) => {
 	const _liquidityPoolBalance = getLiquidityPoolBalance(connection, wallet);
 	const _outstandingCredit = getOutstandingCredit(connection, wallet);
 	const [liquidityPoolBalance, outstandingCredit] = await Promise.all([
@@ -148,19 +148,19 @@ const getTVL = multiAsync(async (connection: Connection, wallet:typeof Wallet) =
 });
 
 const getLiquidityPoolAssociatedUSDCTokenAddressPK = multiAsync(
-	async (connection: Connection, wallet:typeof Wallet) => {
+	async (connection: Connection, wallet: typeof Wallet) => {
 		const signingAuthorityPDA = await findSigningAuthorityPDA();
 		return getAssociatedUSDCTokenAddressPK(connection, wallet, signingAuthorityPDA[0], true);
 	}
 );
 
-const getTreasuryPoolTokenAccountPK = multiAsync(async (connection: Connection, wallet:typeof Wallet) => {
+const getTreasuryPoolTokenAccountPK = multiAsync(async (connection: Connection, wallet: typeof Wallet) => {
 	const globalMarketStateData = await getGlobalMarketStateAccountData(connection, wallet);
 	return globalMarketStateData.treasuryPoolTokenAccount;
 });
 
 const getAssociatedUSDCTokenAddressPK = multiAsync(
-	async (connection: Connection, wallet:typeof Wallet, publicKey: PublicKey, offCurve: boolean) => {
+	async (connection: Connection, wallet: typeof Wallet, publicKey: PublicKey, offCurve: boolean) => {
 		const _usdcMintPK = await getUSDCMintPK(connection, wallet);
 		return await Token.getAssociatedTokenAddress(
 			ASSOCIATED_TOKEN_PROGRAM_ID,
@@ -173,7 +173,7 @@ const getAssociatedUSDCTokenAddressPK = multiAsync(
 );
 
 const getInvestorLPAssociatedTokenAddress = multiAsync(
-	async (connection: Connection, wallet:typeof Wallet) => {
+	async (connection: Connection, wallet: typeof Wallet) => {
 		const lpTokenMintPK = await getLPTokenMintPK(connection, wallet);
 		return Token.getAssociatedTokenAddress(
 			ASSOCIATED_TOKEN_PROGRAM_ID,
@@ -185,7 +185,7 @@ const getInvestorLPAssociatedTokenAddress = multiAsync(
 );
 
 const getGatewayToken = multiAsync(
-	async (connection: Connection, wallet:typeof Wallet, userPK: PublicKey) => {
+	async (connection: Connection, wallet: typeof Wallet, userPK: PublicKey) => {
 		// used from node_modules/@identity.com/solana-gateway-ts/src/lib `findGatewayTokens`
 		// should be able to plug in our own program id in order to make it work locally
 		const GATEWAY_TOKEN_ACCOUNT_OWNER_FIELD_OFFSET = 2;
@@ -222,12 +222,12 @@ const getGatewayToken = multiAsync(
 	}
 );
 
-const getLPTokenMintPK = multiAsync(async (connection: Connection, wallet:typeof Wallet) => {
+const getLPTokenMintPK = multiAsync(async (connection: Connection, wallet: typeof Wallet) => {
 	const globalMarketStateData = await getGlobalMarketStateAccountData(connection, wallet);
 	return globalMarketStateData.lpTokenMintAccount;
 });
 
-export const getPoolStats = multiAsync(async (connection: Connection, wallet:typeof Wallet) => {
+export const getPoolStats = multiAsync(async (connection: Connection, wallet: typeof Wallet) => {
 	const _tvl = getTVL(connection, wallet);
 	const _apy = getAPY(connection, wallet);
 	const _outstandingCredit = getOutstandingCredit(connection, wallet);
@@ -244,7 +244,7 @@ export const getPoolStats = multiAsync(async (connection: Connection, wallet:typ
 });
 
 export const depositInvestment = multiAsync(
-	async (amount: Big, connection: Connection, wallet:typeof Wallet) => {
+	async (amount: Big, connection: Connection, wallet: typeof Wallet) => {
 		const depositAmount = new BN(amount.toNumber());
 		const program = newCredixProgram(connection, wallet);
 		const _globalMarketStatePDA = findGlobalMarketStatePDA();
@@ -312,7 +312,7 @@ export const depositInvestment = multiAsync(
 );
 
 export const withdrawInvestment = multiAsync(
-	async (amount: Big, connection: Connection, wallet:typeof Wallet) => {
+	async (amount: Big, connection: Connection, wallet: typeof Wallet) => {
 		const program = newCredixProgram(connection, wallet);
 		const _globalMarketStatePDA = findGlobalMarketStatePDA();
 		const _userAssociatedUSDCTokenAddressPK = getAssociatedUSDCTokenAddressPK(
@@ -383,7 +383,7 @@ export const withdrawInvestment = multiAsync(
 );
 
 export const getDealAccountData = multiAsync(
-	async (connection: Connection, wallet:typeof Wallet, borrower: PublicKey, dealNumber: number) => {
+	async (connection: Connection, wallet: typeof Wallet, borrower: PublicKey, dealNumber: number) => {
 		const program = newCredixProgram(connection, wallet);
 		const dealPDA = await findDealPDA(borrower, dealNumber);
 		return program.account.deal.fetchNullable(dealPDA[0]);
@@ -391,7 +391,7 @@ export const getDealAccountData = multiAsync(
 );
 
 export const getBorrowerInfoAccountData = multiAsync(
-	async (connection: Connection, wallet:typeof Wallet, borrower: PublicKey) => {
+	async (connection: Connection, wallet: typeof Wallet, borrower: PublicKey) => {
 		const borrowerInfoPDA = await findBorrowerInfoPDA(borrower);
 		const program = newCredixProgram(connection, wallet);
 
@@ -400,7 +400,7 @@ export const getBorrowerInfoAccountData = multiAsync(
 );
 
 export const getWithdrawFeePercentage = multiAsync(
-	async (connection: Connection, wallet:typeof Wallet) => {
+	async (connection: Connection, wallet: typeof Wallet) => {
 		const globalMarketStateData = await getGlobalMarketStateAccountData(connection, wallet);
 
 		return globalMarketStateData.withdrawalFee;
@@ -408,7 +408,7 @@ export const getWithdrawFeePercentage = multiAsync(
 );
 
 export const getInterestFeePercentage = multiAsync(
-	async (connection: Connection, wallet:typeof Wallet) => {
+	async (connection: Connection, wallet: typeof Wallet) => {
 		const globalMarketStateData = await getGlobalMarketStateAccountData(connection, wallet);
 
 		return globalMarketStateData.interestFee;
@@ -424,7 +424,7 @@ export const createDeal = multiAsync(
 		dealNumber: number,
 		dealName: string,
 		connection: Connection,
-		wallet:typeof Wallet
+		wallet: typeof Wallet
 	) => {
 		const _dealPDA = findDealPDA(borrower, dealNumber);
 		const _globalMarketStatePDA = findGlobalMarketStatePDA();
@@ -477,7 +477,7 @@ export const createDeal = multiAsync(
 );
 
 export const activateDeal = multiAsync(
-	async (borrower: PublicKey, dealNumber: number, connection: Connection, wallet:typeof Wallet) => {
+	async (borrower: PublicKey, dealNumber: number, connection: Connection, wallet: typeof Wallet) => {
 		const program = newCredixProgram(connection, wallet);
 		const _userAssociatedUSDCTokenAddressPK = getAssociatedUSDCTokenAddressPK(
 			connection,
@@ -537,14 +537,14 @@ export const activateDeal = multiAsync(
 	}
 );
 
-const getLPTokenSupply = multiAsync(async (connection: Connection, wallet:typeof Wallet) => {
+const getLPTokenSupply = multiAsync(async (connection: Connection, wallet: typeof Wallet) => {
 	const lpTokenMintPK = await getLPTokenMintPK(connection, wallet);
 	return connection
 		.getTokenSupply(lpTokenMintPK)
 		.then((response) => new Big(Number(response.value.amount)));
 });
 
-const getLPTokenPrice = multiAsync(async (connection: Connection, wallet:typeof Wallet) => {
+const getLPTokenPrice = multiAsync(async (connection: Connection, wallet: typeof Wallet) => {
 	const _tvl = getTVL(connection, wallet);
 	const _lpTokenSupply = getLPTokenSupply(connection, wallet);
 
@@ -557,7 +557,7 @@ const getLPTokenPrice = multiAsync(async (connection: Connection, wallet:typeof 
 	return tvl.div(lpTokenSupply);
 });
 
-const getUserLPTokenAccount = multiAsync(async (connection: Connection, wallet:typeof Wallet) => {
+const getUserLPTokenAccount = multiAsync(async (connection: Connection, wallet: typeof Wallet) => {
 	const _lpTokenMintPK = getLPTokenMintPK(connection, wallet);
 	const _investorLPAssociatedTokenAddress = getInvestorLPAssociatedTokenAddress(connection, wallet);
 
@@ -575,7 +575,7 @@ const getUserLPTokenAccount = multiAsync(async (connection: Connection, wallet:t
 	)[0];
 });
 
-const getUserLPTokenAmount = multiAsync(async (connection: Connection, wallet:typeof Wallet) => {
+const getUserLPTokenAmount = multiAsync(async (connection: Connection, wallet: typeof Wallet) => {
 	const userLPTokenAccount = await getUserLPTokenAccount(connection, wallet);
 
 	if (!userLPTokenAccount) {
@@ -585,7 +585,7 @@ const getUserLPTokenAmount = multiAsync(async (connection: Connection, wallet:ty
 	return new Big(Number(userLPTokenAccount.account.data.parsed.info.tokenAmount.amount));
 });
 
-export const getLPTokenUSDCBalance = multiAsync(async (connection: Connection, wallet:typeof Wallet) => {
+export const getLPTokenUSDCBalance = multiAsync(async (connection: Connection, wallet: typeof Wallet) => {
 	const _lpTokenPrice = getLPTokenPrice(connection, wallet);
 	const _userLPTokenAmount = getUserLPTokenAmount(connection, wallet);
 
@@ -600,7 +600,7 @@ export const repayDeal = multiAsync(
 		repaymentType: RepaymentType,
 		dealNumber: number,
 		connection: Connection,
-		wallet:typeof Wallet
+		wallet: typeof Wallet
 	) => {
 		const program = newCredixProgram(connection, wallet);
 		const repayAmount = new BN(amount.toNumber());
@@ -669,7 +669,7 @@ export const issueCredixPass = async (
 	isUnderwriter: boolean,
 	isBorrower: boolean,
 	connection: Connection,
-	wallet:typeof Wallet
+	wallet: typeof Wallet
 ) => {
 	const program = newCredixProgram(connection, wallet);
 	const _globalMarketStatePDA = findGlobalMarketStatePDA();
@@ -699,7 +699,7 @@ export const updateCredixPass = async (
 	isUnderwriter: boolean,
 	isBorrower: boolean,
 	connection: Connection,
-	wallet:typeof Wallet
+	wallet: typeof Wallet
 ) => {
 	const program = newCredixProgram(connection, wallet);
 
@@ -723,7 +723,7 @@ export const updateCredixPass = async (
 };
 
 export const getCredixPassInfo = multiAsync(
-	async (publicKey: PublicKey, connection: Connection, wallet:typeof Wallet) => {
+	async (publicKey: PublicKey, connection: Connection, wallet: typeof Wallet) => {
 		const program = newCredixProgram(connection, wallet);
 		const [credixPassPDA] = await findCredixPassPDA(publicKey);
 		return program.account.credixPass.fetchNullable(credixPassPDA);
