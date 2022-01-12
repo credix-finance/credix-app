@@ -176,7 +176,7 @@ export const DealOverview = () => {
 				repaidAmount,
 				Big.roundUp,
 				intl.formatNumber
-			)} Base`;
+			)} USDC`;
 
 			const interestFeePercentage = await getInterestFeePercentage(
 				connection.connection,
