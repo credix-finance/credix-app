@@ -1,44 +1,66 @@
 import { Wallet } from "@project-serum/anchor";
 import { useAnchorWallet, useConnection } from "@solana/wallet-adapter-react";
 import { serialAsync } from "utils/async.utils";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useNotify } from "react/hooks/useNotify";
-import { activateDeal, createDeal, getLiquidityPoolBalance } from "store/api";
-import { toUIAmount } from "utils/format.utils";
 import "../../../styles/stakeform.scss";
 import { PublicKey } from "@solana/web3.js";
 import { useRefresh } from "react/hooks/useRefresh";
+import {
+	activateDeal,
+	createDeal,
+	getBorrowerInfoAccountData,
+	getLiquidityPoolBalance,
+} from "client/api";
+import { useNavigate } from "react-router-dom";
+import { Path } from "types/navigation.types";
+import Big from "big.js";
+import { ZERO } from "utils/math.utils";
+import { formatUIAmount, toProgramAmount, toUIAmount } from "utils/format.utils";
+import { config } from "../../../config";
+import { SolanaCluster } from "../../../types/solana.types";
+import { useIntl } from "react-intl";
 
 interface Props {
+	borrower?: PublicKey;
 	disabled?: boolean;
 }
 
 export const CreateDealForm = (props: Props) => {
+	const intl = useIntl();
 	const wallet = useAnchorWallet();
 	const connection = useConnection();
-	const [principal, setPrincipal] = useState<number | undefined>();
-	const [liquidityPoolBalance, setLiquidityPoolBalance] = useState<number>(0); 
+	const [principal, setPrincipal] = useState<Big | undefined>();
+	const [liquidityPoolBalance, setLiquidityPoolBalance] = useState<Big>(ZERO);
 	const [financingFee, setFinancingFee] = useState<number | undefined>();
 	const [timeToMaturity, setTimeToMaturity] = useState<number | undefined>();
 	const [borrower, setBorrower] = useState<string>("");
+	const [dealname, setDealName] = useState<string>("");
 	const [placeholder, setPlaceholder] = useState<string>("CONNECT WALLET");
+	const [dealNamePlaceholder, setDealNamePlaceholder] = useState<string>("CONNECT WALLET");
+	const [publicKeyPlaceholder, setPublicKeyPlaceholder] = useState<string>("CONNECT WALLET");
 	const notify = useNotify();
 	const triggerRefresh = useRefresh();
+	const navigate = useNavigate();
+
+	const updateLiquidityPoolBalance = useCallback(async () => {
+		const balance = await getLiquidityPoolBalance(connection.connection, wallet as typeof Wallet);
+		setLiquidityPoolBalance(balance);
+	}, [connection.connection, wallet]);
 
 	useEffect(() => {
 		if (wallet?.publicKey && connection.connection) {
 			setPlaceholder("0");
-			setBorrower(wallet?.publicKey.toString());
-			updateLiquidityPoolBalance(); 
-		} else {
-			setPlaceholder("Connect wallet");
-		}
-	}, [connection.connection, wallet?.publicKey]);
+			setPublicKeyPlaceholder(wallet.publicKey.toString());
+			setDealNamePlaceholder("SERIES A");
 
-	const updateLiquidityPoolBalance = async () => {
-		const balance = await getLiquidityPoolBalance(connection.connection, wallet as Wallet);
-		setLiquidityPoolBalance(toUIAmount(balance)); 
-	};
+			updateLiquidityPoolBalance();
+		} else {
+			setPlaceholder("CONNECT WALLET");
+			setPublicKeyPlaceholder("CONNECT WALLET");
+			setDealNamePlaceholder("CONNECT WALLET");
+		}
+	}, [connection.connection, wallet?.publicKey, updateLiquidityPoolBalance]);
 
 	const onSubmit = serialAsync(async (e: React.SyntheticEvent) => {
 		e.preventDefault();
@@ -48,8 +70,13 @@ export const CreateDealForm = (props: Props) => {
 			return;
 		}
 
-		if (!principal || !financingFee) {
-			notify("error", "Need principal and financing fee to submit");
+		if (!principal || principal.eq(ZERO)) {
+			notify("error", "Need principal to submit");
+			return;
+		}
+
+		if (!financingFee) {
+			notify("error", "Need financing fee to submit");
 			return;
 		}
 
@@ -64,19 +91,37 @@ export const CreateDealForm = (props: Props) => {
 		}
 
 		try {
+			const borrowerPK = new PublicKey(borrower);
+
+			// TODO: move this into the createDeal function?
+			const borrowerInfoAccountData = await getBorrowerInfoAccountData(
+				connection.connection,
+				wallet as typeof Wallet,
+				borrowerPK
+			);
+
+			const dealNumber = (borrowerInfoAccountData && borrowerInfoAccountData.numOfDeals) || 0;
+
 			await createDeal(
 				principal,
 				financingFee,
 				timeToMaturity,
-				new PublicKey(borrower),
+				borrowerPK,
+				dealNumber,
+				dealname,
 				connection.connection,
-				wallet as Wallet
+				wallet as typeof Wallet
 			);
 			notify("success", "Deal created successfully");
 
-			await activateDeal(connection.connection, wallet as Wallet);
-			notify("success", "Deal activated successfully");
+			// only automatically activate deal on localnet
+			if (config.clusterConfig.name === SolanaCluster.LOCALNET) {
+				await activateDeal(borrowerPK, dealNumber, connection.connection, wallet as typeof Wallet);
+				notify("success", "Deal activated successfully");
+			}
+
 			triggerRefresh();
+			navigate(Path.DEALS);
 		} catch (err: any) {
 			notify("error", `Transaction failed! ${err?.message}`);
 		}
@@ -113,7 +158,10 @@ export const CreateDealForm = (props: Props) => {
 	};
 
 	const onChangePrincipal = (e: React.ChangeEvent<HTMLInputElement>) => {
-		onChange(e, setPrincipal);
+		const newValue = e.target.value === "" ? undefined : Number(e.target.value);
+		const newPrincipal = newValue === undefined ? newValue : toProgramAmount(new Big(newValue));
+
+		setPrincipal(newPrincipal);
 	};
 
 	const onChangeFinancingFee = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -124,13 +172,19 @@ export const CreateDealForm = (props: Props) => {
 		setBorrower(e.target.value);
 	};
 
+	const onChangeName = (e: React.ChangeEvent<HTMLInputElement>) => {
+		setDealName(e.target.value);
+	};
+
 	const onChangeTimeToMaturity = (e: React.ChangeEvent<HTMLInputElement>) => {
 		onChange(e, setTimeToMaturity);
 	};
 
 	const onBlurPrincipal = (e: React.ChangeEvent<HTMLInputElement>) => {
-		if (principal && principal > liquidityPoolBalance) {
-			setPrincipal(liquidityPoolBalance);
+		if (principal) {
+			if (principal.gt(liquidityPoolBalance)) {
+				setPrincipal(liquidityPoolBalance);
+			}
 		}
 	};
 
@@ -149,9 +203,22 @@ export const CreateDealForm = (props: Props) => {
 					<input
 						name="borrowerPublicKey"
 						type="text"
-						value={borrower}
-						placeholder={placeholder}
+						value={props.borrower?.toString() || borrower}
+						placeholder={publicKeyPlaceholder}
 						onChange={onChangeBorrower}
+						disabled={!wallet?.publicKey || props.disabled || !!props.borrower}
+						className="stake-input borrower-pk credix-button MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary balance-button"
+					/>
+				</label>
+				<br />
+				<label className="stake-input-label">
+					Deal Name
+					<input
+						name="dealName"
+						type="text"
+						value={dealname}
+						placeholder={dealNamePlaceholder}
+						onChange={onChangeName}
 						disabled={!wallet?.publicKey || props.disabled}
 						className="stake-input borrower-pk credix-button MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary balance-button"
 					/>
@@ -159,11 +226,17 @@ export const CreateDealForm = (props: Props) => {
 				<br />
 				<label className="stake-input-label">
 					Principal
-					<p>The total amount of USDC to borrow, borrow limit: {liquidityPoolBalance} USDC</p>
+					<p>
+						{`The total amount of USDC to borrow, borrow limit: ${formatUIAmount(
+							liquidityPoolBalance,
+							Big.roundDown,
+							intl.formatNumber
+						)} USDC`}
+					</p>
 					<input
 						name="principal"
 						type="number"
-						value={principal === undefined ? "" : principal}
+						value={principal === undefined ? "" : toUIAmount(principal).toNumber()}
 						placeholder={placeholder}
 						onChange={onChangePrincipal}
 						onBlur={onBlurPrincipal}
@@ -174,7 +247,7 @@ export const CreateDealForm = (props: Props) => {
 				<br />
 				<label className="stake-input-label">
 					Financing fee %
-					<p>The percentage on top of the principal that needs to be repaid as interest</p>
+					<p>The percentage on top of the principal that needs to be repaid as interest (APR)</p>
 					<input
 						name="financingFee"
 						type="number"

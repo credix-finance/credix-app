@@ -1,7 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&family=Poppins:wght@700&display=swap");
 
 body {
-	font-family: "IBM Plex Mono";
+	font-family: "IBM Plex Mono" !important;
 	background-color: white;
 	margin: 0;
 }
@@ -15,6 +15,17 @@ h2 {
 .container {
 	position: relative;
 	height: 100vh;
+}
+
+.pass-guard-container {
+	width: 100%;
+	display: flex;
+	position: absolute;
+	top: 70px;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	height: calc(100% - 110px);
 }
 
 .pool-and-stake-withdraw-wrapper {
@@ -51,12 +62,20 @@ button,
 	border: 1px solid black !important;
 	background: white !important;
 	font-weight: bold !important;
+	height: 30px !important;
+}
+
+.sc-gsDKAQ {
+	svg {
+		width: 18px !important;
+		height: 18px !important;
+		top: 5px !important;
+	}
 }
 
 .credix-button {
 	font-size: 12px !important;
 	padding: 3px 16px !important;
-	height: 30px !important;
 }
 
 li > button {
@@ -123,7 +142,11 @@ button {
 }
 
 .MuiButton-root {
-	padding: 20px 20px;
+	padding: 20px 40px;
+}
+
+.MuiButtonBase-root.MuiIconButton-root {
+	width: 30px;
 }
 
 .container-initialize {
@@ -144,20 +167,15 @@ button {
 	align-items: center;
 	width: 100vw;
 	height: 100vh;
-
-	button {
-		margin-right: 20px;
-	}
 }
 
 @media only screen and (max-width: 1124px) {
 	.pool-and-stake-withdraw-container {
-		flex-direction: column; 
+		flex-direction: column;
 
 		.pool-container {
-			margin: 0; 
-			margin-bottom: 10vh; 
+			margin: 0;
+			margin-bottom: 10vh;
 		}
 	}
-
 }

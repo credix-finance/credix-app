@@ -1,4 +1,4 @@
-FROM node:13.12.0-alpine
+FROM node:14.17.0-alpine
 
 ARG PROGRAM_ADDRESS
 ENV ENV_PROGRAM_ADDRESS=$PROGRAM_ADDRESS
@@ -10,12 +10,12 @@ WORKDIR /app
 
 COPY . .
 
-RUN npm install --silent
-RUN npm install react-scripts@3.4.1 -g --silent
+RUN yarn install --silent
+RUN yarn global add react-scripts@3.4.1 --silent
 
-RUN REACT_APP_CLUSTER=$ENV_ENVIRONMENT REACT_APP_PROGRAM_ID=$ENV_PROGRAM_ADDRESS npm run build --production
+RUN REACT_APP_CLUSTER=$ENV_ENVIRONMENT REACT_APP_PROGRAM_ID=$ENV_PROGRAM_ADDRESS yarn run build --production
 
-RUN npm install -g serve
+RUN yarn global add serve --silent
 
 CMD serve -p 8080 -s build
 
