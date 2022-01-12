@@ -188,7 +188,7 @@ export const DealOverview = () => {
 				fee,
 				Big.roundDown,
 				intl.formatNumber
-			)} Base fee`;
+			)} USDC fee`;
 
 			notify("success", `${paymentNotification}${showFeeNotification ? feeNotification : ""}`);
 
@@ -298,7 +298,7 @@ export const DealOverview = () => {
 					</label>
 					<br />
 					<label className="stake-input-label">
-						Base amount
+						USDC amount
 						<p>
 							{`To repay: ${
 								amountToRepay === undefined
