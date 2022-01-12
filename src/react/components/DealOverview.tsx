@@ -176,7 +176,7 @@ export const DealOverview = () => {
 				repaidAmount,
 				Big.roundUp,
 				intl.formatNumber
-			)} USDC`;
+			)} Base`;
 
 			const interestFeePercentage = await getInterestFeePercentage(
 				connection.connection,
@@ -188,7 +188,7 @@ export const DealOverview = () => {
 				fee,
 				Big.roundDown,
 				intl.formatNumber
-			)} USDC fee`;
+			)} Base fee`;
 
 			notify("success", `${paymentNotification}${showFeeNotification ? feeNotification : ""}`);
 
@@ -298,7 +298,7 @@ export const DealOverview = () => {
 					</label>
 					<br />
 					<label className="stake-input-label">
-						USDC amount
+						Base amount
 						<p>
 							{`To repay: ${
 								amountToRepay === undefined

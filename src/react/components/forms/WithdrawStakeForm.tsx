@@ -39,7 +39,7 @@ export const WithdrawStakeForm = () => {
 					withdrawAmount,
 					Big.roundDown,
 					intl.formatNumber
-				)} USDC with a ${formatUIAmount(withdrawFee, Big.roundDown, intl.formatNumber)} USDC fee`
+				)} Base with a ${formatUIAmount(withdrawFee, Big.roundDown, intl.formatNumber)} Base fee`
 			);
 			triggerRefresh();
 		} catch (e: any) {

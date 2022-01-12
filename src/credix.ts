@@ -46,7 +46,7 @@ export type Credix = {
           "isSigner": true
         },
         {
-          "name": "usdcMintAccount",
+          "name": "baseMintAccount",
           "isMut": false,
           "isSigner": false
         },
@@ -147,7 +147,7 @@ export type Credix = {
           "isSigner": false
         },
         {
-          "name": "usdcMintAccount",
+          "name": "baseMintAccount",
           "isMut": false,
           "isSigner": false
         },
@@ -311,7 +311,7 @@ export type Credix = {
           "isSigner": false
         },
         {
-          "name": "usdcMintAccount",
+          "name": "baseMintAccount",
           "isMut": false,
           "isSigner": false
         },
@@ -387,7 +387,7 @@ export type Credix = {
           "isSigner": false
         },
         {
-          "name": "usdcMintAccount",
+          "name": "baseMintAccount",
           "isMut": false,
           "isSigner": false
         },
@@ -469,7 +469,7 @@ export type Credix = {
           "isSigner": false
         },
         {
-          "name": "usdcMintAccount",
+          "name": "baseMintAccount",
           "isMut": false,
           "isSigner": false
         },
@@ -486,7 +486,7 @@ export type Credix = {
       ],
       "args": [
         {
-          "name": "usdcWithdrawalAmount",
+          "name": "baseWithdrawalAmount",
           "type": "u64"
         }
       ]
@@ -946,7 +946,7 @@ export const IDL: Credix = {
           "isSigner": true
         },
         {
-          "name": "usdcMintAccount",
+          "name": "baseMintAccount",
           "isMut": false,
           "isSigner": false
         },
@@ -1047,7 +1047,7 @@ export const IDL: Credix = {
           "isSigner": false
         },
         {
-          "name": "usdcMintAccount",
+          "name": "baseMintAccount",
           "isMut": false,
           "isSigner": false
         },
@@ -1211,7 +1211,7 @@ export const IDL: Credix = {
           "isSigner": false
         },
         {
-          "name": "usdcMintAccount",
+          "name": "baseMintAccount",
           "isMut": false,
           "isSigner": false
         },
@@ -1287,7 +1287,7 @@ export const IDL: Credix = {
           "isSigner": false
         },
         {
-          "name": "usdcMintAccount",
+          "name": "baseMintAccount",
           "isMut": false,
           "isSigner": false
         },
@@ -1369,7 +1369,7 @@ export const IDL: Credix = {
           "isSigner": false
         },
         {
-          "name": "usdcMintAccount",
+          "name": "baseMintAccount",
           "isMut": false,
           "isSigner": false
         },
@@ -1386,7 +1386,7 @@ export const IDL: Credix = {
       ],
       "args": [
         {
-          "name": "usdcWithdrawalAmount",
+          "name": "baseWithdrawalAmount",
           "type": "u64"
         }
       ]

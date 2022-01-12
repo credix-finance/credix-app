@@ -29,7 +29,7 @@ export const DepositStakeForm = () => {
 			await depositInvestment(stake, connection.connection, wallet as typeof Wallet);
 			notify(
 				"success",
-				`Successful deposit of ${formatUIAmount(stake, Big.roundDown, intl.formatNumber)} USDC`
+				`Successful deposit of ${formatUIAmount(stake, Big.roundDown, intl.formatNumber)} Base`
 			);
 			triggerRefresh();
 		} catch (e: any) {
