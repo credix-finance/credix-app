@@ -32,7 +32,7 @@ jobs:
       - name: Run tests
         run: yarn test
 
-  cd:
+  cd-devnet:
     runs-on: ubuntu-latest
 #    if: github.ref == 'refs/heads/devnet' || github.ref == 'refs/heads/mainnet'
     needs: [ci]
@@ -46,13 +46,12 @@ jobs:
         run : |
           yarn install --silent
           yarn global add react-scripts@3.4.1 --silent
-          REACT_APP_CLUSTER=${{ secrets.ENVIRONMENT }} REACT_APP_PROGRAM_ID=${{ secrets.PROGRAM_ADDRESS }} yarn run build --production
+          REACT_APP_CLUSTER=devnet REACT_APP_PROGRAM_ID=${{ secrets.PROGRAM_ADDRESS }} yarn run build --production
       - name: Checkout target repository
         uses: actions/checkout@v2
         with:
-          repository: credix-finance/credix-app-${{ secrets.ENVIRONMENT }}
+          repository: credix-finance/credix-app-devnet
           path: 'deploy'
-          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Push files to target repository
         run: |
           cp -r build/dist/* deploy
