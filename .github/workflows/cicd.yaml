@@ -38,7 +38,7 @@ jobs:
     needs: [ci]
     environment:
       name: devnet
-      url: ${{ secrets.DEPLOY_URL }}
+      url: https://app.dev.credix.finance
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
