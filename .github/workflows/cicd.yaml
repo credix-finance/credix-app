@@ -34,7 +34,7 @@ jobs:
 
   cd-devnet:
     runs-on: ubuntu-latest
-#    if: github.ref == 'refs/heads/devnet' || github.ref == 'refs/heads/mainnet'
+    if: github.ref == 'refs/heads/devnet'
     needs: [ci]
     environment:
       name: devnet
@@ -51,6 +51,40 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: credix-finance/credix-app-devnet
+          path: 'deploy'
+          token: ${{ secrets.PAT }}
+      - name: Set GitHub Actions as commit author
+        run: |
+          git config --global user.name github-actions
+          git config --global user.email github-actions@github.com
+      - name: Push files to target repository
+        run: |
+          cp -r build/* deploy
+          cd deploy
+          echo ${{ secrets.DEPLOY_URL }} > CNAME
+          git add .
+          git commit -m $GITHUB_SHA
+          git push
+
+  cd-mainnet:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/mainnet'
+    needs: [ci]
+    environment:
+      name: mainnet
+      url: https://app.credix.finance
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Install and build
+        run : |
+          yarn install --silent
+          yarn global add react-scripts@3.4.1 --silent
+          REACT_APP_CLUSTER=mainnet-beta REACT_APP_PROGRAM_ID=${{ secrets.PROGRAM_ADDRESS }} yarn run build --production
+      - name: Checkout target repository
+        uses: actions/checkout@v2
+        with:
+          repository: credix-finance/credix-app-mainnet
           path: 'deploy'
           token: ${{ secrets.PAT }}
       - name: Set GitHub Actions as commit author
