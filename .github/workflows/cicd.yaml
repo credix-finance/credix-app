@@ -38,7 +38,7 @@ jobs:
     needs: [ci]
     environment:
       name: devnet
-      url: ${{ format('{0}{1}', 'https://', env.DEPLOY_URL) }} + ${{ env.DEPLOY_URL }}
+      url: ${{ format('{0}{1}', 'https://', secrets.DEPLOY_URL) }} + ${{ secrets.DEPLOY_URL }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -46,18 +46,18 @@ jobs:
         run : |
           yarn install --silent
           yarn global add react-scripts@3.4.1 --silent
-          REACT_APP_CLUSTER=${{ env.ENVIRONMENT }} REACT_APP_PROGRAM_ID=${{ secrets.PROGRAM_ADDRESS }} yarn run build --production
+          REACT_APP_CLUSTER=${{ secrets.ENVIRONMENT }} REACT_APP_PROGRAM_ID=${{ secrets.PROGRAM_ADDRESS }} yarn run build --production
       - name: Checkout target repository
         uses: actions/checkout@v2
         with:
-          repository: credix-finance/credix-app-${{ env.ENVIRONMENT }}
+          repository: credix-finance/credix-app-${{ secrets.ENVIRONMENT }}
           path: 'deploy'
           token: ${{ secrets.GITHUB_TOKEN }}
       - name: Push files to target repository
         run: |
           cp -r build/dist/* deploy
           cd deploy
-          echo ${{ env.DEPLOY_URL }} > CNAME
+          echo ${{ secrets.DEPLOY_URL }} > CNAME
 #          git add .
 #          git commit -m $GITHUB_SHA
 #          git push
