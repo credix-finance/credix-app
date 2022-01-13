@@ -52,9 +52,10 @@ jobs:
         with:
           repository: credix-finance/credix-app-devnet
           path: 'deploy'
+          token: ${{ secrets.PAT }}
       - name: Push files to target repository
         run: |
-          cp -r build/dist/* deploy
+          cp -r build/* deploy
           cd deploy
           echo ${{ secrets.DEPLOY_URL }} > CNAME
 #          git add .
