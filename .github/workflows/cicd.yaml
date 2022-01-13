@@ -34,11 +34,11 @@ jobs:
 
   cd:
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/devnet' || github.ref == 'refs/heads/mainnet'
+#    if: github.ref == 'refs/heads/devnet' || github.ref == 'refs/heads/mainnet'
     needs: [ci]
     environment:
-      name: ${{ env.ENVIRONMENT }}
-      url: 'http://'${{ env.DEPLOY_URL }}
+      name: devnet
+      url: ${{ format('{0}{1}', 'https://', env.DEPLOY_URL) }} + ${{ env.DEPLOY_URL }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
