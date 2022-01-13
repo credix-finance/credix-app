@@ -53,6 +53,10 @@ jobs:
           repository: credix-finance/credix-app-devnet
           path: 'deploy'
           token: ${{ secrets.PAT }}
+      - name: Set GitHub Actions as commit author
+        run: |
+          git config --global user.name github-actions
+          git config --global user.email github-actions@github.com
       - name: Push files to target repository
         run: |
           cp -r build/* deploy
