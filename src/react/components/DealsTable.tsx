@@ -94,9 +94,7 @@ export const DealsTable = (props: Props) => {
 				</TableCell>
 				<TableCell>{`${daysRemaining} / ${deal.timeToMaturityDays}`}</TableCell>
 				<TableCell>{`${dealStatus !== null && formatDealStatus(dealStatus)}`}</TableCell>
-				<TableCell>
-					{showRepayButton && <CredixButton text="repay" onClick={console.log} />}
-				</TableCell>
+				<TableCell>{showRepayButton && <CredixButton text="repay" />}</TableCell>
 			</TableRow>
 		);
 	};
