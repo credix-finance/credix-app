@@ -3,7 +3,7 @@ import { BN, Wallet } from "@project-serum/anchor";
 import { useAnchorWallet, useConnection } from "@solana/wallet-adapter-react";
 import React, { useCallback, useEffect, useState } from "react";
 import { getClusterTime, getDealAccounts } from "client/api";
-import { Deal } from "types/program.types";
+import { Deal, DealStatus } from "types/program.types";
 import { useNavigate } from "react-router-dom";
 import { Path } from "types/navigation.types";
 import "../../styles/dealstable.scss";
@@ -12,6 +12,7 @@ import { getDaysRemaining, mapDealToStatus } from "utils/deal.utils";
 import { PublicKey } from "@solana/web3.js";
 import Big from "big.js";
 import { useIntl } from "react-intl";
+import { CredixButton } from "./buttons/CredixButton";
 
 interface Props {
 	borrower?: PublicKey;
@@ -63,6 +64,7 @@ export const DealsTable = (props: Props) => {
 		);
 
 		const userDeal = wallet?.publicKey && deal.borrower.equals(wallet?.publicKey);
+		const showRepayButton = userDeal && dealStatus === DealStatus.IN_PROGRESS;
 
 		return (
 			<TableRow key={key} hover={userDeal} onClick={() => userDeal && navigate(targetRoute)}>
@@ -92,7 +94,9 @@ export const DealsTable = (props: Props) => {
 				</TableCell>
 				<TableCell>{`${daysRemaining} / ${deal.timeToMaturityDays}`}</TableCell>
 				<TableCell>{`${dealStatus !== null && formatDealStatus(dealStatus)}`}</TableCell>
-				<TableCell>{userDeal && "repay"}</TableCell>
+				<TableCell>
+					{showRepayButton && <CredixButton text="repay" onClick={console.log} />}
+				</TableCell>
 			</TableRow>
 		);
 	};
