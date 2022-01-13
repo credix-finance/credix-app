@@ -58,6 +58,6 @@ jobs:
           cp -r build/* deploy
           cd deploy
           echo ${{ secrets.DEPLOY_URL }} > CNAME
-#          git add .
-#          git commit -m $GITHUB_SHA
-#          git push
+          git add .
+          git commit -m $GITHUB_SHA
+          git push
