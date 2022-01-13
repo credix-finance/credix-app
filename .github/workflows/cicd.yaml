@@ -6,7 +6,6 @@ on:
     - localnet
     - devnet
     - mainnet
-    - github-pages
   pull_request:
 
 env:
