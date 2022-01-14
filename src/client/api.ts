@@ -1,8 +1,8 @@
-import { BN, ProgramAccount, Wallet, web3 } from "@project-serum/anchor";
+import { BN, Wallet, web3 } from "@project-serum/anchor";
 import { TOKEN_PROGRAM_ID, ASSOCIATED_TOKEN_PROGRAM_ID, Token } from "@solana/spl-token";
 import { Connection, PublicKey, SystemProgram } from "@solana/web3.js";
-import { Deal, DealStatus, PoolStats, Ratio, RepaymentType } from "types/program.types";
-import { multiAsync } from "utils/async.utils";
+import { DealStatus, PoolStats, Ratio, RepaymentType } from "types/program.types";
+import { asyncFilter, multiAsync } from "utils/async.utils";
 import { mapDealToStatus } from "utils/deal.utils";
 import {
 	findGlobalMarketStatePDA,
@@ -23,18 +23,14 @@ export const getDealAccounts = multiAsync(
 		const program = newCredixProgram(connection, wallet);
 
 		const allDeals = await program.account.deal.all();
-
-		const marketDeals: Array<ProgramAccount<Deal>> = [];
-		allDeals.forEach(async (deal) => {
+		const marketDeals = await asyncFilter(allDeals, async (deal) => {
 			const dealPDA = await findDealPDA(
 				deal.account.borrower,
 				deal.account.dealNumber,
 				globalMarketSeed
 			);
 
-			if (dealPDA[0].equals(deal.publicKey)) {
-				marketDeals.push(deal);
-			}
+			return dealPDA[0].equals(deal.publicKey);
 		});
 
 		if (borrower) {
