@@ -11,7 +11,6 @@ WORKDIR /app
 COPY . .
 
 RUN yarn install --silent
-RUN yarn global add react-scripts@3.4.1 --silent
 
 RUN REACT_APP_CLUSTER=$ENV_ENVIRONMENT REACT_APP_PROGRAM_ID=$ENV_PROGRAM_ADDRESS yarn run build --production
 

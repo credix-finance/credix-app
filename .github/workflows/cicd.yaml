@@ -44,7 +44,6 @@ jobs:
       - name: Install and build
         run : |
           yarn install --silent
-          yarn global add react-scripts@3.4.1 --silent
           REACT_APP_CLUSTER=devnet REACT_APP_PROGRAM_ID=${{ secrets.PROGRAM_ADDRESS }} yarn run build --production
       - name: Checkout target repository
         uses: actions/checkout@v2
@@ -78,7 +77,6 @@ jobs:
       - name: Install and build
         run : |
           yarn install --silent
-          yarn global add react-scripts@3.4.1 --silent
           REACT_APP_CLUSTER=mainnet-beta REACT_APP_PROGRAM_ID=${{ secrets.PROGRAM_ADDRESS }} yarn run build --production
       - name: Checkout target repository
         uses: actions/checkout@v2
