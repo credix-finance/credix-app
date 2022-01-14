@@ -2,9 +2,10 @@ export const SESSION_STORAGE = {
 	STATE: "state",
 };
 
+export const defaultMarketPlace = "credix-marketplace";
+
 // TODO: turn into enum
 export const SEEDS = {
-	GLOBAL_MARKET_STATE_PDA: "credix-marketplace",
 	DEAL_INFO: "deal-info",
 	CREDIX_PASS: "credix-pass",
 	BORROWER_INFO: "borrower-info",

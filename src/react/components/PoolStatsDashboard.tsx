@@ -6,6 +6,7 @@ import { getPoolStats } from "client/api";
 import millify from "millify";
 import React, { useCallback, useEffect, useState } from "react";
 import { useIntl } from "react-intl";
+import { useMarketSeed } from "react/hooks/useMarketSeed";
 import { useRefresh } from "react/hooks/useRefresh";
 import { PoolStats } from "types/program.types";
 import { formatNumber, formatRatio, toUIAmount } from "utils/format.utils";
@@ -15,11 +16,16 @@ export const PoolStatsDashboard = () => {
 	const intl = useIntl();
 	const wallet = useAnchorWallet();
 	const connection = useConnection();
+	const marketSeed = useMarketSeed();
 
 	const [poolStats, setPoolstats] = useState<PoolStats | undefined>();
 
 	const updatePoolStats = useCallback(async () => {
-		const poolStats = await getPoolStats(connection.connection, wallet as typeof Wallet);
+		const poolStats = await getPoolStats(
+			connection.connection,
+			wallet as typeof Wallet,
+			marketSeed
+		);
 		setPoolstats(poolStats);
 		// whether the wallet is connected or not is irrelevant for this component so not including the wallet as a dependency \
 		//  avoids unnecessary rerenders

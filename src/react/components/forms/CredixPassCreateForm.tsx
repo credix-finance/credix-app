@@ -3,6 +3,7 @@ import { useAnchorWallet, useConnection } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
 import { issueCredixPass } from "client/api";
 import React, { useState } from "react";
+import { useMarketSeed } from "react/hooks/useMarketSeed";
 import { useNotify } from "react/hooks/useNotify";
 import { serialAsync } from "utils/async.utils";
 import "../../../styles/stakeform.scss";
@@ -11,6 +12,7 @@ export const CredixPassCreateForm = () => {
 	const wallet = useAnchorWallet();
 	const connection = useConnection();
 	const notify = useNotify();
+	const marketSeed = useMarketSeed();
 
 	const [isBorrower, setIsBorrower] = useState<boolean>(true);
 	const [isUnderwriter, setIsUnderwriter] = useState<boolean>(true);
@@ -27,7 +29,8 @@ export const CredixPassCreateForm = () => {
 				isUnderwriter,
 				isBorrower,
 				connection.connection,
-				wallet as typeof Wallet
+				wallet as typeof Wallet,
+				marketSeed
 			);
 			notify("success", "CredixPass created successfully");
 		} catch (err: any) {

@@ -12,6 +12,8 @@ import { getDaysRemaining, mapDealToStatus } from "utils/deal.utils";
 import { PublicKey } from "@solana/web3.js";
 import Big from "big.js";
 import { useIntl } from "react-intl";
+import { navigationHelper } from "utils/navigation.utils";
+import { useMarketSeed } from "react/hooks/useMarketSeed";
 
 interface Props {
 	borrower?: PublicKey;
@@ -24,16 +26,22 @@ export const DealsTable = (props: Props) => {
 	const [deals, setDeals] = useState<any>([]);
 	const [clusterTime, setClusterTime] = useState<number | null>(null);
 	const navigate = useNavigate();
+	const marketSeed = useMarketSeed();
 
 	const getDeals = useCallback(async () => {
-		const _deals = getDealAccounts(connection.connection, wallet as typeof Wallet, props.borrower);
+		const _deals = getDealAccounts(
+			connection.connection,
+			wallet as typeof Wallet,
+			marketSeed,
+			props.borrower
+		);
 		const _clusterTime = getClusterTime(connection.connection);
 
 		const [deals, clusterTime] = await Promise.all([_deals, _clusterTime]);
 
 		setDeals(deals);
 		setClusterTime(clusterTime);
-	}, [connection.connection, wallet, props.borrower]);
+	}, [connection.connection, wallet, props.borrower, marketSeed]);
 
 	useEffect(() => {
 		if (wallet) {
@@ -65,7 +73,11 @@ export const DealsTable = (props: Props) => {
 		const userDeal = wallet?.publicKey && deal.borrower.equals(wallet?.publicKey);
 
 		return (
-			<TableRow key={key} hover={userDeal} onClick={() => userDeal && navigate(targetRoute)}>
+			<TableRow
+				key={key}
+				hover={userDeal}
+				onClick={() => userDeal && navigationHelper(navigate, targetRoute, marketSeed)}
+			>
 				<TableCell>{deal.name}</TableCell>
 				<TableCell>{formatBorrowerKey(deal.borrower)}</TableCell>
 				<TableCell>{createdAt.toUTCString()}</TableCell>
