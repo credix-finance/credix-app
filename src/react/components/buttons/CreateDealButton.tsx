@@ -15,7 +15,7 @@ export const CreateDealButton = (props: Props) => {
 
 	const targetRoute = props.borrower
 		? Path.DEALS_BORROWER_NEW.replace(":borrower", props.borrower.toString())
-		: Path.DEALS_NEW.replace(":marketplace", marketSeed);
+		: Path.DEALS_NEW;
 
 	return (
 		<CredixButton
