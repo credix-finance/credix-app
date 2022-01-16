@@ -75,17 +75,19 @@ export const PoolStatsDashboard = () => {
 				<div className="pool-stat">
 					<div className="hover-text">
 						<p>
-							The expected APY that investors get; calculated based on the weighted average of the
-							financing fees of outstanding deals.
+							The weighted average financing fee of all active deals. 
 						</p>
 					</div>
 					<p className="pool-stat-number">
 						{poolStats &&
-							formatNumber(formatRatio(poolStats.APY), Big.roundHalfUp, intl.formatNumber)}
+							formatNumber(formatRatio(poolStats.FF), Big.roundHalfUp, intl.formatNumber)}
 						%
 					</p>
-					<p className="pool-stat-title">Estimated APY</p>
+					<p className="pool-stat-title">Average financing fee</p>
 				</div>
+			</div>
+			<div className="row">
+				<p className="credix-apy">Estimated APY (incl. Credix tokens) = 30%</p>
 			</div>
 		</div>
 	);
