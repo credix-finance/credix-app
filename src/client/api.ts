@@ -375,7 +375,7 @@ export const depositInvestment = multiAsync(
 			_getCredixPassPDA,
 		]);
 
-		return program.rpc.depositFunds(depositAmount, {
+		return program.rpc.depositFunds(globalMarketSeed, depositAmount, {
 			accounts: {
 				investor: wallet.publicKey,
 				gatewayToken: gatewayToken.publicKey,
@@ -459,7 +459,7 @@ export const withdrawInvestment = multiAsync(
 
 		const withdrawAmount = new BN(amount.toNumber());
 
-		return program.rpc.withdrawFunds(withdrawAmount, {
+		return program.rpc.withdrawFunds(globalMarketSeed, withdrawAmount, {
 			accounts: {
 				investor: wallet.publicKey,
 				gatewayToken: gatewayToken.publicKey,
@@ -569,6 +569,7 @@ export const createDeal = multiAsync(
 		};
 
 		return program.rpc.createDeal(
+			globalMarketSeed,
 			dealPDA[1],
 			borrowerInfoPDA[1],
 			principalAmount,
@@ -641,7 +642,7 @@ export const activateDeal = multiAsync(
 			_getCredixPassPDA,
 		]);
 
-		return program.rpc.activateDeal({
+		return program.rpc.activateDeal(globalMarketSeed, {
 			accounts: {
 				owner: wallet.publicKey,
 				gatewayToken: gatewayToken.publicKey,
@@ -799,7 +800,7 @@ export const repayDeal = multiAsync(
 			_getCredixPassPDA,
 		]);
 
-		await program.rpc.makeDealRepayment(repayAmount, repaymentType, {
+		await program.rpc.makeDealRepayment(globalMarketSeed, repayAmount, repaymentType, {
 			accounts: {
 				borrower: wallet.publicKey,
 				gatewayToken: gatewayToken.publicKey,
@@ -835,7 +836,7 @@ export const issueCredixPass = async (
 		_getCredixPassPDA,
 	]);
 
-	return program.rpc.createCredixPass(credixPassPDA[1], isUnderwriter, isBorrower, {
+	return program.rpc.createCredixPass(globalMarketSeed, credixPassPDA[1], isUnderwriter, isBorrower, {
 		accounts: {
 			owner: wallet.publicKey,
 			passHolder: publicKey,
@@ -867,7 +868,7 @@ export const updateCredixPass = async (
 		_getCredixPassPDA,
 	]);
 
-	return program.rpc.updateCredixPass(isActive, isUnderwriter, isBorrower, {
+	return program.rpc.updateCredixPass(globalMarketSeed, isActive, isUnderwriter, isBorrower, {
 		accounts: {
 			owner: wallet.publicKey,
 			passHolder: publicKey,

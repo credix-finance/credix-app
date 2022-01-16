@@ -73,16 +73,16 @@ export type Credix = {
       ],
       "args": [
         {
+          "name": "globalMarketSeed",
+          "type": "string"
+        },
+        {
           "name": "signingAuthorityBump",
           "type": "u8"
         },
         {
           "name": "globalMarketStateBump",
           "type": "u8"
-        },
-        {
-          "name": "globalMarketSeed",
-          "type": "string"
         },
         {
           "name": "interestFee",
@@ -174,6 +174,10 @@ export type Credix = {
       ],
       "args": [
         {
+          "name": "globalMarketSeed",
+          "type": "string"
+        },
+        {
           "name": "amount",
           "type": "u64"
         }
@@ -224,6 +228,10 @@ export type Credix = {
         }
       ],
       "args": [
+        {
+          "name": "globalMarketSeed",
+          "type": "string"
+        },
         {
           "name": "dealBump",
           "type": "u8"
@@ -336,7 +344,12 @@ export type Credix = {
           "isSigner": false
         }
       ],
-      "args": []
+      "args": [
+        {
+          "name": "globalMarketSeed",
+          "type": "string"
+        }
+      ]
     },
     {
       "name": "makeDealRepayment",
@@ -403,6 +416,10 @@ export type Credix = {
         }
       ],
       "args": [
+        {
+          "name": "globalMarketSeed",
+          "type": "string"
+        },
         {
           "name": "amount",
           "type": "u64"
@@ -486,6 +503,10 @@ export type Credix = {
       ],
       "args": [
         {
+          "name": "globalMarketSeed",
+          "type": "string"
+        },
+        {
           "name": "baseWithdrawalAmount",
           "type": "u64"
         }
@@ -527,6 +548,10 @@ export type Credix = {
       ],
       "args": [
         {
+          "name": "globalMarketSeed",
+          "type": "string"
+        },
+        {
           "name": "passBump",
           "type": "u8"
         },
@@ -566,6 +591,10 @@ export type Credix = {
       ],
       "args": [
         {
+          "name": "globalMarketSeed",
+          "type": "string"
+        },
+        {
           "name": "isActive",
           "type": "bool"
         },
@@ -593,7 +622,12 @@ export type Credix = {
           "isSigner": false
         }
       ],
-      "args": []
+      "args": [
+        {
+          "name": "globalMarketSeed",
+          "type": "string"
+        }
+      ]
     },
     {
       "name": "thawGlobalMarketState",
@@ -609,7 +643,12 @@ export type Credix = {
           "isSigner": false
         }
       ],
-      "args": []
+      "args": [
+        {
+          "name": "globalMarketSeed",
+          "type": "string"
+        }
+      ]
     }
   ],
   "accounts": [
@@ -700,6 +739,10 @@ export type Credix = {
           },
           {
             "name": "private",
+            "type": "bool"
+          },
+          {
+            "name": "defaulted",
             "type": "bool"
           }
         ]
@@ -894,6 +937,21 @@ export type Credix = {
       "code": 6015,
       "name": "PreciseNumberCastFailed",
       "msg": "Unable to cast PreciseNumber to u64"
+    },
+    {
+      "code": 6016,
+      "name": "NotEnoughLPTokens",
+      "msg": "Not enough LP tokens."
+    },
+    {
+      "code": 6017,
+      "name": "NotEnoughBaseTokens",
+      "msg": "Not enough Base tokens."
+    },
+    {
+      "code": 6018,
+      "name": "InterestBeforePrincipal",
+      "msg": "Repay interest before principal."
     }
   ]
 };
@@ -973,16 +1031,16 @@ export const IDL: Credix = {
       ],
       "args": [
         {
+          "name": "globalMarketSeed",
+          "type": "string"
+        },
+        {
           "name": "signingAuthorityBump",
           "type": "u8"
         },
         {
           "name": "globalMarketStateBump",
           "type": "u8"
-        },
-        {
-          "name": "globalMarketSeed",
-          "type": "string"
         },
         {
           "name": "interestFee",
@@ -1074,6 +1132,10 @@ export const IDL: Credix = {
       ],
       "args": [
         {
+          "name": "globalMarketSeed",
+          "type": "string"
+        },
+        {
           "name": "amount",
           "type": "u64"
         }
@@ -1124,6 +1186,10 @@ export const IDL: Credix = {
         }
       ],
       "args": [
+        {
+          "name": "globalMarketSeed",
+          "type": "string"
+        },
         {
           "name": "dealBump",
           "type": "u8"
@@ -1236,7 +1302,12 @@ export const IDL: Credix = {
           "isSigner": false
         }
       ],
-      "args": []
+      "args": [
+        {
+          "name": "globalMarketSeed",
+          "type": "string"
+        }
+      ]
     },
     {
       "name": "makeDealRepayment",
@@ -1303,6 +1374,10 @@ export const IDL: Credix = {
         }
       ],
       "args": [
+        {
+          "name": "globalMarketSeed",
+          "type": "string"
+        },
         {
           "name": "amount",
           "type": "u64"
@@ -1386,6 +1461,10 @@ export const IDL: Credix = {
       ],
       "args": [
         {
+          "name": "globalMarketSeed",
+          "type": "string"
+        },
+        {
           "name": "baseWithdrawalAmount",
           "type": "u64"
         }
@@ -1427,6 +1506,10 @@ export const IDL: Credix = {
       ],
       "args": [
         {
+          "name": "globalMarketSeed",
+          "type": "string"
+        },
+        {
           "name": "passBump",
           "type": "u8"
         },
@@ -1466,6 +1549,10 @@ export const IDL: Credix = {
       ],
       "args": [
         {
+          "name": "globalMarketSeed",
+          "type": "string"
+        },
+        {
           "name": "isActive",
           "type": "bool"
         },
@@ -1493,7 +1580,12 @@ export const IDL: Credix = {
           "isSigner": false
         }
       ],
-      "args": []
+      "args": [
+        {
+          "name": "globalMarketSeed",
+          "type": "string"
+        }
+      ]
     },
     {
       "name": "thawGlobalMarketState",
@@ -1509,7 +1601,12 @@ export const IDL: Credix = {
           "isSigner": false
         }
       ],
-      "args": []
+      "args": [
+        {
+          "name": "globalMarketSeed",
+          "type": "string"
+        }
+      ]
     }
   ],
   "accounts": [
@@ -1600,6 +1697,10 @@ export const IDL: Credix = {
           },
           {
             "name": "private",
+            "type": "bool"
+          },
+          {
+            "name": "defaulted",
             "type": "bool"
           }
         ]
@@ -1794,6 +1895,21 @@ export const IDL: Credix = {
       "code": 6015,
       "name": "PreciseNumberCastFailed",
       "msg": "Unable to cast PreciseNumber to u64"
+    },
+    {
+      "code": 6016,
+      "name": "NotEnoughLPTokens",
+      "msg": "Not enough LP tokens."
+    },
+    {
+      "code": 6017,
+      "name": "NotEnoughBaseTokens",
+      "msg": "Not enough Base tokens."
+    },
+    {
+      "code": 6018,
+      "name": "InterestBeforePrincipal",
+      "msg": "Repay interest before principal."
     }
   ]
 };
