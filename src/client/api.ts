@@ -41,11 +41,11 @@ export const getDealAccounts = multiAsync(
 	}
 );
 
-const getGlobalMarketStateAccountData = multiAsync(
+export const getGlobalMarketStateAccountData = multiAsync(
 	async (connection: Connection, wallet: typeof Wallet, globalMarketSeed: string) => {
 		const program = newCredixProgram(connection, wallet);
 		const globalMarketStatePDA = await findGlobalMarketStatePDA(globalMarketSeed);
-		return program.account.globalMarketState.fetch(globalMarketStatePDA[0]);
+		return program.account.globalMarketState.fetchNullable(globalMarketStatePDA[0]);
 	}
 );
 
@@ -56,6 +56,11 @@ const getBaseMintPK = multiAsync(
 			wallet,
 			globalMarketSeed
 		);
+
+		if (!globalMarketState) {
+			throw Error("Market not found");
+		}
+
 		return globalMarketState.liquidityPoolTokenMintAccount;
 	}
 );
@@ -107,6 +112,11 @@ const getOutstandingCredit = multiAsync(
 			wallet,
 			globalMarketSeed
 		);
+
+		if (!globalMarketStateData) {
+			throw Error("Market not found");
+		}
+
 		return new Big(globalMarketStateData.totalOutstandingCredit.toNumber());
 	}
 );
@@ -118,6 +128,11 @@ export const getGatekeeperNetwork = multiAsync(
 			wallet,
 			globalMarketSeed
 		);
+
+		if (!globalMarketStateData) {
+			throw Error("Market not found");
+		}
+
 		return globalMarketStateData.gatekeeperNetwork;
 	}
 );
@@ -209,6 +224,11 @@ const getTreasuryPoolTokenAccountPK = multiAsync(
 			wallet,
 			globalMarketSeed
 		);
+
+		if (!globalMarketStateData) {
+			throw Error("Market not found");
+		}
+
 		return globalMarketStateData.treasuryPoolTokenAccount;
 	}
 );
@@ -298,6 +318,11 @@ const getLPTokenMintPK = multiAsync(
 			wallet,
 			globalMarketSeed
 		);
+
+		if (!globalMarketStateData) {
+			throw Error("Market not found");
+		}
+
 		return globalMarketStateData.lpTokenMintAccount;
 	}
 );
@@ -515,6 +540,10 @@ export const getWithdrawFeePercentage = multiAsync(
 			globalMarketSeed
 		);
 
+		if (!globalMarketStateData) {
+			throw Error("Market not found");
+		}
+
 		return globalMarketStateData.withdrawalFee;
 	}
 );
@@ -526,6 +555,10 @@ export const getInterestFeePercentage = multiAsync(
 			wallet,
 			globalMarketSeed
 		);
+
+		if (!globalMarketStateData) {
+			throw Error("Market not found");
+		}
 
 		return globalMarketStateData.interestFee;
 	}

@@ -4,6 +4,8 @@ export const SESSION_STORAGE = {
 
 export const defaultMarketPlace = "credix-marketplace";
 
+export const NON_MARKET_PLACE_ROUTES = ["help", "credix-pass"];
+
 // TODO: turn into enum
 export const SEEDS = {
 	DEAL_INFO: "deal-info",
