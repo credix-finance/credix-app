@@ -33,6 +33,7 @@ jobs:
 
   cd-devnet:
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/devnet'
     needs: [ci]
     environment:
       name: devnet
