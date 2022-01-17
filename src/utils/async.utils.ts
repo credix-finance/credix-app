@@ -3,6 +3,15 @@ import { stringify } from "flatted";
 let runners = 0;
 const callbacks: Array<Function> = [];
 
+export async function asyncFilter<T>(
+	arr: T[],
+	filter: (element: T) => Promise<boolean>
+): Promise<T[]> {
+	const results = await Promise.all(arr.map(filter));
+
+	return arr.filter((_, i) => results[i]);
+}
+
 export const serialAsync = <F extends (...args: any[]) => any>(
 	f: F
 ): ((...funcArgs: Parameters<F>) => ReturnType<F>) => {
