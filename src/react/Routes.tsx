@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes as RouterRoutes } from "react-router-dom";
+import { HashRouter, Route, Routes as RouterRoutes } from "react-router-dom";
 import { OverviewPage } from "@components/pages/OverviewPage";
 import { Path } from "types/navigation.types";
 import { DealsPage } from "@components/pages/DealsPage";
@@ -8,8 +8,7 @@ import { DealPage } from "@components/pages/DealPage";
 import { NewDealPage } from "@components/pages/NewDealPage";
 
 export const Routes = () => (
-	// <BrowserRouter basename={process.env.PUBLIC_URL}>
-	<BrowserRouter>
+	<HashRouter>
 		<RouterRoutes>
 			<Route path={Path.HELP} element={<HelpPage />} />
 
@@ -23,5 +22,5 @@ export const Routes = () => (
 			<Route path={Path.CREDIX_PASS} element={<CredixPassPage />} />
 			<Route path={Path.NOT_FOUND} element={<p>There is nothing here.</p>} />
 		</RouterRoutes>
-	</BrowserRouter>
+	</HashRouter>
 );
