@@ -24,6 +24,7 @@ export const Routes = () => (
 				element={<Navigate to={Path.OVERVIEW.replace(":marketplace", defaultMarketPlace)} />}
 			/>
 			<Route path={Path.NOT_FOUND} element={<p>There is nothing here.</p>} />
+			<Route path={"*"} element={<p>There is nothing here.</p>} />
 		</RouterRoutes>
 	</BrowserRouter>
 );

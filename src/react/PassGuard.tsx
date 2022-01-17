@@ -49,7 +49,6 @@ export const PassGuard = (props: Props) => {
 		);
 
 		if (!globalMarketStateAccount) {
-			console.log("not found");
 			navigate(Path.NOT_FOUND);
 			return;
 		}

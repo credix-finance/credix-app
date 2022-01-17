@@ -8,5 +8,5 @@ export enum Path {
 	DEALS_DETAIL = "/:marketplace/deals/:borrower/:deal",
 	HELP = "/help",
 	CREDIX_PASS = "/credix-pass",
-	NOT_FOUND = "*",
+	NOT_FOUND = "/not-found",
 }
