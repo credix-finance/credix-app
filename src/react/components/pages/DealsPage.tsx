@@ -16,8 +16,8 @@ export const DealsPage = () => {
 			try {
 				setBorrower(new PublicKey(params.borrower));
 			} catch (e) {
-				// TODO: put this in a borrower route guard or something
 				navigate(Path.NOT_FOUND);
+				return;
 			}
 		}
 	}, [params.borrower, navigate]);
