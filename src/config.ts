@@ -15,14 +15,14 @@ const localnetConfig: ClusterConfig = {
 const devnetConfig: ClusterConfig = {
 	name: SolanaCluster.DEVNET,
 	RPCEndpoint: RPCEndpoint.DEVNET,
-	programId: new PublicKey("DnKntCMeFpwFMpegCsbYdmLhQaKULPbAmcivfX917PNL"),
+	programId: new PublicKey("CRDx2YkdtYtGZXGHZ59wNv1EwKHQndnRc1gT4p8i2vPX"),
 	gatewayProgramId: new PublicKey("gatem74V238djXdzWnJf94Wo1DcnuGkfijbf3AuBhfs"),
 };
 
 const mainnetConfig: ClusterConfig = {
 	name: SolanaCluster.MAINNET,
 	RPCEndpoint: RPCEndpoint.MAINNET,
-	programId: new PublicKey("DnKntCMeFpwFMpegCsbYdmLhQaKULPbAmcivfX917PNL"),
+	programId: new PublicKey("CRDx2YkdtYtGZXGHZ59wNv1EwKHQndnRc1gT4p8i2vPX"),
 	gatewayProgramId: new PublicKey("gatem74V238djXdzWnJf94Wo1DcnuGkfijbf3AuBhfs"),
 };
 ///
