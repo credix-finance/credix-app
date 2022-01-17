@@ -4,10 +4,12 @@ import { Path } from "types/navigation.types";
 import "../../styles/footer.scss";
 import { useEffect, useState } from "react";
 import { useAnchorWallet } from "@solana/wallet-adapter-react";
+import { useMarketSeed } from "react/hooks/useMarketSeed";
 
 export const Footer = () => {
 	const [showAdminOptions, setshowAdminOptions] = useState<boolean>(false);
 	const wallet = useAnchorWallet();
+	const marketSeed = useMarketSeed();
 
 	useEffect(() => {
 		if (config.managementKeys.includes(wallet?.publicKey.toString() ?? "")) {
@@ -18,8 +20,8 @@ export const Footer = () => {
 	return (
 		<div>
 			<div className="footer footer-left">
-				<Link to={Path.OVERVIEW}>Invest</Link>
-				<Link to={Path.DEALS}>Borrow/Repay</Link>
+				<Link to={Path.OVERVIEW.replace(":marketplace", marketSeed)}>Invest</Link>
+				<Link to={Path.DEALS.replace(":marketplace", marketSeed)}>Borrow/Repay</Link>
 				<Link to={Path.HELP} className="start-here animated bounce">
 					Start here
 				</Link>

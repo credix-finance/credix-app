@@ -32,7 +32,7 @@ export type RepaymentType = PrincipalRepaymentType | InterestRepaymentType;
 
 export interface PoolStats {
 	TVL: Big;
-	APY: Ratio;
+	FF: Ratio;
 	outstandingCredit: Big;
 }
 

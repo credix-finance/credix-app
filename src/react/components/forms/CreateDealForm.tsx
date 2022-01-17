@@ -20,6 +20,8 @@ import { formatUIAmount, toProgramAmount, toUIAmount } from "utils/format.utils"
 import { config } from "../../../config";
 import { SolanaCluster } from "../../../types/solana.types";
 import { useIntl } from "react-intl";
+import { useMarketSeed } from "react/hooks/useMarketSeed";
+import { navigationHelper } from "utils/navigation.utils";
 
 interface Props {
 	borrower?: PublicKey;
@@ -42,11 +44,16 @@ export const CreateDealForm = (props: Props) => {
 	const notify = useNotify();
 	const triggerRefresh = useRefresh();
 	const navigate = useNavigate();
+	const marketSeed = useMarketSeed();
 
 	const updateLiquidityPoolBalance = useCallback(async () => {
-		const balance = await getLiquidityPoolBalance(connection.connection, wallet as typeof Wallet);
+		const balance = await getLiquidityPoolBalance(
+			connection.connection,
+			wallet as typeof Wallet,
+			marketSeed
+		);
 		setLiquidityPoolBalance(balance);
-	}, [connection.connection, wallet]);
+	}, [connection.connection, wallet, marketSeed]);
 
 	useEffect(() => {
 		if (wallet?.publicKey && connection.connection) {
@@ -97,7 +104,8 @@ export const CreateDealForm = (props: Props) => {
 			const borrowerInfoAccountData = await getBorrowerInfoAccountData(
 				connection.connection,
 				wallet as typeof Wallet,
-				borrowerPK
+				borrowerPK,
+				marketSeed
 			);
 
 			const dealNumber = (borrowerInfoAccountData && borrowerInfoAccountData.numOfDeals) || 0;
@@ -110,18 +118,25 @@ export const CreateDealForm = (props: Props) => {
 				dealNumber,
 				dealname,
 				connection.connection,
-				wallet as typeof Wallet
+				wallet as typeof Wallet,
+				marketSeed
 			);
 			notify("success", "Deal created successfully");
 
 			// only automatically activate deal on localnet
 			if (config.clusterConfig.name === SolanaCluster.LOCALNET) {
-				await activateDeal(borrowerPK, dealNumber, connection.connection, wallet as typeof Wallet);
+				await activateDeal(
+					borrowerPK,
+					dealNumber,
+					connection.connection,
+					wallet as typeof Wallet,
+					marketSeed
+				);
 				notify("success", "Deal activated successfully");
 			}
 
 			triggerRefresh();
-			navigate(Path.DEALS);
+			navigationHelper(navigate, Path.DEALS, marketSeed);
 		} catch (err: any) {
 			notify("error", `Transaction failed! ${err?.message}`);
 		}
@@ -247,7 +262,7 @@ export const CreateDealForm = (props: Props) => {
 				<br />
 				<label className="stake-input-label">
 					Financing fee %
-					<p>The percentage on top of the principal that needs to be repaid as interest (APR)</p>
+					<p>The annualized interest rate that needs to be repaid on top of the principal</p>
 					<input
 						name="financingFee"
 						type="number"
