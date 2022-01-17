@@ -1,4 +1,4 @@
-import { BrowserRouter, Navigate, Route, Routes as RouterRoutes } from "react-router-dom";
+import { HashRouter, Navigate, Route, Routes as RouterRoutes } from "react-router-dom";
 import { OverviewPage } from "@components/pages/OverviewPage";
 import { Path } from "types/navigation.types";
 import { DealsPage } from "@components/pages/DealsPage";
@@ -9,7 +9,7 @@ import { NewDealPage } from "@components/pages/NewDealPage";
 import { defaultMarketPlace } from "consts";
 
 export const Routes = () => (
-	<BrowserRouter>
+	<HashRouter>
 		<RouterRoutes>
 			<Route path={Path.OVERVIEW} element={<OverviewPage />} />
 			<Route path={Path.DEALS} element={<DealsPage />} />
@@ -26,5 +26,5 @@ export const Routes = () => (
 			<Route path={Path.NOT_FOUND} element={<p>There is nothing here.</p>} />
 			<Route path={"*"} element={<p>There is nothing here.</p>} />
 		</RouterRoutes>
-	</BrowserRouter>
+	</HashRouter>
 );
