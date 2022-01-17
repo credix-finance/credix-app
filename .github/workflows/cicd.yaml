@@ -43,7 +43,7 @@ jobs:
       - name: Install and build
         run : |
           yarn install --silent
-          REACT_APP_CLUSTER=devnet REACT_APP_PROGRAM_ID=${{ secrets.PROGRAM_ADDRESS }} yarn run build --production
+          PUBLIC_URL=https://credix-finance.github.io/credix-app-devnet REACT_APP_CLUSTER=devnet REACT_APP_PROGRAM_ID=${{ secrets.PROGRAM_ADDRESS }} yarn run build --production
       - name: Checkout target repository
         uses: actions/checkout@v2
         with:
@@ -76,7 +76,7 @@ jobs:
       - name: Install and build
         run : |
           yarn install --silent
-          REACT_APP_CLUSTER=mainnet-beta REACT_APP_PROGRAM_ID=${{ secrets.PROGRAM_ADDRESS }} yarn run build --production
+          PUBLIC_URL=https://credix-finance.github.io/credix-app-mainnet REACT_APP_CLUSTER=mainnet-beta REACT_APP_PROGRAM_ID=${{ secrets.PROGRAM_ADDRESS }} yarn run build --production
       - name: Checkout target repository
         uses: actions/checkout@v2
         with:
