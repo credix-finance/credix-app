@@ -8,7 +8,7 @@ import { DealPage } from "@components/pages/DealPage";
 import { NewDealPage } from "@components/pages/NewDealPage";
 
 export const Routes = () => (
-	<BrowserRouter>
+	<BrowserRouter basename={process.env.PUBLIC_URL}>
 		<RouterRoutes>
 			<Route path={Path.HELP} element={<HelpPage />} />
 
