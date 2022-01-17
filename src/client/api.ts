@@ -131,7 +131,7 @@ const getWeightedAverageFinancingFee = multiAsync(
 	async (connection: Connection, wallet: typeof Wallet, globalMarketSeed: string) => {
 		const _deals = await getDealAccounts(connection, wallet, globalMarketSeed);
 		const _clusterTime = getClusterTime(connection);
-		let principalSum = new Big(0); 
+		let principalSum = new Big(0);
 
 		const [deals, clusterTime] = await Promise.all([_deals, _clusterTime]);
 

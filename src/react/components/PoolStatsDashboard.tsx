@@ -74,9 +74,7 @@ export const PoolStatsDashboard = () => {
 				</div>
 				<div className="pool-stat">
 					<div className="hover-text">
-						<p>
-							The weighted average financing fee of all active deals. 
-						</p>
+						<p>The weighted average financing fee of all active deals.</p>
 					</div>
 					<p className="pool-stat-number">
 						{poolStats &&
