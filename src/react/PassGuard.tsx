@@ -7,6 +7,8 @@ import React from "react";
 import { useMarketSeed } from "./hooks/useMarketSeed";
 import { useNavigate } from "react-router-dom";
 import { Path } from "types/navigation.types";
+import { config } from "config";
+import { SolanaCluster } from "types/solana.types";
 
 interface Props {
 	children?: React.ReactNode;
@@ -60,7 +62,9 @@ export const PassGuard = (props: Props) => {
 	}, [getCredixPass]);
 
 	useEffect(() => {
-		checkMarket();
+		if (config.clusterConfig.name !== SolanaCluster.MAINNET) {
+			checkMarket();
+		}
 	}, [checkMarket]);
 
 	return credixPass?.active ? (
