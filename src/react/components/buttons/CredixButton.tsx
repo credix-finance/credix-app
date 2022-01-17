@@ -4,7 +4,7 @@ import "../../../styles/navbar.scss";
 
 interface Props {
 	text: string;
-	onClick: () => void;
+	onClick?: () => void;
 	className?: string;
 	startIcon?: any;
 }
