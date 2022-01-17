@@ -262,7 +262,7 @@ export const CreateDealForm = (props: Props) => {
 				<br />
 				<label className="stake-input-label">
 					Financing fee %
-					<p>The percentage on top of the principal that needs to be repaid as interest (APR)</p>
+					<p>The annualized interest rate that needs to be repaid on top of the principal</p>
 					<input
 						name="financingFee"
 						type="number"

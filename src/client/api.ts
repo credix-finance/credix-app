@@ -142,10 +142,11 @@ export const getClusterTime = multiAsync(async (connection: Connection) => {
 	return connection.getBlockTime(slot);
 });
 
-const getRunningAPY = multiAsync(
+const getWeightedAverageFinancingFee = multiAsync(
 	async (connection: Connection, wallet: typeof Wallet, globalMarketSeed: string) => {
 		const _deals = await getDealAccounts(connection, wallet, globalMarketSeed);
 		const _clusterTime = getClusterTime(connection);
+		let principalSum = new Big(0);
 
 		const [deals, clusterTime] = await Promise.all([_deals, _clusterTime]);
 
@@ -153,41 +154,25 @@ const getRunningAPY = multiAsync(
 			throw Error("Could not fetch cluster time");
 		}
 
-		const runningAPY = deals.reduce((result, deal) => {
+		const runningFinancingFee = deals.reduce((result, deal) => {
 			const status = mapDealToStatus(deal.account, clusterTime);
 			if (status === DealStatus.IN_PROGRESS) {
 				const financingFeePercentage = deal.account.financingFeePercentage;
 				const principal = new Big(deal.account.principal.toNumber());
 				const percentage = applyRatio(financingFeePercentage, principal);
-
+				principalSum = principalSum.add(principal);
 				result = result.add(percentage);
 			}
 
 			return result;
 		}, new Big(0));
 
-		return runningAPY;
-	}
-);
-
-const getAPY = multiAsync(
-	async (
-		connection: Connection,
-		wallet: typeof Wallet,
-		globalMarketSeed: string
-	): Promise<Ratio> => {
-		const _tvl = getTVL(connection, wallet, globalMarketSeed);
-		const _runningApy = getRunningAPY(connection, wallet, globalMarketSeed);
-
-		const [tvl, runningAPY] = await Promise.all([_tvl, _runningApy]);
-
-		if (tvl.eq(ZERO)) {
+		if (principalSum.toNumber() === 0) {
 			return { numerator: 0, denominator: 1 };
+		} else {
+			const ff = runningFinancingFee.div(principalSum);
+			return { numerator: ff.mul(new Big(100)).toNumber(), denominator: 100 };
 		}
-
-		const apy = runningAPY.div(tvl);
-
-		return { numerator: apy.mul(new Big(100)).toNumber(), denominator: 100 };
 	}
 );
 
@@ -330,14 +315,14 @@ const getLPTokenMintPK = multiAsync(
 export const getPoolStats = multiAsync(
 	async (connection: Connection, wallet: typeof Wallet, globalMarketSeed: string) => {
 		const _tvl = getTVL(connection, wallet, globalMarketSeed);
-		const _apy = getAPY(connection, wallet, globalMarketSeed);
+		const _ff = getWeightedAverageFinancingFee(connection, wallet, globalMarketSeed);
 		const _outstandingCredit = getOutstandingCredit(connection, wallet, globalMarketSeed);
 
-		const [TVL, APY, outstandingCredit] = await Promise.all([_tvl, _apy, _outstandingCredit]);
+		const [TVL, FF, outstandingCredit] = await Promise.all([_tvl, _ff, _outstandingCredit]);
 
 		const poolStats: PoolStats = {
 			TVL,
-			APY,
+			FF,
 			outstandingCredit,
 		};
 
