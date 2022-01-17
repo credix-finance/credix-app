@@ -12,7 +12,7 @@ COPY . .
 
 RUN yarn install --silent
 
-RUN REACT_APP_CLUSTER=$ENV_ENVIRONMENT REACT_APP_PROGRAM_ID=$ENV_PROGRAM_ADDRESS yarn run build --production
+RUN PUBLIC_URL=https://credix-finance.github.io/credix-app-$ENV_ENVIRONMENT REACT_APP_CLUSTER=$ENV_ENVIRONMENT REACT_APP_PROGRAM_ID=$ENV_PROGRAM_ADDRESS yarn run build --production
 
 RUN yarn global add serve --silent
 
