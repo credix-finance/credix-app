@@ -2,6 +2,7 @@
   "name": "credix-app",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://credix-finance.github.io/credix-app-devnet",
   "dependencies": {
     "@civic/solana-gateway-react": "^0.4.6",
     "@craco/craco": "^6.4.0",
