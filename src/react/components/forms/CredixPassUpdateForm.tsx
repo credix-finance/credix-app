@@ -3,6 +3,7 @@ import { useAnchorWallet, useConnection } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
 import { getCredixPassInfo, updateCredixPass } from "client/api";
 import React, { useCallback, useEffect, useState } from "react";
+import { useMarketSeed } from "react/hooks/useMarketSeed";
 import { useNotify } from "react/hooks/useNotify";
 import { CredixPass } from "types/program.types";
 import { serialAsync } from "utils/async.utils";
@@ -19,17 +20,19 @@ export const CredixPassUpdateForm = () => {
 
 	const [passHolder, setPassHolder] = useState<string>("");
 	const [credixPass, setCredixPass] = useState<CredixPass | null>();
+	const marketSeed = useMarketSeed();
 
 	const fetchAndSetPassData = useCallback(
 		async (publicKey: PublicKey) => {
 			const credixPass = await getCredixPassInfo(
 				publicKey,
 				connection.connection,
-				wallet as Wallet
+				wallet as typeof Wallet,
+				marketSeed
 			);
 			setCredixPass(credixPass);
 		},
-		[connection.connection, wallet]
+		[connection.connection, wallet, marketSeed]
 	);
 
 	useEffect(() => {
@@ -59,7 +62,8 @@ export const CredixPassUpdateForm = () => {
 				isUnderwriter,
 				isBorrower,
 				connection.connection,
-				wallet as Wallet
+				wallet as typeof Wallet,
+				marketSeed
 			);
 			notify("success", "CredixPass updated successfully");
 		} catch (err: any) {

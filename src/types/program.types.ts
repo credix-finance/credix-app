@@ -15,10 +15,10 @@ export type CredixTypes = AnchorTypes<
 
 export type CredixProgram = CredixTypes["Program"];
 
-export type Deal = CredixTypes["Accounts"]["Deal"];
-export type CredixPass = CredixTypes["Accounts"]["CredixPass"];
-export type GlobalMarketState = CredixTypes["Accounts"]["GlobalMarketState"];
-export type BorrowerInfo = CredixTypes["Accounts"]["BorrowerInfo"];
+export type Deal = CredixTypes["Accounts"]["deal"];
+export type CredixPass = CredixTypes["Accounts"]["credixPass"];
+export type GlobalMarketState = CredixTypes["Accounts"]["globalMarketState"];
+export type BorrowerInfo = CredixTypes["Accounts"]["borrowerInfo"];
 
 export type Ratio = {
 	numerator: number;
@@ -32,7 +32,7 @@ export type RepaymentType = PrincipalRepaymentType | InterestRepaymentType;
 
 export interface PoolStats {
 	TVL: Big;
-	APY: Ratio;
+	FF: Ratio;
 	outstandingCredit: Big;
 }
 

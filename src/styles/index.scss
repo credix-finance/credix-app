@@ -17,6 +17,17 @@ h2 {
 	height: 100vh;
 }
 
+.pass-guard-container {
+	width: 100%;
+	display: flex;
+	position: absolute;
+	top: 70px;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+	height: calc(100% - 110px);
+}
+
 .pool-and-stake-withdraw-wrapper {
 	display: flex;
 	height: calc(100% - 110px);

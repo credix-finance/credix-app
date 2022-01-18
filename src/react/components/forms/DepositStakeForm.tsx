@@ -9,6 +9,7 @@ import { depositInvestment } from "client/api";
 import { Big } from "big.js";
 import { formatUIAmount, toProgramAmount, toUIAmount } from "utils/format.utils";
 import { useIntl } from "react-intl";
+import { useMarketSeed } from "react/hooks/useMarketSeed";
 
 export const DepositStakeForm = () => {
 	const intl = useIntl();
@@ -17,6 +18,7 @@ export const DepositStakeForm = () => {
 	const [stake, setStake] = useState<Big | undefined>();
 	const notify = useNotify();
 	const triggerRefresh = useRefresh();
+	const marketSeed = useMarketSeed();
 
 	const onSubmit = serialAsync(async (e: React.SyntheticEvent) => {
 		e.preventDefault();
@@ -26,7 +28,7 @@ export const DepositStakeForm = () => {
 		}
 
 		try {
-			await depositInvestment(stake, connection.connection, wallet as Wallet);
+			await depositInvestment(stake, connection.connection, wallet as typeof Wallet, marketSeed);
 			notify(
 				"success",
 				`Successful deposit of ${formatUIAmount(stake, Big.roundDown, intl.formatNumber)} USDC`

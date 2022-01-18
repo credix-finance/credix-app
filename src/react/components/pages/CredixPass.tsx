@@ -9,18 +9,22 @@ import "../../../styles/credixpass.scss";
 import { Path } from "types/navigation.types";
 import { CredixPassUpdateForm } from "@components/forms/CredixPassUpdateForm";
 import { CredixButton } from "@components/buttons/CredixButton";
+import { useMarketSeed } from "react/hooks/useMarketSeed";
+import { navigationHelper } from "utils/navigation.utils";
 
 export const CredixPassPage = () => {
 	const wallet = useAnchorWallet();
 	const navigate = useNavigate();
 	const [issueCredixPass, setIssueCredixPass] = useState<boolean>(true);
+	const marketSeed = useMarketSeed();
+
 	useEffect(() => {
 		if (wallet?.publicKey) {
 			if (!config.managementKeys.includes(wallet.publicKey.toString())) {
-				navigate(Path.OVERVIEW);
+				navigationHelper(navigate, Path.OVERVIEW, marketSeed);
 			}
 		}
-	}, [wallet?.publicKey, navigate]);
+	}, [wallet?.publicKey, navigate, marketSeed]);
 
 	return (
 		<AppLayout>

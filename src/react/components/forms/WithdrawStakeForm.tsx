@@ -9,6 +9,7 @@ import { formatUIAmount, toProgramAmount, toUIAmount } from "utils/format.utils"
 import { getFee, ZERO } from "utils/math.utils";
 import { getWithdrawFeePercentage, withdrawInvestment } from "client/api";
 import { useIntl } from "react-intl";
+import { useMarketSeed } from "react/hooks/useMarketSeed";
 
 export const WithdrawStakeForm = () => {
 	const intl = useIntl();
@@ -17,6 +18,7 @@ export const WithdrawStakeForm = () => {
 	const [withdrawAmount, setWithdrawAmount] = useState<Big | undefined>();
 	const notify = useNotify();
 	const triggerRefresh = useRefresh();
+	const marketSeed = useMarketSeed();
 
 	const onSubmit = async (e: React.SyntheticEvent) => {
 		e.preventDefault();
@@ -27,12 +29,18 @@ export const WithdrawStakeForm = () => {
 
 		const withdrawFeePercentage = await getWithdrawFeePercentage(
 			connection.connection,
-			wallet as Wallet
+			wallet as typeof Wallet,
+			marketSeed
 		);
 		const withdrawFee = getFee(withdrawAmount, withdrawFeePercentage);
 
 		try {
-			await withdrawInvestment(withdrawAmount, connection.connection, wallet as Wallet);
+			await withdrawInvestment(
+				withdrawAmount,
+				connection.connection,
+				wallet as typeof Wallet,
+				marketSeed
+			);
 			notify(
 				"success",
 				`Successful withdraw of ${formatUIAmount(

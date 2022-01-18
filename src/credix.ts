@@ -46,7 +46,7 @@ export type Credix = {
           "isSigner": true
         },
         {
-          "name": "usdcMintAccount",
+          "name": "baseMintAccount",
           "isMut": false,
           "isSigner": false
         },
@@ -147,7 +147,7 @@ export type Credix = {
           "isSigner": false
         },
         {
-          "name": "usdcMintAccount",
+          "name": "baseMintAccount",
           "isMut": false,
           "isSigner": false
         },
@@ -311,7 +311,7 @@ export type Credix = {
           "isSigner": false
         },
         {
-          "name": "usdcMintAccount",
+          "name": "baseMintAccount",
           "isMut": false,
           "isSigner": false
         },
@@ -387,7 +387,7 @@ export type Credix = {
           "isSigner": false
         },
         {
-          "name": "usdcMintAccount",
+          "name": "baseMintAccount",
           "isMut": false,
           "isSigner": false
         },
@@ -469,7 +469,7 @@ export type Credix = {
           "isSigner": false
         },
         {
-          "name": "usdcMintAccount",
+          "name": "baseMintAccount",
           "isMut": false,
           "isSigner": false
         },
@@ -486,7 +486,7 @@ export type Credix = {
       ],
       "args": [
         {
-          "name": "usdcWithdrawalAmount",
+          "name": "baseWithdrawalAmount",
           "type": "u64"
         }
       ]
@@ -614,7 +614,7 @@ export type Credix = {
   ],
   "accounts": [
     {
-      "name": "BorrowerInfo",
+      "name": "borrowerInfo",
       "type": {
         "kind": "struct",
         "fields": [
@@ -630,7 +630,7 @@ export type Credix = {
       }
     },
     {
-      "name": "Deal",
+      "name": "deal",
       "type": {
         "kind": "struct",
         "fields": [
@@ -706,7 +706,7 @@ export type Credix = {
       }
     },
     {
-      "name": "GlobalMarketState",
+      "name": "globalMarketState",
       "type": {
         "kind": "struct",
         "fields": [
@@ -715,16 +715,8 @@ export type Credix = {
             "type": "publicKey"
           },
           {
-            "name": "liquidityPoolTokenAccount",
+            "name": "liquidityPoolTokenMintAccount",
             "type": "publicKey"
-          },
-          {
-            "name": "liquidityPoolUsdcAmount",
-            "type": "u64"
-          },
-          {
-            "name": "liquidityPoolDecimals",
-            "type": "u8"
           },
           {
             "name": "lpTokenMintAccount",
@@ -753,7 +745,7 @@ export type Credix = {
             }
           },
           {
-            "name": "withrawalFee",
+            "name": "withdrawalFee",
             "type": {
               "defined": "Ratio"
             }
@@ -766,7 +758,7 @@ export type Credix = {
       }
     },
     {
-      "name": "CredixPass",
+      "name": "credixPass",
       "type": {
         "kind": "struct",
         "fields": [
@@ -954,7 +946,7 @@ export const IDL: Credix = {
           "isSigner": true
         },
         {
-          "name": "usdcMintAccount",
+          "name": "baseMintAccount",
           "isMut": false,
           "isSigner": false
         },
@@ -1055,7 +1047,7 @@ export const IDL: Credix = {
           "isSigner": false
         },
         {
-          "name": "usdcMintAccount",
+          "name": "baseMintAccount",
           "isMut": false,
           "isSigner": false
         },
@@ -1219,7 +1211,7 @@ export const IDL: Credix = {
           "isSigner": false
         },
         {
-          "name": "usdcMintAccount",
+          "name": "baseMintAccount",
           "isMut": false,
           "isSigner": false
         },
@@ -1295,7 +1287,7 @@ export const IDL: Credix = {
           "isSigner": false
         },
         {
-          "name": "usdcMintAccount",
+          "name": "baseMintAccount",
           "isMut": false,
           "isSigner": false
         },
@@ -1377,7 +1369,7 @@ export const IDL: Credix = {
           "isSigner": false
         },
         {
-          "name": "usdcMintAccount",
+          "name": "baseMintAccount",
           "isMut": false,
           "isSigner": false
         },
@@ -1394,7 +1386,7 @@ export const IDL: Credix = {
       ],
       "args": [
         {
-          "name": "usdcWithdrawalAmount",
+          "name": "baseWithdrawalAmount",
           "type": "u64"
         }
       ]
@@ -1522,7 +1514,7 @@ export const IDL: Credix = {
   ],
   "accounts": [
     {
-      "name": "BorrowerInfo",
+      "name": "borrowerInfo",
       "type": {
         "kind": "struct",
         "fields": [
@@ -1538,7 +1530,7 @@ export const IDL: Credix = {
       }
     },
     {
-      "name": "Deal",
+      "name": "deal",
       "type": {
         "kind": "struct",
         "fields": [
@@ -1614,7 +1606,7 @@ export const IDL: Credix = {
       }
     },
     {
-      "name": "GlobalMarketState",
+      "name": "globalMarketState",
       "type": {
         "kind": "struct",
         "fields": [
@@ -1623,16 +1615,8 @@ export const IDL: Credix = {
             "type": "publicKey"
           },
           {
-            "name": "liquidityPoolTokenAccount",
+            "name": "liquidityPoolTokenMintAccount",
             "type": "publicKey"
-          },
-          {
-            "name": "liquidityPoolUsdcAmount",
-            "type": "u64"
-          },
-          {
-            "name": "liquidityPoolDecimals",
-            "type": "u8"
           },
           {
             "name": "lpTokenMintAccount",
@@ -1661,7 +1645,7 @@ export const IDL: Credix = {
             }
           },
           {
-            "name": "withrawalFee",
+            "name": "withdrawalFee",
             "type": {
               "defined": "Ratio"
             }
@@ -1674,7 +1658,7 @@ export const IDL: Credix = {
       }
     },
     {
-      "name": "CredixPass",
+      "name": "credixPass",
       "type": {
         "kind": "struct",
         "fields": [

@@ -29,6 +29,8 @@ import { Big } from "big.js";
 import { getFee, min, ZERO } from "utils/math.utils";
 import { formatRatio, formatUIAmount, toProgramAmount, toUIAmount } from "utils/format.utils";
 import { useIntl } from "react-intl";
+import { useMarketSeed } from "react/hooks/useMarketSeed";
+import { navigationHelper } from "utils/navigation.utils";
 
 export const DealOverview = () => {
 	const intl = useIntl();
@@ -45,6 +47,7 @@ export const DealOverview = () => {
 	const notify = useNotify();
 	const params = useParams();
 	const navigate = useNavigate();
+	const marketSeed = useMarketSeed();
 
 	const fetchDealData = useCallback(async () => {
 		if (!borrower) {
@@ -54,9 +57,10 @@ export const DealOverview = () => {
 		const _clusterTime = getClusterTime(connection.connection);
 		const _dealData = getDealAccountData(
 			connection.connection,
-			wallet as Wallet,
+			wallet as typeof Wallet,
 			borrower,
-			dealNumber
+			dealNumber,
+			marketSeed
 		);
 
 		const [clusterTime, deal] = await Promise.all([_clusterTime, _dealData]);
@@ -77,7 +81,7 @@ export const DealOverview = () => {
 
 		const daysRemaining = getDaysRemaining(deal, clusterTime, dealStatus);
 		setDaysRemaining(daysRemaining);
-	}, [connection.connection, wallet, borrower, dealNumber]);
+	}, [connection.connection, wallet, borrower, dealNumber, marketSeed]);
 
 	const triggerRefresh = useRefresh(fetchDealData);
 
@@ -126,14 +130,14 @@ export const DealOverview = () => {
 		try {
 			const borrowerKey = new PublicKey(params.borrower || "");
 			if (!borrowerKey.equals(wallet.publicKey)) {
-				navigate(Path.DEALS);
+				navigationHelper(navigate, Path.DEALS, marketSeed);
 				return;
 			}
 			setBorrower(borrowerKey);
 		} catch (e) {
 			navigate(Path.NOT_FOUND);
 		}
-	}, [params.borrower, navigate, wallet]);
+	}, [params.borrower, navigate, wallet, marketSeed]);
 
 	useEffect(() => {
 		if (wallet?.publicKey && connection.connection) {
@@ -167,7 +171,8 @@ export const DealOverview = () => {
 				repaymentTypeObj,
 				dealNumber,
 				connection.connection,
-				wallet as Wallet
+				wallet as typeof Wallet,
+				marketSeed
 			);
 			const showFeeNotification = repaymentSelectValue === "interest";
 
@@ -180,7 +185,8 @@ export const DealOverview = () => {
 
 			const interestFeePercentage = await getInterestFeePercentage(
 				connection.connection,
-				wallet as Wallet
+				wallet as typeof Wallet,
+				marketSeed
 			);
 
 			const fee = getFee(repaidAmount, interestFeePercentage);
@@ -285,7 +291,10 @@ export const DealOverview = () => {
 							value={repaymentSelectValue}
 							className="repayment-select credix-button MuiButton-root"
 						>
-							<MenuItem value="principal" disabled={!deal || !getPrincipalToRepay(deal)}>
+							<MenuItem
+								value="principal"
+								disabled={!deal || !getPrincipalToRepay(deal) || !!getInterestToRepay(deal)}
+							>
 								Principal
 							</MenuItem>
 							<MenuItem value="interest" disabled={!deal || !getInterestToRepay(deal)}>

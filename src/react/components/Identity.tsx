@@ -7,26 +7,32 @@ import { PublicKey } from "@solana/web3.js";
 import { config } from "../../config";
 import { CivicHeaderSection } from "@components/CivicHeaderSection";
 import { SolanaCluster } from "../../types/solana.types";
+import { useMarketSeed } from "react/hooks/useMarketSeed";
 
 export const Identity = () => {
 	const wallet = useAnchorWallet();
 	const connection = useConnection();
+	const marketSeed = useMarketSeed();
 
 	const [gatekeeperNetwork, setGatekeeperNetwork] = useState<PublicKey>();
 
 	useEffect(() => {
 		const updateGatekeeperNetwork = async () => {
-			const gatekeeperNetwork = await getGatekeeperNetwork(connection.connection, wallet as Wallet);
+			const gatekeeperNetwork = await getGatekeeperNetwork(
+				connection.connection,
+				wallet as typeof Wallet,
+				marketSeed
+			);
 			setGatekeeperNetwork(gatekeeperNetwork);
 		};
 
 		if (wallet?.publicKey && connection.connection) {
 			updateGatekeeperNetwork();
 		}
-	}, [connection.connection, wallet]);
+	}, [connection.connection, wallet, marketSeed]);
 
 	const mapClusterNameToStage = (clusterName: SolanaCluster) => {
-		switch(clusterName) {
+		switch (clusterName) {
 			case SolanaCluster.LOCALNET: {
 				return "local";
 			}
@@ -50,9 +56,7 @@ export const Identity = () => {
 				gatekeeperNetwork={gatekeeperNetwork}
 				clusterUrl={config.clusterConfig.RPCEndpoint}
 			>
-				{ gatekeeperNetwork &&
-					<CivicHeaderSection gatekeeperNetwork={gatekeeperNetwork} />
-				}
+				{gatekeeperNetwork && <CivicHeaderSection gatekeeperNetwork={gatekeeperNetwork} />}
 			</GatewayProvider>
 		</>
 	);
