@@ -37,26 +37,32 @@ jobs:
     needs: [ci]
     environment:
       name: devnet
-      url: 'http://app.dev.credix.finance'
+      url: https://app.dev.credix.finance
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@v0
+      - name: Install and build
+        run : |
+          yarn install --silent
+          REACT_APP_CLUSTER=devnet REACT_APP_PROGRAM_ID=${{ secrets.PROGRAM_ADDRESS }} yarn run build --production
+      - name: Checkout target repository
+        uses: actions/checkout@v2
         with:
-          project_id: ${{ secrets.GCP_PROJECT_ID }}
-          service_account_key: ${{ secrets.GCP_SA_KEY }}
-          export_default_credentials: true
-      - name: Authenticate with registry
-        run: gcloud auth configure-docker -q
-      - name: Build Docker image
-        run: docker build . --build-arg PROGRAM_ADDRESS=${{ secrets.PROGRAM_ADDRESS }} --build-arg ENVIRONMENT=devnet -t ${{ env.REGISTRY }}/${{ secrets.GCP_PROJECT_ID }}/${{ env.REPOSITORY_NAME }}:latest
-      - name: Push Docker image
-        run: docker push ${{ env.REGISTRY }}/${{ secrets.GCP_PROJECT_ID }}/${{ env.REPOSITORY_NAME }}:latest
-      - name: Deploy to Google App Engine
+          repository: credix-finance/credix-app-devnet
+          path: 'deploy'
+          token: ${{ secrets.PAT }}
+      - name: Set GitHub Actions as commit author
         run: |
-          gcloud config set project ${{ secrets.GCP_PROJECT_ID }}
-          gcloud app deploy --quiet --image-url ${{ env.REGISTRY }}/${{ secrets.GCP_PROJECT_ID }}/${{ env.REPOSITORY_NAME }}:latest
+          git config --global user.name github-actions
+          git config --global user.email github-actions@github.com
+      - name: Push files to target repository
+        run: |
+          cp -r build/* deploy
+          cd deploy
+          echo ${{ secrets.DEPLOY_URL }} > CNAME
+          git add .
+          git commit -m $GITHUB_SHA
+          git push
 
   cd-mainnet:
     runs-on: ubuntu-latest
@@ -64,23 +70,29 @@ jobs:
     needs: [ci]
     environment:
       name: mainnet
-      url: 'http://app.credix.finance'
+      url: https://app.credix.finance
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
-      - name: Set up Cloud SDK
-        uses: google-github-actions/setup-gcloud@master
+      - name: Install and build
+        run : |
+          yarn install --silent
+          REACT_APP_CLUSTER=mainnet-beta REACT_APP_PROGRAM_ID=${{ secrets.PROGRAM_ADDRESS }} yarn run build --production
+      - name: Checkout target repository
+        uses: actions/checkout@v2
         with:
-          project_id: ${{ secrets.GCP_PROJECT_ID }}
-          service_account_key: ${{ secrets.GCP_SA_KEY }}
-          export_default_credentials: true
-      - name: Authenticate with registry
-        run: gcloud auth configure-docker -q
-      - name: Build Docker image
-        run: docker build . --build-arg PROGRAM_ADDRESS=${{ secrets.PROGRAM_ADDRESS }} --build-arg ENVIRONMENT=devnet -t ${{ env.REGISTRY }}/${{ secrets.GCP_PROJECT_ID }}/${{ env.REPOSITORY_NAME }}:latest
-      - name: Push Docker image
-        run: docker push ${{ env.REGISTRY }}/${{ secrets.GCP_PROJECT_ID }}/${{ env.REPOSITORY_NAME }}:latest
-      - name: Deploy to Google App Engine
+          repository: credix-finance/credix-app-mainnet
+          path: 'deploy'
+          token: ${{ secrets.PAT }}
+      - name: Set GitHub Actions as commit author
         run: |
-          gcloud config set project ${{ secrets.GCP_PROJECT_ID }}
-          gcloud app deploy --quiet --image-url ${{ env.REGISTRY }}/${{ secrets.GCP_PROJECT_ID }}/${{ env.REPOSITORY_NAME }}:latest
+          git config --global user.name github-actions
+          git config --global user.email github-actions@github.com
+      - name: Push files to target repository
+        run: |
+          cp -r build/* deploy
+          cd deploy
+          echo ${{ secrets.DEPLOY_URL }} > CNAME
+          git add .
+          git commit -m $GITHUB_SHA
+          git push
