@@ -8,7 +8,7 @@ import { IDL } from "credix";
 const localnetConfig: ClusterConfig = {
 	name: SolanaCluster.LOCALNET,
 	RPCEndpoint: RPCEndpoint.LOCALNET,
-	programId: new PublicKey("DnKntCMeFpwFMpegCsbYdmLhQaKULPbAmcivfX917PNL"),
+	programId: new PublicKey("CRDx2YkdtYtGZXGHZ59wNv1EwKHQndnRc1gT4p8i2vPX"),
 	gatewayProgramId: new PublicKey("gatem74V238djXdzWnJf94Wo1DcnuGkfijbf3AuBhfs"),
 };
 
