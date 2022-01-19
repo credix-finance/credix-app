@@ -263,7 +263,7 @@ const getGatewayToken = multiAsync(
 		const gatewayToken = await findGatewayToken(connection, userPK, gatekeeperNetwork);
 
 		if (!gatewayToken) {
-			throw Error("No valid Civic gateway tokens found");
+			throw Error("No valid Civic gateway token found");
 		}
 
 		return gatewayToken;
