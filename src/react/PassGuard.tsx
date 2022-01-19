@@ -29,8 +29,6 @@ export const PassGuard = (props: Props) => {
 		}
 
 		if (wallet.connected && wallet.publicKey) {
-			console.log("marketSeed", marketSeed);
-
 			const credixPass = await getCredixPassInfo(
 				wallet.publicKey,
 				connection.connection,
