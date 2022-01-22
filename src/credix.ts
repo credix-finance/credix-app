@@ -520,12 +520,12 @@ export type Credix = {
           "isSigner": false
         },
         {
-          "name": "systemProgram",
+          "name": "rent",
           "isMut": false,
           "isSigner": false
         },
         {
-          "name": "rent",
+          "name": "systemProgram",
           "isMut": false,
           "isSigner": false
         }
@@ -983,7 +983,7 @@ export type Credix = {
           "index": false
         },
         {
-          "name": "lpTokenPrice",
+          "name": "investorLpTokenAmount",
           "type": "u64",
           "index": false
         },
@@ -1028,7 +1028,7 @@ export type Credix = {
           "index": false
         },
         {
-          "name": "lpTokenPrice",
+          "name": "investorLpTokenAmount",
           "type": "u64",
           "index": false
         },
@@ -1711,12 +1711,12 @@ export const IDL: Credix = {
           "isSigner": false
         },
         {
-          "name": "systemProgram",
+          "name": "rent",
           "isMut": false,
           "isSigner": false
         },
         {
-          "name": "rent",
+          "name": "systemProgram",
           "isMut": false,
           "isSigner": false
         }
@@ -2174,7 +2174,7 @@ export const IDL: Credix = {
           "index": false
         },
         {
-          "name": "lpTokenPrice",
+          "name": "investorLpTokenAmount",
           "type": "u64",
           "index": false
         },
@@ -2219,7 +2219,7 @@ export const IDL: Credix = {
           "index": false
         },
         {
-          "name": "lpTokenPrice",
+          "name": "investorLpTokenAmount",
           "type": "u64",
           "index": false
         },
