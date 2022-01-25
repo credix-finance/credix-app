@@ -12,8 +12,7 @@ import {
 	findCredixPassPDA,
 } from "./pda";
 import { newCredixProgram } from "./program";
-import { dataToGatewayToken, GatewayTokenData } from "@identity.com/solana-gateway-ts";
-import { config } from "../config";
+import { findGatewayToken } from "@identity.com/solana-gateway-ts";
 import { applyRatio, ZERO } from "utils/math.utils";
 import Big from "big.js";
 import Fraction from "fraction.js";
@@ -256,43 +255,18 @@ const getGatewayToken = multiAsync(
 		userPK: PublicKey,
 		globalMarketSeed: string
 	) => {
-		// used from node_modules/@identity.com/solana-gateway-ts/src/lib `findGatewayTokens`
-		// should be able to plug in our own program id in order to make it work locally
-		const GATEWAY_TOKEN_ACCOUNT_OWNER_FIELD_OFFSET = 2;
-		const GATEWAY_TOKEN_ACCOUNT_GATEKEEPER_NETWORK_FIELD_OFFSET = 35;
 		const gatekeeperNetwork = await getGatekeeperNetwork(
 			connection,
 			wallet as typeof Wallet,
 			globalMarketSeed
 		);
-		const ownerFilter = {
-			memcmp: {
-				offset: GATEWAY_TOKEN_ACCOUNT_OWNER_FIELD_OFFSET,
-				bytes: userPK.toBase58(),
-			},
-		};
-		const gatekeeperNetworkFilter = {
-			memcmp: {
-				offset: GATEWAY_TOKEN_ACCOUNT_GATEKEEPER_NETWORK_FIELD_OFFSET,
-				bytes: gatekeeperNetwork.toBase58(),
-			},
-		};
-		const filters = [ownerFilter, gatekeeperNetworkFilter];
-		const accountsResponse = await connection.getProgramAccounts(
-			config.clusterConfig.gatewayProgramId,
-			{
-				filters,
-			}
-		);
+		const gatewayToken = await findGatewayToken(connection, userPK, gatekeeperNetwork);
 
-		if (accountsResponse.length === 0) {
-			throw Error("No valid Civic gateway tokens found");
+		if (!gatewayToken) {
+			throw Error("No valid Civic gateway token found");
 		}
 
-		return dataToGatewayToken(
-			GatewayTokenData.fromAccount(accountsResponse[0].account.data as Buffer),
-			accountsResponse[0].pubkey
-		);
+		return gatewayToken;
 	}
 );
 
