@@ -138,7 +138,8 @@ export const getGatekeeperNetwork = multiAsync(
 
 export const getClusterTime = multiAsync(async (connection: Connection) => {
 	const slot = await connection.getSlot();
-	return connection.getBlockTime(slot);
+	// * 1000 because now() returns milliseconds
+	return connection.getBlockTime(slot).catch(() => Date.now() * 1000);
 });
 
 const getWeightedAverageFinancingFee = multiAsync(
