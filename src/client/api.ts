@@ -150,7 +150,6 @@ export const getClusterTime = multiAsync(async (connection: Connection) => {
 			})
 			// * 1000 because now() returns milliseconds
 			.catch(() => Date.now() * 1000)
-			.finally()
 	);
 });
 
