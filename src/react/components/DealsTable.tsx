@@ -25,7 +25,7 @@ export const DealsTable = (props: Props) => {
 	const wallet = useAnchorWallet();
 	const connection = useConnection();
 	const [deals, setDeals] = useState<any>([]);
-	const [clusterTime, setClusterTime] = useState<number | null>(null);
+	const [clusterTime, setClusterTime] = useState<number>(Date.now() * 1000);
 	const navigate = useNavigate();
 	const marketSeed = useMarketSeed();
 
@@ -62,9 +62,8 @@ export const DealsTable = (props: Props) => {
 				? new Date(deal.goLiveAt.mul(new BN(1000)).toNumber())
 				: undefined;
 
-		const dealStatus = clusterTime && mapDealToStatus(deal, clusterTime);
-		const daysRemaining =
-			dealStatus && clusterTime && getDaysRemaining(deal, clusterTime, dealStatus);
+		const dealStatus = mapDealToStatus(deal, clusterTime);
+		const daysRemaining = getDaysRemaining(deal, clusterTime, dealStatus);
 
 		const targetRoute = Path.DEALS_DETAIL.replace(":borrower", deal.borrower.toString()).replace(
 			":deal",
@@ -105,7 +104,7 @@ export const DealsTable = (props: Props) => {
 					)}
 				</TableCell>
 				<TableCell>{`${daysRemaining} / ${deal.timeToMaturityDays}`}</TableCell>
-				<TableCell>{`${dealStatus !== null && formatDealStatus(dealStatus)}`}</TableCell>
+				<TableCell>{`${formatDealStatus(dealStatus)}`}</TableCell>
 				<TableCell>{showRepayButton && <CredixButton text="repay" />}</TableCell>
 			</TableRow>
 		);

@@ -71,11 +71,6 @@ export const DealOverview = () => {
 
 		setDeal(deal);
 
-		if (!clusterTime) {
-			// TODO: DO SOMETHING
-			throw Error("Could not fetch cluster time");
-		}
-
 		const dealStatus = mapDealToStatus(deal, clusterTime);
 		setDealStatus(dealStatus);
 
