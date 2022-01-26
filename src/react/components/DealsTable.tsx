@@ -112,8 +112,8 @@ export const DealsTable = (props: Props) => {
 
 	return (
 		<div style={{ border: "1px solid black", maxWidth: "90vw" }}>
-			<TableContainer>
-				<Table>
+			<TableContainer sx={{ maxHeight: "60vh" }}>
+				<Table stickyHeader>
 					<TableHead>
 						<TableRow>
 							<TableCell>Deal Name</TableCell>
