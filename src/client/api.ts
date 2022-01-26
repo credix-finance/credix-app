@@ -139,7 +139,17 @@ export const getGatekeeperNetwork = multiAsync(
 export const getClusterTime = multiAsync(async (connection: Connection) => {
 	const slot = await connection.getSlot();
 	// * 1000 because now() returns milliseconds
-	return connection.getBlockTime(slot).catch(() => Date.now() * 1000);
+	return connection
+		.getBlockTime(slot)
+		.then((blockTime) => {
+			if (!blockTime) {
+				throw Error("Could not fetch cluster time");
+			}
+
+			return blockTime;
+		})
+		.catch(() => Date.now() * 1000)
+		.finally();
 });
 
 const getWeightedAverageFinancingFee = multiAsync(
@@ -149,10 +159,6 @@ const getWeightedAverageFinancingFee = multiAsync(
 		let principalSum = new Big(0);
 
 		const [deals, clusterTime] = await Promise.all([_deals, _clusterTime]);
-
-		if (!clusterTime) {
-			throw Error("Could not fetch cluster time");
-		}
 
 		const runningFinancingFee = deals.reduce((result, deal) => {
 			const status = mapDealToStatus(deal.account, clusterTime);
