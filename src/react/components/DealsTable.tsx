@@ -40,7 +40,7 @@ export const DealsTable = (props: Props) => {
 
 		const [deals, clusterTime] = await Promise.all([_deals, _clusterTime]);
 
-		setDeals(deals);
+		setDeals([...deals, ...deals]);
 		setClusterTime(clusterTime);
 	}, [connection.connection, wallet, props.borrower, marketSeed]);
 
@@ -112,8 +112,8 @@ export const DealsTable = (props: Props) => {
 
 	return (
 		<div style={{ border: "1px solid black", maxWidth: "90vw" }}>
-			<TableContainer>
-				<Table>
+			<TableContainer sx={{ maxHeight: "60vh" }}>
+				<Table stickyHeader>
 					<TableHead>
 						<TableRow>
 							<TableCell>Deal Name</TableCell>
