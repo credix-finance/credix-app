@@ -35,6 +35,28 @@
 	flex-wrap: wrap;
 }
 
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+  -webkit-appearance: none; 
+  margin: 0; 
+}
+
+.deposit-withdraw-row {
+	position: relative; 
+}
+
+.max-button {
+	position: absolute; 
+	z-index: 3 !important;
+	bottom: 2px; 
+	font-size: 12px; 
+	left: 214px; 
+	width: 30px; 
+	align-self: flex-end; 
+	margin-right: 10px; 
+	cursor: pointer; 
+}
+
 .stake-form-column {
 	flex-direction: column;
 	align-items: flex-start;
