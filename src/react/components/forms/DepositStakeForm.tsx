@@ -28,7 +28,21 @@ export const DepositStakeForm = () => {
 		}
 
 		try {
-			await depositInvestment(stake, connection.connection, wallet as typeof Wallet, marketSeed);
+			const tx = depositInvestment(
+				stake,
+				connection.connection,
+				wallet as typeof Wallet,
+				marketSeed
+			);
+			notify(
+				"success",
+				`Deposit of ${formatUIAmount(
+					stake,
+					Big.roundDown,
+					intl.formatNumber
+				)} USDC is being processed`
+			);
+			await tx;
 			notify(
 				"success",
 				`Successful deposit of ${formatUIAmount(stake, Big.roundDown, intl.formatNumber)} USDC`

@@ -35,12 +35,25 @@ export const WithdrawStakeForm = () => {
 		const withdrawFee = getFee(withdrawAmount, withdrawFeePercentage);
 
 		try {
-			await withdrawInvestment(
+			const tx = withdrawInvestment(
 				withdrawAmount,
 				connection.connection,
 				wallet as typeof Wallet,
 				marketSeed
 			);
+			notify(
+				"success",
+				`Deposit of ${formatUIAmount(
+					withdrawAmount,
+					Big.roundDown,
+					intl.formatNumber
+				)} USDC with a ${formatUIAmount(
+					withdrawFee,
+					Big.roundDown,
+					intl.formatNumber
+				)} USDC fee is being processed`
+			);
+			await tx;
 			notify(
 				"success",
 				`Successful withdraw of ${formatUIAmount(
