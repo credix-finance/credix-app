@@ -10,6 +10,7 @@ import { Big } from "big.js";
 import { formatUIAmount, toProgramAmount, toUIAmount } from "utils/format.utils";
 import { useIntl } from "react-intl";
 import { useMarketSeed } from "react/hooks/useMarketSeed";
+import { useSnackbar } from "notistack";
 
 export const DepositStakeForm = () => {
 	const intl = useIntl();
@@ -17,6 +18,7 @@ export const DepositStakeForm = () => {
 	const connection = useConnection();
 	const [stake, setStake] = useState<Big | undefined>();
 	const notify = useNotify();
+	const { closeSnackbar } = useSnackbar();
 	const triggerRefresh = useRefresh();
 	const marketSeed = useMarketSeed();
 
@@ -28,25 +30,29 @@ export const DepositStakeForm = () => {
 		}
 
 		try {
-			const tx = depositInvestment(
+			const txPromise = depositInvestment(
 				stake,
 				connection.connection,
 				wallet as typeof Wallet,
 				marketSeed
 			);
-			notify(
-				"success",
+			const snackbarKey = notify(
+				"info",
 				`Deposit of ${formatUIAmount(
 					stake,
 					Big.roundDown,
 					intl.formatNumber
-				)} USDC is being processed`
+				)} USDC is being processed`,
+				undefined,
+				true
 			);
-			await tx;
+			const tx = await txPromise;
 			notify(
 				"success",
-				`Successful deposit of ${formatUIAmount(stake, Big.roundDown, intl.formatNumber)} USDC`
+				`Successful deposit of ${formatUIAmount(stake, Big.roundDown, intl.formatNumber)} USDC`,
+				tx
 			);
+			closeSnackbar(snackbarKey);
 			triggerRefresh();
 		} catch (e: any) {
 			notify("error", `Transaction failed! ${e?.message}`);

@@ -10,12 +10,14 @@ import { getFee, ZERO } from "utils/math.utils";
 import { getWithdrawFeePercentage, withdrawInvestment } from "client/api";
 import { useIntl } from "react-intl";
 import { useMarketSeed } from "react/hooks/useMarketSeed";
+import { useSnackbar } from "notistack";
 
 export const WithdrawStakeForm = () => {
 	const intl = useIntl();
 	const wallet = useAnchorWallet();
 	const connection = useConnection();
 	const [withdrawAmount, setWithdrawAmount] = useState<Big | undefined>();
+	const { closeSnackbar } = useSnackbar();
 	const notify = useNotify();
 	const triggerRefresh = useRefresh();
 	const marketSeed = useMarketSeed();
@@ -35,15 +37,15 @@ export const WithdrawStakeForm = () => {
 		const withdrawFee = getFee(withdrawAmount, withdrawFeePercentage);
 
 		try {
-			const tx = withdrawInvestment(
+			const txPromise = withdrawInvestment(
 				withdrawAmount,
 				connection.connection,
 				wallet as typeof Wallet,
 				marketSeed
 			);
-			notify(
-				"success",
-				`Deposit of ${formatUIAmount(
+			const snackbarKey = notify(
+				"info",
+				`Withdraw of ${formatUIAmount(
 					withdrawAmount,
 					Big.roundDown,
 					intl.formatNumber
@@ -51,17 +53,21 @@ export const WithdrawStakeForm = () => {
 					withdrawFee,
 					Big.roundDown,
 					intl.formatNumber
-				)} USDC fee is being processed`
+				)} USDC fee is being processed`,
+				undefined,
+				true
 			);
-			await tx;
+			const tx = await txPromise;
 			notify(
 				"success",
 				`Successful withdraw of ${formatUIAmount(
 					withdrawAmount,
 					Big.roundDown,
 					intl.formatNumber
-				)} USDC with a ${formatUIAmount(withdrawFee, Big.roundDown, intl.formatNumber)} USDC fee`
+				)} USDC with a ${formatUIAmount(withdrawFee, Big.roundDown, intl.formatNumber)} USDC fee`,
+				tx
 			);
+			closeSnackbar(snackbarKey);
 			triggerRefresh();
 		} catch (e: any) {
 			notify("error", `Transaction failed! ${e?.message}`);

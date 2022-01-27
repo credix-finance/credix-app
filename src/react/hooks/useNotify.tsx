@@ -29,8 +29,8 @@ export function useNotify() {
 	const { enqueueSnackbar } = useSnackbar();
 
 	return useCallback(
-		(variant: VariantType, message: string, signature?: string) => {
-			enqueueSnackbar(
+		(variant: VariantType, message: string, signature?: string, persist?: boolean) => {
+			return enqueueSnackbar(
 				<span className={styles.notification}>
 					{message}
 					{signature && (
@@ -50,7 +50,8 @@ export function useNotify() {
 						vertical: "bottom",
 						horizontal: "right",
 					},
-				},
+					persist,
+				}
 			);
 		},
 		[enqueueSnackbar, styles]
