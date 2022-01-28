@@ -7,7 +7,7 @@ import { useNotify } from "../../hooks/useNotify";
 import { Big } from "big.js";
 import { formatUIAmount, toProgramAmount, toUIAmount } from "utils/format.utils";
 import { getFee, ZERO } from "utils/math.utils";
-import { getWithdrawFeePercentage, withdrawInvestment } from "client/api";
+import { getLPTokenBaseBalance, getWithdrawFeePercentage, withdrawInvestment } from "client/api";
 import { useIntl } from "react-intl";
 import { useMarketSeed } from "react/hooks/useMarketSeed";
 import { useSnackbar } from "notistack";
@@ -21,6 +21,17 @@ export const WithdrawStakeForm = () => {
 	const notify = useNotify();
 	const triggerRefresh = useRefresh();
 	const marketSeed = useMarketSeed();
+
+	const setMaxAmount = async () => {
+		if (wallet) {
+			const stake = await getLPTokenBaseBalance(
+				connection.connection,
+				wallet as typeof Wallet,
+				marketSeed
+			);
+			setWithdrawAmount(stake.round(-1, Big.roundDown));
+		}
+	};
 
 	const onSubmit = async (e: React.SyntheticEvent) => {
 		e.preventDefault();
@@ -88,23 +99,31 @@ export const WithdrawStakeForm = () => {
 	const canSubmit = () => !(wallet?.publicKey && withdrawAmount);
 
 	return (
-		<form onSubmit={onSubmit} className="row">
-			<label className="stake-input-label">
+		<div className="deposit-withdraw-row">
+			<span
+				className="max-button"
+				onClick={setMaxAmount}
+			>
+				max
+			</span>
+			<form onSubmit={onSubmit} className="row">
+				<label className="stake-input-label">
+					<input
+						placeholder={"1000"}
+						value={withdrawAmount === undefined ? "" : toUIAmount(withdrawAmount).toNumber()}
+						type="number"
+						step=".01"
+						onChange={onChange}
+						className="stake-input credix-button MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary balance-button"
+					/>
+				</label>
 				<input
-					placeholder={"1000"}
-					value={withdrawAmount === undefined ? "" : toUIAmount(withdrawAmount).toNumber()}
-					type="number"
-					step=".01"
-					onChange={onChange}
-					className="stake-input credix-button MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary balance-button"
+					disabled={canSubmit()}
+					value="Withdraw USDC"
+					type="submit"
+					className="stake-submit credix-button MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary balance-button"
 				/>
-			</label>
-			<input
-				disabled={canSubmit()}
-				value="Withdraw USDC"
-				type="submit"
-				className="stake-submit credix-button MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary balance-button"
-			/>
-		</form>
+			</form>
+		</div>
 	);
 };
