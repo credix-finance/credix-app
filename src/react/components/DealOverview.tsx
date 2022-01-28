@@ -31,6 +31,7 @@ import { formatRatio, formatUIAmount, toProgramAmount, toUIAmount } from "utils/
 import { useIntl } from "react-intl";
 import { useMarketSeed } from "react/hooks/useMarketSeed";
 import { navigationHelper } from "utils/navigation.utils";
+import { useSnackbar } from "notistack";
 
 export const DealOverview = () => {
 	const intl = useIntl();
@@ -45,6 +46,7 @@ export const DealOverview = () => {
 	const [dealNumber, setDealNumber] = useState<number>(0);
 	const [borrower, setBorrower] = useState<PublicKey | undefined>();
 	const notify = useNotify();
+	const { closeSnackbar } = useSnackbar();
 	const params = useParams();
 	const navigate = useNavigate();
 	const marketSeed = useMarketSeed();
@@ -155,13 +157,15 @@ export const DealOverview = () => {
 			return;
 		}
 
+		let snackbarKey;
 		try {
 			calculateAmountToRepay();
 			const repaymentTypeObj =
 				repaymentSelectValue === "interest"
 					? createInterestRepaymentType()
 					: createPrincipalRepaymentType();
-			await repayDeal(
+
+			const txPromise = repayDeal(
 				repaymentAmount,
 				repaymentTypeObj,
 				dealNumber,
@@ -172,7 +176,7 @@ export const DealOverview = () => {
 			const showFeeNotification = repaymentSelectValue === "interest";
 
 			const repaidAmount = min(repaymentAmount, amountToRepay);
-			const paymentNotification = `Successfully repaid ${formatUIAmount(
+			const paymentNotification = `${formatUIAmount(
 				repaidAmount,
 				Big.roundUp,
 				intl.formatNumber
@@ -191,12 +195,26 @@ export const DealOverview = () => {
 				intl.formatNumber
 			)} USDC fee`;
 
-			notify("success", `${paymentNotification}${showFeeNotification ? feeNotification : ""}`);
-
+			snackbarKey = notify(
+				"info",
+				`Repayment of ${paymentNotification}${
+					showFeeNotification ? feeNotification : ""
+				} is being processed`,
+				undefined,
+				true
+			);
+			const tx = await txPromise;
+			notify(
+				"success",
+				`Successfully repaid ${paymentNotification}${showFeeNotification ? feeNotification : ""}`,
+				tx
+			);
+			closeSnackbar(snackbarKey);
 			setRepaymentAmount(undefined);
 			triggerRefresh();
 		} catch (e: any) {
 			notify("error", `Transaction failed! ${e?.message}`);
+			closeSnackbar(snackbarKey);
 		}
 	};
 
