@@ -2,6 +2,7 @@ import React, { useCallback } from "react";
 import { Link, makeStyles } from "@material-ui/core";
 import { useSnackbar, VariantType } from "notistack";
 import LaunchIcon from "@material-ui/icons/Launch";
+import { config } from "config";
 
 const useStyles = makeStyles({
 	notification: {
@@ -29,14 +30,14 @@ export function useNotify() {
 	const { enqueueSnackbar } = useSnackbar();
 
 	return useCallback(
-		(variant: VariantType, message: string, signature?: string) => {
-			enqueueSnackbar(
+		(variant: VariantType, message: string, signature?: string, persist?: boolean) => {
+			return enqueueSnackbar(
 				<span className={styles.notification}>
 					{message}
 					{signature && (
 						<Link
 							className={styles.link}
-							href={`https://explorer.solana.com/tx/${signature}?cluster=devnet`}
+							href={`https://explorer.solana.com/tx/${signature}?cluster=${config.clusterConfig.name}`}
 							target="_blank"
 						>
 							Transaction
@@ -50,7 +51,8 @@ export function useNotify() {
 						vertical: "bottom",
 						horizontal: "right",
 					},
-				},
+					persist,
+				}
 			);
 		},
 		[enqueueSnackbar, styles]

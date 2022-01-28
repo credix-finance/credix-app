@@ -5,11 +5,12 @@ import React, { useState } from "react";
 import { useRefresh } from "react/hooks/useRefresh";
 import "../../../styles/depositstakeform.scss";
 import { useNotify } from "../../hooks/useNotify";
-import { depositInvestment } from "client/api";
+import { depositInvestment, getUserBaseBalance } from "client/api";
 import { Big } from "big.js";
 import { formatUIAmount, toProgramAmount, toUIAmount } from "utils/format.utils";
 import { useIntl } from "react-intl";
 import { useMarketSeed } from "react/hooks/useMarketSeed";
+import { useSnackbar } from "notistack";
 
 export const DepositStakeForm = () => {
 	const intl = useIntl();
@@ -17,8 +18,20 @@ export const DepositStakeForm = () => {
 	const connection = useConnection();
 	const [stake, setStake] = useState<Big | undefined>();
 	const notify = useNotify();
+	const { closeSnackbar } = useSnackbar();
 	const triggerRefresh = useRefresh();
 	const marketSeed = useMarketSeed();
+
+	const setMaxAmount = async () => {
+		if (wallet) {
+			const balance = await getUserBaseBalance(
+				connection.connection,
+				wallet as typeof Wallet,
+				marketSeed
+			);
+			setStake(balance.round(-1, Big.roundDown));
+		}
+	};
 
 	const onSubmit = serialAsync(async (e: React.SyntheticEvent) => {
 		e.preventDefault();
@@ -27,14 +40,34 @@ export const DepositStakeForm = () => {
 			return;
 		}
 
+		let snackbarKey;
 		try {
-			await depositInvestment(stake, connection.connection, wallet as typeof Wallet, marketSeed);
+			const txPromise = depositInvestment(
+				stake,
+				connection.connection,
+				wallet as typeof Wallet,
+				marketSeed
+			);
+			snackbarKey = notify(
+				"info",
+				`Deposit of ${formatUIAmount(
+					stake,
+					Big.roundDown,
+					intl.formatNumber
+				)} USDC is being processed`,
+				undefined,
+				true
+			);
+			const tx = await txPromise;
 			notify(
 				"success",
-				`Successful deposit of ${formatUIAmount(stake, Big.roundDown, intl.formatNumber)} USDC`
+				`Successful deposit of ${formatUIAmount(stake, Big.roundDown, intl.formatNumber)} USDC`,
+				tx
 			);
+			closeSnackbar(snackbarKey);
 			triggerRefresh();
 		} catch (e: any) {
+			closeSnackbar(snackbarKey);
 			notify("error", `Transaction failed! ${e?.message}`);
 		} finally {
 			setStake(undefined);
@@ -50,23 +83,31 @@ export const DepositStakeForm = () => {
 	const canSubmit = () => !(wallet?.publicKey && stake && !stake.eq(0));
 
 	return (
-		<form onSubmit={onSubmit} className="row">
-			<label className="stake-input-label">
+		<div className="deposit-withdraw-row">
+			<span
+				className="max-button"
+				onClick={setMaxAmount}
+			>
+				max
+			</span>
+			<form onSubmit={onSubmit} className="row">
+				<label className="stake-input-label">
+					<input
+						value={stake === undefined ? "" : toUIAmount(stake).toNumber()}
+						type="number"
+						step=".01"
+						placeholder={"1000"}
+						onChange={onChange}
+						className="stake-input credix-button MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary balance-button"
+					/>
+				</label>
 				<input
-					value={stake === undefined ? "" : toUIAmount(stake).toNumber()}
-					type="number"
-					step=".01"
-					placeholder={"1000"}
-					onChange={onChange}
-					className="stake-input credix-button MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary balance-button"
+					disabled={canSubmit()}
+					value="Stake USDC"
+					type="submit"
+					className="stake-submit credix-button MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary balance-button"
 				/>
-			</label>
-			<input
-				disabled={canSubmit()}
-				value="Stake USDC"
-				type="submit"
-				className="stake-submit credix-button MuiButtonBase-root MuiButton-root MuiButton-contained MuiButton-containedPrimary balance-button"
-			/>
-		</form>
+			</form>
+		</div>
 	);
 };
