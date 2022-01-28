@@ -35,6 +35,7 @@ export const WithdrawStakeForm = () => {
 			marketSeed
 		);
 		const withdrawFee = getFee(withdrawAmount, withdrawFeePercentage);
+		let snackbarKey;
 
 		try {
 			const txPromise = withdrawInvestment(
@@ -43,7 +44,7 @@ export const WithdrawStakeForm = () => {
 				wallet as typeof Wallet,
 				marketSeed
 			);
-			const snackbarKey = notify(
+			snackbarKey = notify(
 				"info",
 				`Withdraw of ${formatUIAmount(
 					withdrawAmount,
@@ -71,6 +72,7 @@ export const WithdrawStakeForm = () => {
 			triggerRefresh();
 		} catch (e: any) {
 			notify("error", `Transaction failed! ${e?.message}`);
+			closeSnackbar(snackbarKey);
 		} finally {
 			setWithdrawAmount(undefined);
 		}

@@ -2,6 +2,7 @@ import { Wallet } from "@project-serum/anchor";
 import { useAnchorWallet, useConnection } from "@solana/wallet-adapter-react";
 import { PublicKey } from "@solana/web3.js";
 import { issueCredixPass } from "client/api";
+import { useSnackbar } from "notistack";
 import React, { useState } from "react";
 import { useMarketSeed } from "react/hooks/useMarketSeed";
 import { useNotify } from "react/hooks/useNotify";
@@ -12,6 +13,7 @@ export const CredixPassCreateForm = () => {
 	const wallet = useAnchorWallet();
 	const connection = useConnection();
 	const notify = useNotify();
+	const { closeSnackbar } = useSnackbar();
 	const marketSeed = useMarketSeed();
 
 	const [isBorrower, setIsBorrower] = useState<boolean>(true);
@@ -21,10 +23,11 @@ export const CredixPassCreateForm = () => {
 	const onSubmit = serialAsync(async (e: React.SyntheticEvent) => {
 		e.preventDefault();
 
+		let snackbarKey;
 		try {
 			const holderPublicKey = new PublicKey(passHolder);
 
-			await issueCredixPass(
+			const txPromise = issueCredixPass(
 				holderPublicKey,
 				isUnderwriter,
 				isBorrower,
@@ -32,9 +35,13 @@ export const CredixPassCreateForm = () => {
 				wallet as typeof Wallet,
 				marketSeed
 			);
-			notify("success", "CredixPass created successfully");
+			snackbarKey = notify("info", "CredixPass creation is being processed", undefined, true);
+			const tx = await txPromise;
+			notify("success", "CredixPass created successfully", tx);
+			closeSnackbar(snackbarKey);
 		} catch (err: any) {
 			notify("error", `Transaction failed! ${err?.message}`);
+			closeSnackbar(snackbarKey);
 		}
 	});
 

@@ -29,6 +29,7 @@ export const DepositStakeForm = () => {
 			return;
 		}
 
+		let snackbarKey;
 		try {
 			const txPromise = depositInvestment(
 				stake,
@@ -36,7 +37,7 @@ export const DepositStakeForm = () => {
 				wallet as typeof Wallet,
 				marketSeed
 			);
-			const snackbarKey = notify(
+			snackbarKey = notify(
 				"info",
 				`Deposit of ${formatUIAmount(
 					stake,
@@ -55,6 +56,7 @@ export const DepositStakeForm = () => {
 			closeSnackbar(snackbarKey);
 			triggerRefresh();
 		} catch (e: any) {
+			closeSnackbar(snackbarKey);
 			notify("error", `Transaction failed! ${e?.message}`);
 		} finally {
 			setStake(undefined);
