@@ -802,7 +802,7 @@ export const repayDeal = multiAsync(
 			_getCredixPassPDA,
 		]);
 
-		await program.rpc.makeDealRepayment(repayAmount, repaymentType, {
+		return await program.rpc.makeDealRepayment(repayAmount, repaymentType, {
 			accounts: {
 				borrower: wallet.publicKey,
 				gatewayToken: gatewayToken.publicKey,

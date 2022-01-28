@@ -22,6 +22,7 @@ import { SolanaCluster } from "../../../types/solana.types";
 import { useIntl } from "react-intl";
 import { useMarketSeed } from "react/hooks/useMarketSeed";
 import { navigationHelper } from "utils/navigation.utils";
+import { useSnackbar } from "notistack";
 
 interface Props {
 	borrower?: PublicKey;
@@ -42,6 +43,7 @@ export const CreateDealForm = (props: Props) => {
 	const [dealNamePlaceholder, setDealNamePlaceholder] = useState<string>("CONNECT WALLET");
 	const [publicKeyPlaceholder, setPublicKeyPlaceholder] = useState<string>("CONNECT WALLET");
 	const notify = useNotify();
+	const { closeSnackbar } = useSnackbar();
 	const triggerRefresh = useRefresh();
 	const navigate = useNavigate();
 	const marketSeed = useMarketSeed();
@@ -97,6 +99,7 @@ export const CreateDealForm = (props: Props) => {
 			return;
 		}
 
+		let snackbarKey;
 		try {
 			const borrowerPK = new PublicKey(borrower);
 
@@ -110,7 +113,7 @@ export const CreateDealForm = (props: Props) => {
 
 			const dealNumber = (borrowerInfoAccountData && borrowerInfoAccountData.numOfDeals) || 0;
 
-			await createDeal(
+			const txPromise = createDeal(
 				principal,
 				financingFee,
 				timeToMaturity,
@@ -121,24 +124,31 @@ export const CreateDealForm = (props: Props) => {
 				wallet as typeof Wallet,
 				marketSeed
 			);
-			notify("success", "Deal created successfully");
+			snackbarKey = notify("info", "Deal creation is being processed", undefined, true);
+			const tx = await txPromise;
+			notify("success", "Deal created successfully", tx);
+			closeSnackbar(snackbarKey);
 
 			// only automatically activate deal on localnet
 			if (config.clusterConfig.name === SolanaCluster.LOCALNET) {
-				await activateDeal(
+				const txPromise = activateDeal(
 					borrowerPK,
 					dealNumber,
 					connection.connection,
 					wallet as typeof Wallet,
 					marketSeed
 				);
-				notify("success", "Deal activated successfully");
+				snackbarKey = notify("info", "Deal activation is being processed", undefined, true);
+				const tx = await txPromise;
+				notify("success", "Deal activated successfully", tx);
+				closeSnackbar(snackbarKey);
 			}
 
 			triggerRefresh();
 			navigationHelper(navigate, Path.DEALS, marketSeed);
 		} catch (err: any) {
 			notify("error", `Transaction failed! ${err?.message}`);
+			closeSnackbar(snackbarKey);
 		}
 	});
 
