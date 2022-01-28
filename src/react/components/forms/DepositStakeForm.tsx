@@ -27,7 +27,7 @@ export const DepositStakeForm = () => {
 				wallet as typeof Wallet,
 				marketSeed
 			);
-			setStake(balance);
+			setStake(balance.round(-1, Big.roundDown));
 		}
 	};
 

@@ -27,7 +27,7 @@ export const WithdrawStakeForm = () => {
 				wallet as typeof Wallet,
 				marketSeed
 			);
-			setWithdrawAmount(stake);
+			setWithdrawAmount(stake.round(-1, Big.roundDown));
 		}
 	};
 
