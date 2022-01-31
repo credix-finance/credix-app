@@ -1,6 +1,6 @@
 # Credix Client
 
-Repository containing the FE application of Credix. If you want to see the working product on Solana testnet, go to [app.credix.finance](https://app.credix.finance), connect your wallet, get some SOL from [this faucet](https://www.solfaucet.com), get some USDC from [this faucet](https://www.usdcfaucet.com) and connect your wallet. If you want to spin up a local clients, follow the steps as outlined below.
+Repository containing the FE application of Credix. If you want to see the working product on Solana devnet, go to [app.dev.credix.finance](https://app.dev.credix.finance), connect your wallet, get some SOL and USDC from [the spl-token-faucet](https://spl-token-faucet.com) and connect your wallet. If you want to spin up a local clients, follow the steps as outlined below.
 
 # Development
 
@@ -10,7 +10,7 @@ A `.env` file will be read depending on what type of build you are running (see:
 
 ### Environment Variables
 
-- `REACT_APP_CLUSTER` Defaults to localnet. Determines which cluster the app should target. options: localnet, devnet, testnet
+- `REACT_APP_CLUSTER` Defaults to localnet. Determines which cluster the app should target. options: localnet, devnet, mainnet
 - `REACT_APP_PROGRAM_ID` Required for localnet. Determines which on-chain program the app should target
 - `REACT_APP_RPC_ENDPOINT` Determines which rpc endpoint will be used to communicate with the cluster
 
@@ -20,41 +20,17 @@ When you deploy a new build, be sure to change the clusterconfig in `src/config.
 
 #### Localnet
 
-When using localnet, be sure to run
-
-```sh
-$ solana-test-validator
-```
-
-This will spin up a local validator that our client interacts with. More info on setting up a local validator can be found [here](https://docs.solana.com/developing/test-validator).
+When using localnet, be sure to run a local test validator + the start.sh/setup.sh script as outlined in [the credix-programs repo](https://github.com/credix-finance/credix-programs). 
 
 #### Devnet
 
-Program address is `92D2wYTs7vTJjfZgtVAR3PwyHEPNzKscm5Uj7MaJFwq2`
+Program address is [CRDx2YkdtYtGZXGHZ59wNv1EwKHQndnRc1gT4p8i2vPX](https://explorer.solana.com/address/CRDx2YkdtYtGZXGHZ59wNv1EwKHQndnRc1gT4p8i2vPX?cluster=devnet)
+App can be found on: [app.dev.credix.finance](https://app.dev.credix.finance)
 
-Request limits of the default RPC endpoint:
+#### Mainnet
 
-```
-Maximum number of requests per 10 seconds per IP: 100
-Maximum number of requests per 10 seconds per IP for a single RPC: 40
-Maximum concurrent connections per IP: 40
-Maximum connection rate per 10 seconds per IP: 40
-Maximum amount of data per 30 second: 100 MB
-```
-
-#### Testnet
-
-Program address is `J8ciKWVC1y5TZvzeeJdVZRtLuwCZheCYeo3K1JWRbL7g`.
-
-Request limits of the default RPC endpoint:
-
-```
-Maximum number of requests per 10 seconds per IP: 100
-Maximum number of requests per 10 seconds per IP for a single RPC: 40
-Maximum concurrent connections per IP: 40
-Maximum connection rate per 10 seconds per IP: 40
-Maximum amount of data per 30 second: 100 MB
-```
+Program address is [CRDx2YkdtYtGZXGHZ59wNv1EwKHQndnRc1gT4p8i2vPX](https://explorer.solana.com/address/CRDx2YkdtYtGZXGHZ59wNv1EwKHQndnRc1gT4p8i2vPX).
+App can be found on: [app.credix.finance](https://app.credix.finance)
 
 ## Editors
 
