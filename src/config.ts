@@ -118,7 +118,7 @@ export const config: Config = ((): Config => {
 	// TODO: see what these options should be
 	// TODO: make these configurable with environment variables
 	const confirmOptions: ConfirmOptions = {
-		commitment: "finalized",
+		commitment: "confirmed",
 		preflightCommitment: "processed",
 	};
 	const MANAGEMENT_KEYS = [
