@@ -100,10 +100,7 @@ export const WithdrawStakeForm = () => {
 
 	return (
 		<div className="deposit-withdraw-row">
-			<span
-				className="max-button"
-				onClick={setMaxAmount}
-			>
+			<span className="max-button" onClick={setMaxAmount}>
 				max
 			</span>
 			<form onSubmit={onSubmit} className="row">
