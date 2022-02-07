@@ -115,7 +115,6 @@ const getClusterConfig = (): ClusterConfig => {
 
 export const config: Config = ((): Config => {
 	const clusterConfig = getClusterConfig();
-	// TODO: see what these options should be
 	// TODO: make these configurable with environment variables
 	const confirmOptions: ConfirmOptions = {
 		commitment: "confirmed",
