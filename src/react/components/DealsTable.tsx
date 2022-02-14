@@ -32,7 +32,7 @@ export const DealsTable = (props: Props) => {
 	const getDeals = useCallback(async () => {
 		const _deals = getDealAccounts(
 			connection.connection,
-			wallet as typeof Wallet,
+			wallet as Wallet,
 			marketSeed,
 			props.borrower
 		);

@@ -22,7 +22,7 @@ export const Balance = () => {
 		if (wallet) {
 			const balance = await getUserBaseBalance(
 				connection.connection,
-				wallet as typeof Wallet,
+				wallet as Wallet,
 				marketSeed
 			);
 			setBalance(balance);

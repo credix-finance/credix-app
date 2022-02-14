@@ -59,7 +59,7 @@ export const DealOverview = () => {
 		const _clusterTime = getClusterTime(connection.connection);
 		const _dealData = getDealAccountData(
 			connection.connection,
-			wallet as typeof Wallet,
+			wallet as Wallet,
 			borrower,
 			dealNumber,
 			marketSeed
@@ -170,7 +170,7 @@ export const DealOverview = () => {
 				repaymentTypeObj,
 				dealNumber,
 				connection.connection,
-				wallet as typeof Wallet,
+				wallet as Wallet,
 				marketSeed
 			);
 			const showFeeNotification = repaymentSelectValue === "interest";
@@ -184,7 +184,7 @@ export const DealOverview = () => {
 
 			const interestFeePercentage = await getInterestFeePercentage(
 				connection.connection,
-				wallet as typeof Wallet,
+				wallet as Wallet,
 				marketSeed
 			);
 

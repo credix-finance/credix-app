@@ -26,7 +26,7 @@ export const WithdrawStakeForm = () => {
 		if (wallet) {
 			const stake = await getLPTokenBaseBalance(
 				connection.connection,
-				wallet as typeof Wallet,
+				wallet as Wallet,
 				marketSeed
 			);
 			setWithdrawAmount(stake.round(-1, Big.roundDown));
@@ -42,7 +42,7 @@ export const WithdrawStakeForm = () => {
 
 		const withdrawFeePercentage = await getWithdrawFeePercentage(
 			connection.connection,
-			wallet as typeof Wallet,
+			wallet as Wallet,
 			marketSeed
 		);
 		const withdrawFee = getFee(withdrawAmount, withdrawFeePercentage);
@@ -52,7 +52,7 @@ export const WithdrawStakeForm = () => {
 			const txPromise = withdrawInvestment(
 				withdrawAmount,
 				connection.connection,
-				wallet as typeof Wallet,
+				wallet as Wallet,
 				marketSeed
 			);
 			snackbarKey = notify(
