@@ -23,7 +23,7 @@ export const PoolStatsDashboard = () => {
 	const updatePoolStats = useCallback(async () => {
 		const poolStats = await getPoolStats(
 			connection.connection,
-			wallet as typeof Wallet,
+			wallet as Wallet,
 			marketSeed
 		);
 		setPoolstats(poolStats);

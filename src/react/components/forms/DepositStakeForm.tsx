@@ -26,7 +26,7 @@ export const DepositStakeForm = () => {
 		if (wallet) {
 			const balance = await getUserBaseBalance(
 				connection.connection,
-				wallet as typeof Wallet,
+				wallet as Wallet,
 				marketSeed
 			);
 			setStake(balance.round(-1, Big.roundDown));
@@ -45,7 +45,7 @@ export const DepositStakeForm = () => {
 			const txPromise = depositInvestment(
 				stake,
 				connection.connection,
-				wallet as typeof Wallet,
+				wallet as Wallet,
 				marketSeed
 			);
 			snackbarKey = notify(
