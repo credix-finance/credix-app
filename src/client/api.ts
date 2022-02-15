@@ -60,7 +60,7 @@ const getBaseMintPK = multiAsync(
 			throw Error("Market not found");
 		}
 
-		return globalMarketState.liquidityPoolTokenMintAccount;
+		return globalMarketState.baseTokenMint;
 	}
 );
 
@@ -284,7 +284,7 @@ const getLPTokenMintPK = multiAsync(
 			throw Error("Market not found");
 		}
 
-		return globalMarketStateData.lpTokenMintAccount;
+		return globalMarketStateData.lpTokenMint;
 	}
 );
 
