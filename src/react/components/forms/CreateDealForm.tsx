@@ -51,7 +51,7 @@ export const CreateDealForm = (props: Props) => {
 	const updateLiquidityPoolBalance = useCallback(async () => {
 		const balance = await getLiquidityPoolBalance(
 			connection.connection,
-			wallet as typeof Wallet,
+			wallet as Wallet,
 			marketSeed
 		);
 		setLiquidityPoolBalance(balance);
@@ -106,7 +106,7 @@ export const CreateDealForm = (props: Props) => {
 			// TODO: move this into the createDeal function?
 			const borrowerInfoAccountData = await getBorrowerInfoAccountData(
 				connection.connection,
-				wallet as typeof Wallet,
+				wallet as Wallet,
 				borrowerPK,
 				marketSeed
 			);
@@ -121,7 +121,7 @@ export const CreateDealForm = (props: Props) => {
 				dealNumber,
 				dealname,
 				connection.connection,
-				wallet as typeof Wallet,
+				wallet as Wallet,
 				marketSeed
 			);
 			snackbarKey = notify("info", "Deal creation is being processed", undefined, true);
@@ -135,7 +135,7 @@ export const CreateDealForm = (props: Props) => {
 					borrowerPK,
 					dealNumber,
 					connection.connection,
-					wallet as typeof Wallet,
+					wallet as Wallet,
 					marketSeed
 				);
 				snackbarKey = notify("info", "Deal activation is being processed", undefined, true);
