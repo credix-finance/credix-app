@@ -15,7 +15,7 @@
     "@saberhq/anchor-contrib": "^1.11.3",
     "@solana/spl-token": "^0.1.8",
     "@solana/wallet-adapter-base": "^0.7.1",
-    "@solana/wallet-adapter-material-ui": "^0.13.1",
+    "@solana/wallet-adapter-material-ui": "^0.16.4",
     "@solana/wallet-adapter-react": "^0.13.1",
     "@solana/wallet-adapter-wallets": "^0.11.3",
     "@solana/web3.js": "^1.30.2",
