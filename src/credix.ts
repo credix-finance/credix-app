@@ -712,11 +712,11 @@ export type Credix = {
             "type": "publicKey"
           },
           {
-            "name": "liquidityPoolTokenMintAccount",
+            "name": "baseTokenMint",
             "type": "publicKey"
           },
           {
-            "name": "lpTokenMintAccount",
+            "name": "lpTokenMint",
             "type": "publicKey"
           },
           {
@@ -1938,11 +1938,11 @@ export const IDL: Credix = {
             "type": "publicKey"
           },
           {
-            "name": "liquidityPoolTokenMintAccount",
+            "name": "baseTokenMint",
             "type": "publicKey"
           },
           {
-            "name": "lpTokenMintAccount",
+            "name": "lpTokenMint",
             "type": "publicKey"
           },
           {
