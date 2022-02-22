@@ -79,7 +79,7 @@ export const DealsTable = (props: Props) => {
 				hover={userDeal}
 				onClick={() => userDeal && navigationHelper(navigate, targetRoute, marketSeed)}
 			>
-				<TableCell>{deal.name}</TableCell>
+				<TableCell className={"deal-name"}>{deal.name}</TableCell>
 				<TableCell>{formatBorrowerKey(deal.borrower)}</TableCell>
 				<TableCell>{createdAt.toUTCString()}</TableCell>
 				<TableCell>{(goLiveAt && goLiveAt.toUTCString()) || "-"}</TableCell>
