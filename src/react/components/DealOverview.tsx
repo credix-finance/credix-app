@@ -21,6 +21,7 @@ import {
 	getPrincipalToRepay,
 	mapDealToStatus,
 	getDaysRemaining,
+	getTotalInterest
 } from "utils/deal.utils";
 import "../../styles/stakeform.scss";
 import "../../styles/deals.scss";
@@ -40,6 +41,7 @@ export const DealOverview = () => {
 	const [deal, setDeal] = useState<Deal | undefined>();
 	const [dealStatus, setDealStatus] = useState<DealStatus | undefined>();
 	const [amountToRepay, setAmountToRepay] = useState<Big | undefined>();
+	const [totalAmountToRepay, setTotalAmountToRepay] = useState<Big | undefined>();
 	const [repaymentAmount, setRepaymentAmount] = useState<Big | undefined>();
 	const [daysRemaining, setDaysRemaining] = useState<number | string>("X");
 	const [repaymentSelectValue, setRepaymentSelectValue] = useState<string>("interest");
@@ -101,10 +103,12 @@ export const DealOverview = () => {
 		switch (repaymentSelectValue) {
 			case "interest": {
 				setAmountToRepay(getInterestToRepay(deal));
+				setTotalAmountToRepay(getTotalInterest(deal));
 				break;
 			}
 			default:
 				setAmountToRepay(getPrincipalToRepay(deal));
+				setTotalAmountToRepay(new Big(deal.principal.toNumber()));
 		}
 	}, [repaymentSelectValue, deal]);
 
@@ -319,12 +323,21 @@ export const DealOverview = () => {
 					<label className="stake-input-label">
 						USDC amount
 						<p>
-							{`To repay: ${
-								amountToRepay === undefined
-									? ""
-									: formatUIAmount(amountToRepay, Big.roundUp, intl.formatNumber)
-							} USDC`}
+							{`Repaid: ${(amountToRepay === undefined || totalAmountToRepay === undefined) ? "" : formatUIAmount(totalAmountToRepay?.sub(amountToRepay), Big.roundUp, intl.formatNumber)}
+							/ ${totalAmountToRepay === undefined ? "" : formatUIAmount(totalAmountToRepay, Big.roundUp, intl.formatNumber)} USDC`}
 						</p>
+						{repaymentSelectValue === "interest" ?
+							<p>
+								{`Monthly repayment: ${
+									(deal?.principal &&
+										formatUIAmount(
+											new Big(getTotalInterest(deal).toNumber()/(deal.timeToMaturityDays/30)),
+											Big.roundUp,
+											intl.formatNumber
+										))
+								} USDC`}
+							</p> : <p></p>
+						}
 						<input
 							disabled={!wallet?.publicKey}
 							name="repayment"
