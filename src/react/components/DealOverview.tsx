@@ -261,7 +261,6 @@ export const DealOverview = () => {
 						<p>The total amount of USDC borrowed</p>
 						<input
 							name="principal"
-							type="number"
 							readOnly={true}
 							disabled={true}
 							value={
