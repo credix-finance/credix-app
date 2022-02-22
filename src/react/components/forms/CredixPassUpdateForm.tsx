@@ -29,7 +29,7 @@ export const CredixPassUpdateForm = () => {
 			const credixPass = await getCredixPassInfo(
 				publicKey,
 				connection.connection,
-				wallet as typeof Wallet,
+				wallet as Wallet,
 				marketSeed
 			);
 			setCredixPass(credixPass);
@@ -65,7 +65,7 @@ export const CredixPassUpdateForm = () => {
 				isUnderwriter,
 				isBorrower,
 				connection.connection,
-				wallet as typeof Wallet,
+				wallet as Wallet,
 				marketSeed
 			);
 			const snackbarKey = notify("info", "CredixPass update is being processed", undefined, true);

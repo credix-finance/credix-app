@@ -41,7 +41,7 @@ export const getDealAccounts = multiAsync(
 );
 
 export const getGlobalMarketStateAccountData = multiAsync(
-	async (connection: Connection, wallet: typeof Wallet, globalMarketSeed: string) => {
+	async (connection: Connection, wallet: Wallet, globalMarketSeed: string) => {
 		const program = newCredixProgram(connection, wallet);
 		const globalMarketStatePDA = await findGlobalMarketStatePDA(globalMarketSeed);
 		return program.account.globalMarketState.fetchNullable(globalMarketStatePDA[0]);
@@ -49,7 +49,7 @@ export const getGlobalMarketStateAccountData = multiAsync(
 );
 
 const getBaseMintPK = multiAsync(
-	async (connection: Connection, wallet: typeof Wallet, globalMarketSeed: string) => {
+	async (connection: Connection, wallet: Wallet, globalMarketSeed: string) => {
 		const globalMarketState = await getGlobalMarketStateAccountData(
 			connection,
 			wallet,
@@ -60,12 +60,12 @@ const getBaseMintPK = multiAsync(
 			throw Error("Market not found");
 		}
 
-		return globalMarketState.liquidityPoolTokenMintAccount;
+		return globalMarketState.baseTokenMint;
 	}
 );
 
 export const getUserBaseTokenAccount = multiAsync(
-	async (connection: Connection, wallet: typeof Wallet, globalMarketSeed: string) => {
+	async (connection: Connection, wallet: Wallet, globalMarketSeed: string) => {
 		const baseMint = await getBaseMintPK(connection, wallet, globalMarketSeed);
 		const accounts = await connection.getParsedTokenAccountsByOwner(wallet.publicKey, {
 			mint: baseMint,
@@ -76,9 +76,8 @@ export const getUserBaseTokenAccount = multiAsync(
 );
 
 export const getUserBaseBalance = multiAsync(
-	async (connection: Connection, wallet: typeof Wallet, globalMarketSeed: string) => {
+	async (connection: Connection, wallet: Wallet, globalMarketSeed: string) => {
 		const tokenAccount = await getUserBaseTokenAccount(connection, wallet, globalMarketSeed);
-
 		if (!tokenAccount) {
 			return ZERO;
 		}
@@ -88,7 +87,7 @@ export const getUserBaseBalance = multiAsync(
 );
 
 export const getLiquidityPoolBalance = multiAsync(
-	async (connection: Connection, wallet: typeof Wallet, globalMarketSeed: string) => {
+	async (connection: Connection, wallet: Wallet, globalMarketSeed: string) => {
 		const liquidityPoolTokenAddress = await getLiquidityPoolAssociatedBaseTokenAddressPK(
 			connection,
 			wallet,
@@ -105,7 +104,7 @@ export const getLiquidityPoolBalance = multiAsync(
 );
 
 const getOutstandingCredit = multiAsync(
-	async (connection: Connection, wallet: typeof Wallet, globalMarketSeed: string) => {
+	async (connection: Connection, wallet: Wallet, globalMarketSeed: string) => {
 		const globalMarketStateData = await getGlobalMarketStateAccountData(
 			connection,
 			wallet,
@@ -121,7 +120,7 @@ const getOutstandingCredit = multiAsync(
 );
 
 export const getGatekeeperNetwork = multiAsync(
-	async (connection: Connection, wallet: typeof Wallet, globalMarketSeed: string) => {
+	async (connection: Connection, wallet: Wallet, globalMarketSeed: string) => {
 		const globalMarketStateData = await getGlobalMarketStateAccountData(
 			connection,
 			wallet,
@@ -154,7 +153,7 @@ export const getClusterTime = multiAsync(async (connection: Connection) => {
 });
 
 const getWeightedAverageFinancingFee = multiAsync(
-	async (connection: Connection, wallet: typeof Wallet, globalMarketSeed: string) => {
+	async (connection: Connection, wallet: Wallet, globalMarketSeed: string) => {
 		const _deals = await getDealAccounts(connection, wallet, globalMarketSeed);
 		const _clusterTime = getClusterTime(connection);
 		let principalSum = new Big(0);
@@ -184,7 +183,7 @@ const getWeightedAverageFinancingFee = multiAsync(
 );
 
 const getTVL = multiAsync(
-	async (connection: Connection, wallet: typeof Wallet, globalMarketSeed: string) => {
+	async (connection: Connection, wallet: Wallet, globalMarketSeed: string) => {
 		const _liquidityPoolBalance = getLiquidityPoolBalance(connection, wallet, globalMarketSeed);
 		const _outstandingCredit = getOutstandingCredit(connection, wallet, globalMarketSeed);
 		const [liquidityPoolBalance, outstandingCredit] = await Promise.all([
@@ -197,7 +196,7 @@ const getTVL = multiAsync(
 );
 
 const getLiquidityPoolAssociatedBaseTokenAddressPK = multiAsync(
-	async (connection: Connection, wallet: typeof Wallet, globalMarketSeed: string) => {
+	async (connection: Connection, wallet: Wallet, globalMarketSeed: string) => {
 		const signingAuthorityPDA = await findSigningAuthorityPDA(globalMarketSeed);
 		return getAssociatedBaseTokenAddressPK(
 			connection,
@@ -210,7 +209,7 @@ const getLiquidityPoolAssociatedBaseTokenAddressPK = multiAsync(
 );
 
 const getTreasuryPoolTokenAccountPK = multiAsync(
-	async (connection: Connection, wallet: typeof Wallet, globalMarketSeed: string) => {
+	async (connection: Connection, wallet: Wallet, globalMarketSeed: string) => {
 		const globalMarketStateData = await getGlobalMarketStateAccountData(
 			connection,
 			wallet,
@@ -228,7 +227,7 @@ const getTreasuryPoolTokenAccountPK = multiAsync(
 const getAssociatedBaseTokenAddressPK = multiAsync(
 	async (
 		connection: Connection,
-		wallet: typeof Wallet,
+		wallet: Wallet,
 		publicKey: PublicKey,
 		offCurve: boolean,
 		globalMarketSeed: string
@@ -245,7 +244,7 @@ const getAssociatedBaseTokenAddressPK = multiAsync(
 );
 
 const getInvestorLPAssociatedTokenAddress = multiAsync(
-	async (connection: Connection, wallet: typeof Wallet, globalMarketSeed: string) => {
+	async (connection: Connection, wallet: Wallet, globalMarketSeed: string) => {
 		const lpTokenMintPK = await getLPTokenMintPK(connection, wallet, globalMarketSeed);
 		return Token.getAssociatedTokenAddress(
 			ASSOCIATED_TOKEN_PROGRAM_ID,
@@ -257,15 +256,10 @@ const getInvestorLPAssociatedTokenAddress = multiAsync(
 );
 
 const getGatewayToken = multiAsync(
-	async (
-		connection: Connection,
-		wallet: typeof Wallet,
-		userPK: PublicKey,
-		globalMarketSeed: string
-	) => {
+	async (connection: Connection, wallet: Wallet, userPK: PublicKey, globalMarketSeed: string) => {
 		const gatekeeperNetwork = await getGatekeeperNetwork(
 			connection,
-			wallet as typeof Wallet,
+			wallet as Wallet,
 			globalMarketSeed
 		);
 		const gatewayToken = await findGatewayToken(connection, userPK, gatekeeperNetwork);
@@ -279,7 +273,7 @@ const getGatewayToken = multiAsync(
 );
 
 const getLPTokenMintPK = multiAsync(
-	async (connection: Connection, wallet: typeof Wallet, globalMarketSeed: string) => {
+	async (connection: Connection, wallet: Wallet, globalMarketSeed: string) => {
 		const globalMarketStateData = await getGlobalMarketStateAccountData(
 			connection,
 			wallet,
@@ -290,12 +284,12 @@ const getLPTokenMintPK = multiAsync(
 			throw Error("Market not found");
 		}
 
-		return globalMarketStateData.lpTokenMintAccount;
+		return globalMarketStateData.lpTokenMint;
 	}
 );
 
 export const getPoolStats = multiAsync(
-	async (connection: Connection, wallet: typeof Wallet, globalMarketSeed: string) => {
+	async (connection: Connection, wallet: Wallet, globalMarketSeed: string) => {
 		const _tvl = getTVL(connection, wallet, globalMarketSeed);
 		const _ff = getWeightedAverageFinancingFee(connection, wallet, globalMarketSeed);
 		const _outstandingCredit = getOutstandingCredit(connection, wallet, globalMarketSeed);
@@ -313,7 +307,7 @@ export const getPoolStats = multiAsync(
 );
 
 export const depositInvestment = multiAsync(
-	async (amount: Big, connection: Connection, wallet: typeof Wallet, globalMarketSeed: string) => {
+	async (amount: Big, connection: Connection, wallet: Wallet, globalMarketSeed: string) => {
 		const depositAmount = new BN(amount.toNumber());
 		const program = newCredixProgram(connection, wallet);
 		const _globalMarketStatePDA = findGlobalMarketStatePDA(globalMarketSeed);
@@ -391,7 +385,7 @@ export const depositInvestment = multiAsync(
 );
 
 export const withdrawInvestment = multiAsync(
-	async (amount: Big, connection: Connection, wallet: typeof Wallet, globalMarketSeed: string) => {
+	async (amount: Big, connection: Connection, wallet: Wallet, globalMarketSeed: string) => {
 		const program = newCredixProgram(connection, wallet);
 		const _globalMarketStatePDA = findGlobalMarketStatePDA(globalMarketSeed);
 		const _userAssociatedBaseTokenAddressPK = getAssociatedBaseTokenAddressPK(
@@ -478,7 +472,7 @@ export const withdrawInvestment = multiAsync(
 export const getDealAccountData = multiAsync(
 	async (
 		connection: Connection,
-		wallet: typeof Wallet,
+		wallet: Wallet,
 		borrower: PublicKey,
 		dealNumber: number,
 		globalMarketSeed: string
@@ -490,12 +484,7 @@ export const getDealAccountData = multiAsync(
 );
 
 export const getBorrowerInfoAccountData = multiAsync(
-	async (
-		connection: Connection,
-		wallet: typeof Wallet,
-		borrower: PublicKey,
-		globalMarketSeed: string
-	) => {
+	async (connection: Connection, wallet: Wallet, borrower: PublicKey, globalMarketSeed: string) => {
 		const borrowerInfoPDA = await findBorrowerInfoPDA(borrower, globalMarketSeed);
 		const program = newCredixProgram(connection, wallet);
 
@@ -504,7 +493,7 @@ export const getBorrowerInfoAccountData = multiAsync(
 );
 
 export const getWithdrawFeePercentage = multiAsync(
-	async (connection: Connection, wallet: typeof Wallet, globalMarketSeed: string) => {
+	async (connection: Connection, wallet: Wallet, globalMarketSeed: string) => {
 		const globalMarketStateData = await getGlobalMarketStateAccountData(
 			connection,
 			wallet,
@@ -520,7 +509,7 @@ export const getWithdrawFeePercentage = multiAsync(
 );
 
 export const getInterestFeePercentage = multiAsync(
-	async (connection: Connection, wallet: typeof Wallet, globalMarketSeed: string) => {
+	async (connection: Connection, wallet: Wallet, globalMarketSeed: string) => {
 		const globalMarketStateData = await getGlobalMarketStateAccountData(
 			connection,
 			wallet,
@@ -544,7 +533,7 @@ export const createDeal = multiAsync(
 		dealNumber: number,
 		dealName: string,
 		connection: Connection,
-		wallet: typeof Wallet,
+		wallet: Wallet,
 		globalMarketSeed: string
 	) => {
 		const _dealPDA = findDealPDA(borrower, dealNumber, globalMarketSeed);
@@ -573,8 +562,6 @@ export const createDeal = multiAsync(
 		};
 
 		const tx = program.rpc.createDeal(
-			dealPDA[1],
-			borrowerInfoPDA[1],
 			principalAmount,
 			financingFeeAmount,
 			0,
@@ -604,7 +591,7 @@ export const activateDeal = multiAsync(
 		borrower: PublicKey,
 		dealNumber: number,
 		connection: Connection,
-		wallet: typeof Wallet,
+		wallet: Wallet,
 		globalMarketSeed: string
 	) => {
 		const program = newCredixProgram(connection, wallet);
@@ -671,7 +658,7 @@ export const activateDeal = multiAsync(
 );
 
 const getLPTokenSupply = multiAsync(
-	async (connection: Connection, wallet: typeof Wallet, globalMarketSeed: string) => {
+	async (connection: Connection, wallet: Wallet, globalMarketSeed: string) => {
 		const lpTokenMintPK = await getLPTokenMintPK(connection, wallet, globalMarketSeed);
 		return connection
 			.getTokenSupply(lpTokenMintPK)
@@ -680,7 +667,7 @@ const getLPTokenSupply = multiAsync(
 );
 
 const getLPTokenPrice = multiAsync(
-	async (connection: Connection, wallet: typeof Wallet, globalMarketSeed: string) => {
+	async (connection: Connection, wallet: Wallet, globalMarketSeed: string) => {
 		const _tvl = getTVL(connection, wallet, globalMarketSeed);
 		const _lpTokenSupply = getLPTokenSupply(connection, wallet, globalMarketSeed);
 
@@ -695,20 +682,25 @@ const getLPTokenPrice = multiAsync(
 );
 
 const getUserLPTokenAmount = multiAsync(
-	async (connection: Connection, wallet: typeof Wallet, globalMarketSeed: string) => {
+	async (connection: Connection, wallet: Wallet, globalMarketSeed: string) => {
 		const lpAssociatedAddress = await getInvestorLPAssociatedTokenAddress(
 			connection,
 			wallet,
 			globalMarketSeed
 		);
 
-		const lpBalance = await connection.getTokenAccountBalance(lpAssociatedAddress);
-		return new Big(lpBalance.value.amount);
+		try {
+			const lpBalance = await connection.getTokenAccountBalance(lpAssociatedAddress);
+			return new Big(lpBalance.value.amount);
+		} catch (e) {
+			console.log(e);
+			return ZERO;
+		}
 	}
 );
 
 export const getLPTokenBaseBalance = multiAsync(
-	async (connection: Connection, wallet: typeof Wallet, globalMarketSeed: string) => {
+	async (connection: Connection, wallet: Wallet, globalMarketSeed: string) => {
 		const _lpTokenPrice = getLPTokenPrice(connection, wallet, globalMarketSeed);
 		const _userLPTokenAmount = getUserLPTokenAmount(connection, wallet, globalMarketSeed);
 
@@ -727,7 +719,7 @@ export const repayDeal = multiAsync(
 		repaymentType: RepaymentType,
 		dealNumber: number,
 		connection: Connection,
-		wallet: typeof Wallet,
+		wallet: Wallet,
 		globalMarketSeed: string
 	) => {
 		const program = newCredixProgram(connection, wallet);
@@ -814,7 +806,7 @@ export const issueCredixPass = async (
 	isUnderwriter: boolean,
 	isBorrower: boolean,
 	connection: Connection,
-	wallet: typeof Wallet,
+	wallet: Wallet,
 	globalMarketSeed: string
 ) => {
 	const program = newCredixProgram(connection, wallet);
@@ -826,7 +818,7 @@ export const issueCredixPass = async (
 		_getCredixPassPDA,
 	]);
 
-	const tx = program.rpc.createCredixPass(credixPassPDA[1], isUnderwriter, isBorrower, {
+	const tx = program.rpc.createCredixPass(isUnderwriter, isBorrower, {
 		accounts: {
 			owner: wallet.publicKey,
 			passHolder: publicKey,
@@ -847,7 +839,7 @@ export const updateCredixPass = async (
 	isUnderwriter: boolean,
 	isBorrower: boolean,
 	connection: Connection,
-	wallet: typeof Wallet,
+	wallet: Wallet,
 	globalMarketSeed: string
 ) => {
 	const program = newCredixProgram(connection, wallet);
@@ -877,7 +869,7 @@ export const getCredixPassInfo = multiAsync(
 	async (
 		publicKey: PublicKey,
 		connection: Connection,
-		wallet: typeof Wallet,
+		wallet: Wallet,
 		globalMarketSeed: string
 	) => {
 		const program = newCredixProgram(connection, wallet);

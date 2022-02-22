@@ -32,7 +32,7 @@ export const DealsTable = (props: Props) => {
 	const getDeals = useCallback(async () => {
 		const _deals = getDealAccounts(
 			connection.connection,
-			wallet as typeof Wallet,
+			wallet as Wallet,
 			marketSeed,
 			props.borrower
 		);
@@ -79,7 +79,7 @@ export const DealsTable = (props: Props) => {
 				hover={userDeal}
 				onClick={() => userDeal && navigationHelper(navigate, targetRoute, marketSeed)}
 			>
-				<TableCell>{deal.name}</TableCell>
+				<TableCell className={"deal-name"}>{deal.name}</TableCell>
 				<TableCell>{formatBorrowerKey(deal.borrower)}</TableCell>
 				<TableCell>{createdAt.toUTCString()}</TableCell>
 				<TableCell>{(goLiveAt && goLiveAt.toUTCString()) || "-"}</TableCell>

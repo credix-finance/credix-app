@@ -32,7 +32,7 @@ export const PassGuard = (props: Props) => {
 			const credixPass = await getCredixPassInfo(
 				wallet.publicKey,
 				connection.connection,
-				anchorWallet as typeof Wallet,
+				anchorWallet as Wallet,
 				marketSeed
 			);
 
@@ -44,7 +44,7 @@ export const PassGuard = (props: Props) => {
 	const checkMarket = useCallback(async () => {
 		const globalMarketStateAccount = await getGlobalMarketStateAccountData(
 			connection.connection,
-			anchorWallet as typeof Wallet,
+			anchorWallet as Wallet,
 			marketSeed
 		);
 

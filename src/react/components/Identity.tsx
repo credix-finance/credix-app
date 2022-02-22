@@ -20,7 +20,7 @@ export const Identity = () => {
 		const updateGatekeeperNetwork = async () => {
 			const gatekeeperNetwork = await getGatekeeperNetwork(
 				connection.connection,
-				wallet as typeof Wallet,
+				wallet as Wallet,
 				marketSeed
 			);
 			setGatekeeperNetwork(gatekeeperNetwork);
