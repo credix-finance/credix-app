@@ -18,12 +18,31 @@ export type Credix = {
         {
           "name": "globalMarketState",
           "isMut": true,
-          "isSigner": false
+          "isSigner": false,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "arg",
+                "type": "string",
+                "path": "global_market_seed"
+              }
+            ]
+          }
         },
         {
           "name": "signingAuthority",
           "isMut": false,
-          "isSigner": false
+          "isSigner": false,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "type": "publicKey",
+                "account": "GlobalMarketState",
+                "path": "global_market_state"
+              }
+            ]
+          }
         },
         {
           "name": "liquidityPoolTokenAccount",
@@ -41,12 +60,12 @@ export type Credix = {
           "isSigner": false
         },
         {
-          "name": "lpTokenMintAccount",
+          "name": "lpTokenMint",
           "isMut": true,
           "isSigner": true
         },
         {
-          "name": "baseMintAccount",
+          "name": "baseTokenMint",
           "isMut": false,
           "isSigner": false
         },
@@ -111,7 +130,17 @@ export type Credix = {
         {
           "name": "signingAuthority",
           "isMut": false,
-          "isSigner": false
+          "isSigner": false,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "type": "publicKey",
+                "account": "GlobalMarketState",
+                "path": "global_market_state"
+              }
+            ]
+          }
         },
         {
           "name": "investorTokenAccount",
@@ -124,7 +153,7 @@ export type Credix = {
           "isSigner": false
         },
         {
-          "name": "lpTokenMintAccount",
+          "name": "lpTokenMint",
           "isMut": true,
           "isSigner": false
         },
@@ -136,10 +165,30 @@ export type Credix = {
         {
           "name": "credixPass",
           "isMut": false,
-          "isSigner": false
+          "isSigner": false,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "type": "publicKey",
+                "account": "GlobalMarketState",
+                "path": "global_market_state"
+              },
+              {
+                "kind": "account",
+                "type": "publicKey",
+                "path": "investor"
+              },
+              {
+                "kind": "const",
+                "type": "string",
+                "value": "credix-pass"
+              }
+            ]
+          }
         },
         {
-          "name": "baseMintAccount",
+          "name": "baseTokenMint",
           "isMut": false,
           "isSigner": false
         },
@@ -192,7 +241,27 @@ export type Credix = {
         {
           "name": "borrowerInfo",
           "isMut": true,
-          "isSigner": false
+          "isSigner": false,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "type": "publicKey",
+                "account": "GlobalMarketState",
+                "path": "global_market_state"
+              },
+              {
+                "kind": "account",
+                "type": "publicKey",
+                "path": "borrower"
+              },
+              {
+                "kind": "const",
+                "type": "string",
+                "value": "borrower-info"
+              }
+            ]
+          }
         },
         {
           "name": "globalMarketState",
@@ -202,12 +271,58 @@ export type Credix = {
         {
           "name": "deal",
           "isMut": true,
-          "isSigner": false
+          "isSigner": false,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "type": "publicKey",
+                "account": "GlobalMarketState",
+                "path": "global_market_state"
+              },
+              {
+                "kind": "account",
+                "type": "publicKey",
+                "path": "borrower"
+              },
+              {
+                "kind": "account",
+                "type": "u16",
+                "account": "BorrowerInfo",
+                "path": "borrower_info.num_of_deals"
+              },
+              {
+                "kind": "const",
+                "type": "string",
+                "value": "deal-info"
+              }
+            ]
+          }
         },
         {
           "name": "credixPass",
           "isMut": false,
-          "isSigner": false
+          "isSigner": false,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "type": "publicKey",
+                "account": "GlobalMarketState",
+                "path": "global_market_state"
+              },
+              {
+                "kind": "account",
+                "type": "publicKey",
+                "path": "borrower"
+              },
+              {
+                "kind": "const",
+                "type": "string",
+                "value": "credix-pass"
+              }
+            ]
+          }
         },
         {
           "name": "systemProgram",
@@ -267,12 +382,48 @@ export type Credix = {
         {
           "name": "signingAuthority",
           "isMut": false,
-          "isSigner": false
+          "isSigner": false,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "type": "publicKey",
+                "account": "GlobalMarketState",
+                "path": "global_market_state"
+              }
+            ]
+          }
         },
         {
           "name": "deal",
           "isMut": true,
-          "isSigner": false
+          "isSigner": false,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "type": "publicKey",
+                "account": "GlobalMarketState",
+                "path": "global_market_state"
+              },
+              {
+                "kind": "account",
+                "type": "publicKey",
+                "path": "borrower"
+              },
+              {
+                "kind": "account",
+                "type": "u16",
+                "account": "Deal",
+                "path": "deal.deal_number"
+              },
+              {
+                "kind": "const",
+                "type": "string",
+                "value": "deal-info"
+              }
+            ]
+          }
         },
         {
           "name": "liquidityPoolTokenAccount",
@@ -292,10 +443,30 @@ export type Credix = {
         {
           "name": "credixPass",
           "isMut": false,
-          "isSigner": false
+          "isSigner": false,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "type": "publicKey",
+                "account": "GlobalMarketState",
+                "path": "global_market_state"
+              },
+              {
+                "kind": "account",
+                "type": "publicKey",
+                "path": "borrower"
+              },
+              {
+                "kind": "const",
+                "type": "string",
+                "value": "credix-pass"
+              }
+            ]
+          }
         },
         {
-          "name": "baseMintAccount",
+          "name": "baseTokenMint",
           "isMut": false,
           "isSigner": false
         },
@@ -348,7 +519,33 @@ export type Credix = {
         {
           "name": "deal",
           "isMut": true,
-          "isSigner": false
+          "isSigner": false,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "type": "publicKey",
+                "account": "GlobalMarketState",
+                "path": "global_market_state"
+              },
+              {
+                "kind": "account",
+                "type": "publicKey",
+                "path": "borrower"
+              },
+              {
+                "kind": "account",
+                "type": "u16",
+                "account": "Deal",
+                "path": "deal.deal_number"
+              },
+              {
+                "kind": "const",
+                "type": "string",
+                "value": "deal-info"
+              }
+            ]
+          }
         },
         {
           "name": "liquidityPoolTokenAccount",
@@ -363,20 +560,50 @@ export type Credix = {
         {
           "name": "signingAuthority",
           "isMut": false,
-          "isSigner": false
+          "isSigner": false,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "type": "publicKey",
+                "account": "GlobalMarketState",
+                "path": "global_market_state"
+              }
+            ]
+          }
         },
         {
           "name": "credixPass",
           "isMut": false,
-          "isSigner": false
+          "isSigner": false,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "type": "publicKey",
+                "account": "GlobalMarketState",
+                "path": "global_market_state"
+              },
+              {
+                "kind": "account",
+                "type": "publicKey",
+                "path": "borrower"
+              },
+              {
+                "kind": "const",
+                "type": "string",
+                "value": "credix-pass"
+              }
+            ]
+          }
         },
         {
-          "name": "baseMintAccount",
+          "name": "baseTokenMint",
           "isMut": false,
           "isSigner": false
         },
         {
-          "name": "lpTokenMintAccount",
+          "name": "lpTokenMint",
           "isMut": true,
           "isSigner": false
         },
@@ -425,7 +652,17 @@ export type Credix = {
         {
           "name": "signingAuthority",
           "isMut": false,
-          "isSigner": false
+          "isSigner": false,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "type": "publicKey",
+                "account": "GlobalMarketState",
+                "path": "global_market_state"
+              }
+            ]
+          }
         },
         {
           "name": "investorLpTokenAccount",
@@ -448,17 +685,37 @@ export type Credix = {
           "isSigner": false
         },
         {
-          "name": "lpTokenMintAccount",
+          "name": "lpTokenMint",
           "isMut": true,
           "isSigner": false
         },
         {
           "name": "credixPass",
           "isMut": false,
-          "isSigner": false
+          "isSigner": false,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "type": "publicKey",
+                "account": "GlobalMarketState",
+                "path": "global_market_state"
+              },
+              {
+                "kind": "account",
+                "type": "publicKey",
+                "path": "investor"
+              },
+              {
+                "kind": "const",
+                "type": "string",
+                "value": "credix-pass"
+              }
+            ]
+          }
         },
         {
-          "name": "baseMintAccount",
+          "name": "baseTokenMint",
           "isMut": false,
           "isSigner": false
         },
@@ -496,7 +753,27 @@ export type Credix = {
         {
           "name": "credixPass",
           "isMut": true,
-          "isSigner": false
+          "isSigner": false,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "type": "publicKey",
+                "account": "GlobalMarketState",
+                "path": "global_market_state"
+              },
+              {
+                "kind": "account",
+                "type": "publicKey",
+                "path": "pass_holder"
+              },
+              {
+                "kind": "const",
+                "type": "string",
+                "value": "credix-pass"
+              }
+            ]
+          }
         },
         {
           "name": "globalMarketState",
@@ -545,7 +822,27 @@ export type Credix = {
         {
           "name": "credixPass",
           "isMut": true,
-          "isSigner": false
+          "isSigner": false,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "type": "publicKey",
+                "account": "GlobalMarketState",
+                "path": "global_market_state"
+              },
+              {
+                "kind": "account",
+                "type": "publicKey",
+                "path": "pass_holder"
+              },
+              {
+                "kind": "const",
+                "type": "string",
+                "value": "credix-pass"
+              }
+            ]
+          }
         },
         {
           "name": "globalMarketState",
@@ -603,6 +900,71 @@ export type Credix = {
         }
       ],
       "args": []
+    },
+    {
+      "name": "updateLpTokenMetadata",
+      "accounts": [
+        {
+          "name": "owner",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "globalMarketState",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "metadataPda",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "lpTokenMint",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "signingAuthority",
+          "isMut": false,
+          "isSigner": false,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "type": "publicKey",
+                "account": "GlobalMarketState",
+                "path": "global_market_state"
+              }
+            ]
+          }
+        },
+        {
+          "name": "tokenMetadataProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rent",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "symbol",
+          "type": "string"
+        }
+      ]
     }
   ],
   "accounts": [
@@ -1244,12 +1606,31 @@ export const IDL: Credix = {
         {
           "name": "globalMarketState",
           "isMut": true,
-          "isSigner": false
+          "isSigner": false,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "arg",
+                "type": "string",
+                "path": "global_market_seed"
+              }
+            ]
+          }
         },
         {
           "name": "signingAuthority",
           "isMut": false,
-          "isSigner": false
+          "isSigner": false,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "type": "publicKey",
+                "account": "GlobalMarketState",
+                "path": "global_market_state"
+              }
+            ]
+          }
         },
         {
           "name": "liquidityPoolTokenAccount",
@@ -1267,12 +1648,12 @@ export const IDL: Credix = {
           "isSigner": false
         },
         {
-          "name": "lpTokenMintAccount",
+          "name": "lpTokenMint",
           "isMut": true,
           "isSigner": true
         },
         {
-          "name": "baseMintAccount",
+          "name": "baseTokenMint",
           "isMut": false,
           "isSigner": false
         },
@@ -1337,7 +1718,17 @@ export const IDL: Credix = {
         {
           "name": "signingAuthority",
           "isMut": false,
-          "isSigner": false
+          "isSigner": false,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "type": "publicKey",
+                "account": "GlobalMarketState",
+                "path": "global_market_state"
+              }
+            ]
+          }
         },
         {
           "name": "investorTokenAccount",
@@ -1350,7 +1741,7 @@ export const IDL: Credix = {
           "isSigner": false
         },
         {
-          "name": "lpTokenMintAccount",
+          "name": "lpTokenMint",
           "isMut": true,
           "isSigner": false
         },
@@ -1362,10 +1753,30 @@ export const IDL: Credix = {
         {
           "name": "credixPass",
           "isMut": false,
-          "isSigner": false
+          "isSigner": false,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "type": "publicKey",
+                "account": "GlobalMarketState",
+                "path": "global_market_state"
+              },
+              {
+                "kind": "account",
+                "type": "publicKey",
+                "path": "investor"
+              },
+              {
+                "kind": "const",
+                "type": "string",
+                "value": "credix-pass"
+              }
+            ]
+          }
         },
         {
-          "name": "baseMintAccount",
+          "name": "baseTokenMint",
           "isMut": false,
           "isSigner": false
         },
@@ -1418,7 +1829,27 @@ export const IDL: Credix = {
         {
           "name": "borrowerInfo",
           "isMut": true,
-          "isSigner": false
+          "isSigner": false,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "type": "publicKey",
+                "account": "GlobalMarketState",
+                "path": "global_market_state"
+              },
+              {
+                "kind": "account",
+                "type": "publicKey",
+                "path": "borrower"
+              },
+              {
+                "kind": "const",
+                "type": "string",
+                "value": "borrower-info"
+              }
+            ]
+          }
         },
         {
           "name": "globalMarketState",
@@ -1428,12 +1859,58 @@ export const IDL: Credix = {
         {
           "name": "deal",
           "isMut": true,
-          "isSigner": false
+          "isSigner": false,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "type": "publicKey",
+                "account": "GlobalMarketState",
+                "path": "global_market_state"
+              },
+              {
+                "kind": "account",
+                "type": "publicKey",
+                "path": "borrower"
+              },
+              {
+                "kind": "account",
+                "type": "u16",
+                "account": "BorrowerInfo",
+                "path": "borrower_info.num_of_deals"
+              },
+              {
+                "kind": "const",
+                "type": "string",
+                "value": "deal-info"
+              }
+            ]
+          }
         },
         {
           "name": "credixPass",
           "isMut": false,
-          "isSigner": false
+          "isSigner": false,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "type": "publicKey",
+                "account": "GlobalMarketState",
+                "path": "global_market_state"
+              },
+              {
+                "kind": "account",
+                "type": "publicKey",
+                "path": "borrower"
+              },
+              {
+                "kind": "const",
+                "type": "string",
+                "value": "credix-pass"
+              }
+            ]
+          }
         },
         {
           "name": "systemProgram",
@@ -1493,12 +1970,48 @@ export const IDL: Credix = {
         {
           "name": "signingAuthority",
           "isMut": false,
-          "isSigner": false
+          "isSigner": false,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "type": "publicKey",
+                "account": "GlobalMarketState",
+                "path": "global_market_state"
+              }
+            ]
+          }
         },
         {
           "name": "deal",
           "isMut": true,
-          "isSigner": false
+          "isSigner": false,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "type": "publicKey",
+                "account": "GlobalMarketState",
+                "path": "global_market_state"
+              },
+              {
+                "kind": "account",
+                "type": "publicKey",
+                "path": "borrower"
+              },
+              {
+                "kind": "account",
+                "type": "u16",
+                "account": "Deal",
+                "path": "deal.deal_number"
+              },
+              {
+                "kind": "const",
+                "type": "string",
+                "value": "deal-info"
+              }
+            ]
+          }
         },
         {
           "name": "liquidityPoolTokenAccount",
@@ -1518,10 +2031,30 @@ export const IDL: Credix = {
         {
           "name": "credixPass",
           "isMut": false,
-          "isSigner": false
+          "isSigner": false,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "type": "publicKey",
+                "account": "GlobalMarketState",
+                "path": "global_market_state"
+              },
+              {
+                "kind": "account",
+                "type": "publicKey",
+                "path": "borrower"
+              },
+              {
+                "kind": "const",
+                "type": "string",
+                "value": "credix-pass"
+              }
+            ]
+          }
         },
         {
-          "name": "baseMintAccount",
+          "name": "baseTokenMint",
           "isMut": false,
           "isSigner": false
         },
@@ -1574,7 +2107,33 @@ export const IDL: Credix = {
         {
           "name": "deal",
           "isMut": true,
-          "isSigner": false
+          "isSigner": false,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "type": "publicKey",
+                "account": "GlobalMarketState",
+                "path": "global_market_state"
+              },
+              {
+                "kind": "account",
+                "type": "publicKey",
+                "path": "borrower"
+              },
+              {
+                "kind": "account",
+                "type": "u16",
+                "account": "Deal",
+                "path": "deal.deal_number"
+              },
+              {
+                "kind": "const",
+                "type": "string",
+                "value": "deal-info"
+              }
+            ]
+          }
         },
         {
           "name": "liquidityPoolTokenAccount",
@@ -1589,20 +2148,50 @@ export const IDL: Credix = {
         {
           "name": "signingAuthority",
           "isMut": false,
-          "isSigner": false
+          "isSigner": false,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "type": "publicKey",
+                "account": "GlobalMarketState",
+                "path": "global_market_state"
+              }
+            ]
+          }
         },
         {
           "name": "credixPass",
           "isMut": false,
-          "isSigner": false
+          "isSigner": false,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "type": "publicKey",
+                "account": "GlobalMarketState",
+                "path": "global_market_state"
+              },
+              {
+                "kind": "account",
+                "type": "publicKey",
+                "path": "borrower"
+              },
+              {
+                "kind": "const",
+                "type": "string",
+                "value": "credix-pass"
+              }
+            ]
+          }
         },
         {
-          "name": "baseMintAccount",
+          "name": "baseTokenMint",
           "isMut": false,
           "isSigner": false
         },
         {
-          "name": "lpTokenMintAccount",
+          "name": "lpTokenMint",
           "isMut": true,
           "isSigner": false
         },
@@ -1651,7 +2240,17 @@ export const IDL: Credix = {
         {
           "name": "signingAuthority",
           "isMut": false,
-          "isSigner": false
+          "isSigner": false,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "type": "publicKey",
+                "account": "GlobalMarketState",
+                "path": "global_market_state"
+              }
+            ]
+          }
         },
         {
           "name": "investorLpTokenAccount",
@@ -1674,17 +2273,37 @@ export const IDL: Credix = {
           "isSigner": false
         },
         {
-          "name": "lpTokenMintAccount",
+          "name": "lpTokenMint",
           "isMut": true,
           "isSigner": false
         },
         {
           "name": "credixPass",
           "isMut": false,
-          "isSigner": false
+          "isSigner": false,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "type": "publicKey",
+                "account": "GlobalMarketState",
+                "path": "global_market_state"
+              },
+              {
+                "kind": "account",
+                "type": "publicKey",
+                "path": "investor"
+              },
+              {
+                "kind": "const",
+                "type": "string",
+                "value": "credix-pass"
+              }
+            ]
+          }
         },
         {
-          "name": "baseMintAccount",
+          "name": "baseTokenMint",
           "isMut": false,
           "isSigner": false
         },
@@ -1722,7 +2341,27 @@ export const IDL: Credix = {
         {
           "name": "credixPass",
           "isMut": true,
-          "isSigner": false
+          "isSigner": false,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "type": "publicKey",
+                "account": "GlobalMarketState",
+                "path": "global_market_state"
+              },
+              {
+                "kind": "account",
+                "type": "publicKey",
+                "path": "pass_holder"
+              },
+              {
+                "kind": "const",
+                "type": "string",
+                "value": "credix-pass"
+              }
+            ]
+          }
         },
         {
           "name": "globalMarketState",
@@ -1771,7 +2410,27 @@ export const IDL: Credix = {
         {
           "name": "credixPass",
           "isMut": true,
-          "isSigner": false
+          "isSigner": false,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "type": "publicKey",
+                "account": "GlobalMarketState",
+                "path": "global_market_state"
+              },
+              {
+                "kind": "account",
+                "type": "publicKey",
+                "path": "pass_holder"
+              },
+              {
+                "kind": "const",
+                "type": "string",
+                "value": "credix-pass"
+              }
+            ]
+          }
         },
         {
           "name": "globalMarketState",
@@ -1829,6 +2488,71 @@ export const IDL: Credix = {
         }
       ],
       "args": []
+    },
+    {
+      "name": "updateLpTokenMetadata",
+      "accounts": [
+        {
+          "name": "owner",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "globalMarketState",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "metadataPda",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "lpTokenMint",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "signingAuthority",
+          "isMut": false,
+          "isSigner": false,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "type": "publicKey",
+                "account": "GlobalMarketState",
+                "path": "global_market_state"
+              }
+            ]
+          }
+        },
+        {
+          "name": "tokenMetadataProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rent",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "symbol",
+          "type": "string"
+        }
+      ]
     }
   ],
   "accounts": [
