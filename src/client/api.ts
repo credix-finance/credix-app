@@ -740,7 +740,6 @@ export const repayDeal = multiAsync(
 			globalMarketSeed
 		);
 		const _baseMintPK = getBaseMintPK(connection, wallet, globalMarketSeed);
-		const _lpTokenMintPK = getLPTokenMintPK(connection, wallet, globalMarketSeed);
 		const _treasuryPoolTokenAccountPK = getTreasuryPoolTokenAccountPK(
 			connection,
 			wallet,
@@ -761,7 +760,6 @@ export const repayDeal = multiAsync(
 			dealPDA,
 			liquidityPoolAssociatedBaseTokenAddressPK,
 			baseMintPK,
-			lpTokenMintPK,
 			treasuryPoolTokenAccountPK,
 			signingAuthorityPDA,
 			gatewayToken,
@@ -772,7 +770,6 @@ export const repayDeal = multiAsync(
 			_dealPDA,
 			_liquidityPoolAssociatedBaseTokenAddressPK,
 			_baseMintPK,
-			_lpTokenMintPK,
 			_treasuryPoolTokenAccountPK,
 			_signingAuthorityPDA,
 			_getGatewayToken,
@@ -790,7 +787,6 @@ export const repayDeal = multiAsync(
 				treasuryPoolTokenAccount: treasuryPoolTokenAccountPK,
 				signingAuthority: signingAuthorityPDA[0],
 				baseTokenMint: baseMintPK,
-				lpTokenMint: lpTokenMintPK,
 				credixPass: credixPass[0],
 				tokenProgram: TOKEN_PROGRAM_ID,
 				associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
