@@ -24,7 +24,7 @@ export const StakeForm = () => {
 		if (wallet) {
 			const stake = await getLPTokenBaseBalance(
 				connection.connection,
-				wallet as typeof Wallet,
+				wallet as Wallet,
 				marketSeed
 			);
 			setStake(stake);

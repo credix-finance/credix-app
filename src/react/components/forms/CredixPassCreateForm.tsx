@@ -32,7 +32,7 @@ export const CredixPassCreateForm = () => {
 				isUnderwriter,
 				isBorrower,
 				connection.connection,
-				wallet as typeof Wallet,
+				wallet as Wallet,
 				marketSeed
 			);
 			snackbarKey = notify("info", "CredixPass creation is being processed", undefined, true);
