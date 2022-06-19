@@ -23,6 +23,7 @@
     "jsx": "react-jsx"
   },
   "include": [
-    "src"
+    "src",
+    "src/create_mainnet_deal.ts"
   ]
 }

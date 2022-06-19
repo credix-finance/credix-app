@@ -48,7 +48,7 @@ export const getGlobalMarketStateAccountData = multiAsync(
 	}
 );
 
-const getBaseMintPK = multiAsync(
+export const getBaseMintPK = multiAsync(
 	async (connection: Connection, wallet: Wallet, globalMarketSeed: string) => {
 		const globalMarketState = await getGlobalMarketStateAccountData(
 			connection,
@@ -195,7 +195,7 @@ const getTVL = multiAsync(
 	}
 );
 
-const getLiquidityPoolAssociatedBaseTokenAddressPK = multiAsync(
+export const getLiquidityPoolAssociatedBaseTokenAddressPK = multiAsync(
 	async (connection: Connection, wallet: Wallet, globalMarketSeed: string) => {
 		const signingAuthorityPDA = await findSigningAuthorityPDA(globalMarketSeed);
 		return getAssociatedBaseTokenAddressPK(
@@ -208,7 +208,7 @@ const getLiquidityPoolAssociatedBaseTokenAddressPK = multiAsync(
 	}
 );
 
-const getTreasuryPoolTokenAccountPK = multiAsync(
+export const getTreasuryPoolTokenAccountPK = multiAsync(
 	async (connection: Connection, wallet: Wallet, globalMarketSeed: string) => {
 		const globalMarketStateData = await getGlobalMarketStateAccountData(
 			connection,
@@ -224,7 +224,7 @@ const getTreasuryPoolTokenAccountPK = multiAsync(
 	}
 );
 
-const getAssociatedBaseTokenAddressPK = multiAsync(
+export const getAssociatedBaseTokenAddressPK = multiAsync(
 	async (
 		connection: Connection,
 		wallet: Wallet,
