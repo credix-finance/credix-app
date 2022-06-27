@@ -18,8 +18,6 @@ import {
 } from "client/pda";
 import { multiAsync } from "utils/async.utils";
 import { findGatewayToken } from "@identity.com/solana-gateway-ts";
-import { Ratio } from "types/program.types";
-import Fraction from "fraction.js";
 import { newCredixProgram } from "client/program";
 import { ASSOCIATED_TOKEN_PROGRAM_ID, TOKEN_PROGRAM_ID } from "@solana/spl-token";
 
@@ -151,11 +149,8 @@ export const createMainnetDeals = async (connection: Connection) => {
 	for (let i = 0; i < data.length; i++) {
 		const deal = data[i];
 		console.log("creating " + deal.name);
-		const principal = new Big(deal.principal * 1000000);
+		const principal = new Big(deal.principal * 1000_000);
 		const timeToMaturity = deal.timeToMaturityDays;
-		const financingFee =
-			parseInt(deal.financingFeePercentage.split("/")[0]) /
-			parseInt(deal.financingFeePercentage.split("/")[1]);
 		const borrower = developmentKey.publicKey;
 		console.log(borrower.toString());
 		const dealName = deal.name;
@@ -208,22 +203,19 @@ export const createMainnetDeals = async (connection: Connection) => {
 			_baseMintPK,
 			_userAssociatedBaseTokenAddressPK,
 			_liquidityPoolAssociatedBaseTokenAddressPK,
-			_treasuryPoolTokenAccountPK
+			_treasuryPoolTokenAccountPK,
 		]);
 
 		const program = newCredixProgram(connection, wallet);
 
 		const principalAmount = new anchor.BN(principal.toNumber());
-		const financingFreeFraction = new Fraction(financingFee);
-
-		const financingFeeAmount: Ratio = {
-			numerator: financingFreeFraction.n,
-			denominator: financingFreeFraction.d * 100,
-		};
 
 		await program.rpc.createDeal(
 			principalAmount,
-			financingFeeAmount,
+			{
+				numerator: parseInt(deal.financingFeePercentage.split("/")[0]),
+				denominator: parseInt(deal.financingFeePercentage.split("/")[1]),
+			},
 			0,
 			0,
 			timeToMaturity,
@@ -261,25 +253,27 @@ export const createMainnetDeals = async (connection: Connection) => {
 			},
 		});
 
-		const repayAmount = new anchor.BN(deal.interestAmountRepaid * 1000000);
-		await program.rpc.makeDealRepayment(repayAmount, { interest: {} }, {
-			accounts: {
-				borrower: wallet.publicKey,
-				gatewayToken: gatewayToken.publicKey,
-				globalMarketState: globalMarketStatePDA[0],
-				borrowerTokenAccount: userAssociatedBaseTokenAddressPK,
-				deal: dealPDA[0],
-				liquidityPoolTokenAccount: liquidityPoolAssociatedBaseTokenAddressPK,
-				treasuryPoolTokenAccount: treasuryPoolTokenAccountPK,
-				signingAuthority: signingAuthorityPDA[0],
-				baseTokenMint: baseMintPK,
-				credixPass: credixPass[0],
-				tokenProgram: TOKEN_PROGRAM_ID,
-				associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
-			},
-		});
-
-		console.log("created " + deal.name + " and repaid " + repayAmount.toNumber());
+		const repayAmount = new anchor.BN(deal.interestAmountRepaid * 1000_000);
+		await program.rpc.makeDealRepayment(
+			repayAmount,
+			{ interest: {} },
+			{
+				accounts: {
+					borrower: wallet.publicKey,
+					gatewayToken: gatewayToken.publicKey,
+					globalMarketState: globalMarketStatePDA[0],
+					borrowerTokenAccount: userAssociatedBaseTokenAddressPK,
+					deal: dealPDA[0],
+					liquidityPoolTokenAccount: liquidityPoolAssociatedBaseTokenAddressPK,
+					treasuryPoolTokenAccount: treasuryPoolTokenAccountPK,
+					signingAuthority: signingAuthorityPDA[0],
+					baseTokenMint: baseMintPK,
+					credixPass: credixPass[0],
+					tokenProgram: TOKEN_PROGRAM_ID,
+					associatedTokenProgram: ASSOCIATED_TOKEN_PROGRAM_ID,
+				},
+			}
+		);
 	}
 };
 
