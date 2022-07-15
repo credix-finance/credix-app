@@ -21,7 +21,7 @@
     "@solana/web3.js": "^1.30.2",
     "@testing-library/jest-dom": "^5.15.0",
     "@testing-library/react": "^12.1.2",
-    "@testing-library/user-event": "^12.8.3",
+    "@testing-library/user-event": "^14.2.5",
     "@types/jest": "^27.0.3",
     "@types/node": "^12.20.36",
     "@types/react": "^17.0.37",
